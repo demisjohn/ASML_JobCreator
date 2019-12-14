@@ -15,10 +15,11 @@ Demis D. John, Univ. of California Santa Barbara; Nanofabrication Facility; 2019
 ####################################################
 # Module setup etc.
 
-from .__globals import *    # global variables/methods to the module.
-from .Cell import Cell_Structure            # Class Cell - Cell Structure options
-from .Image import Image_Definition         # Call Image - Image Definition options
-from .Image import Image_Distribution       # Call Image - Image Distribution options
+from .__globals import *            # global variables/methods to the module.
+from .Cell import CellStructure             # Class Cell - Cell Structure options
+from .Image import Image                    # Class Image 
+from .Alignment import Alignment            # Class Alignment
+from .Layer import Layer                    # class Layer
 
 
 ####################################################

@@ -1,8 +1,8 @@
 """
 This file is part of the ASML_JobCreator package for Python 3.x.
 
-Cell.py
-    Contains class Cell
+Mark.py
+    Class 'Mark', for defining alignment marks.
     
 - - - - - - - - - - - - - - -
 
@@ -21,46 +21,31 @@ from .__globals import *    # global variables/methods to the module.
 
 
 
-class Cell(object):
+class Mark(object):
     """
-    Class for defining Wafer Layout > Cell Structure
+    Class for defining alignment marks.
     
-    Cell(  ):
-        Creates empty object with default values.
-    
-    Methods
-    -------
-    set_CellSize( [x,y] )
-        Required to be set by user.
         
-	set_EdgeClearance( [x,y] )
-	    Defaults to....
-
-    set_EdgeExclusion( exc )
-        Defaults to...
-
-	¿ [w]afer cover
-
-    set_DiePerCell( [x,y] )
-        Defaults to 1 x 1.
-        
-    set_MinDiePerCell()
-        Defaults to [1] die per cell.
-        
-    set_MatrixShift( [x,y] )
-        Defaults to [0,0] default
-    
-    
     Attributes
     ----------
-    x : integer
-        Some Attribute
-
+    data : Data object
+        Contains loaded data from file
+    fits : list
+        list of Fit objects, defining fitting regions and fiting data (losses, slopes etc.)
         
     """
     
-    def __init__(self):
-        '''Creates empty object.'''
+    def __init__(self, MarkID, MarkType, cell_index, cell_shift, wafer_coord):
+        '''Define an alignment mark, either by cell_index/cell_shift OR wafer_coord, not both.
+            
+            Parameters
+            ----------
+            MarkID : string
+                Name of the Mark
+            
+            ...
+			- warn if cell is not on wafer
+            '''
         
     #end __init__
     
@@ -68,7 +53,7 @@ class Cell(object):
     def __str__(self):
         '''Return string to `print` this object.'''
         str = ""
-        str += "ASML_JobCreator.Cell object:\n"
+        str += "OBR_Analysis.Trace object:\n"
         
         return str
     #end __str__
@@ -111,7 +96,7 @@ class Cell(object):
     
     
   
-#end class(Cell)
+#end class(Mark)
 
 
 
