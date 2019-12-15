@@ -37,10 +37,10 @@ class Alignment(object):
         
     """
     
-    def __init__(self, datadict, **kwargs):
-        '''Create empty object, with pointers to the Mark and Strategy classes.'''
-        self.Mark = Mark
-        self.Alignment = Alignment
+    def __init__(self):
+        '''Create empty Alignment object, with pointers to the Mark and Strategy classes.'''
+        self.Mark = Mark    # constructor
+        self.Strategy = Strategy    # constructor
     #end __init__
     
     

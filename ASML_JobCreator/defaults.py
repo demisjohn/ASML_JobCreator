@@ -23,16 +23,16 @@ from .__globals import *    # global variables/methods to the module.
 
 
 class Default(object):
-    """
+    '''
     Class for holding all default values.
-    """
+    '''
     
     def __init__(self):
         '''inits an empty object'''
     #end __init__
     
     
-    '''
+    """
     def __str__(self):
         '''Return string to `print` this object.'''
         str = ""
@@ -40,7 +40,7 @@ class Default(object):
         
         return str
     #end __str__
-    ''''
+    """
     
     
     def copy(self):

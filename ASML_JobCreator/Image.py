@@ -45,21 +45,17 @@ class Image(object):
         
     """
     
-    def __init__(self, datadict, **kwargs):
-        '''Calls `self._buildfromdict(datadict)`. See `help(Trace)` for more info.'''
-        self.fits = []  # empty list
-        self._buildfromdict( datadict )
+    def __init__(self, ImageID, ReticleID, sizeList, shiftList):
+        '''Image object constructor.
+        		__init__("ImageID", "ReticleID", [size_x, size_y], [shiftx,shifty])
+		.Distribute(cell=[C,R], shift=[x,y])
+			§ shift is optional, defualts to [0,0]
+			§ warn if shift >= cell size / 2
+			§ (future) logic if Cell is outside wafer diam?  
+
+        '''
         
         
-        if kwargs:
-            '''pop any required kwargs'''
-            pass
-            '''If there are unused key-word arguments'''
-            ErrStr = "WARNING: Trace(): Unrecognized keywords provided: {"
-            for k in kwargs.iterkeys():
-                ErrStr += "'" + k + "', "
-            ErrStr += "}.    Continuing..."
-            print(ErrStr)
     #end __init__
     
     

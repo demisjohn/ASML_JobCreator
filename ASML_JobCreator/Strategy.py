@@ -89,10 +89,21 @@ class Strategy(object):
     ##############################################
     #       Plotting etc.
     ##############################################
-	def add_mark ( self, preference="Backup"/"Preferred", *args ) 
-		''''- accepts iterable for marks'''
-		pass
-	#end (add_mark)
+    def add_mark ( self, preference, *args ) :
+        '''
+        add_mark ( preference= , Marks ) :
+        
+        Parameters
+        ----------
+        preference ="Backup"/"Preferred"
+        
+        Marks : Mark objects
+            Pass the Mark objects to add to this Alignment Strategy. Accepts each Mark as separate arguments,
+            or optionally a single iterable of Mark objects is acceptable.
+        
+        '''
+        pass
+    #end (add_mark)
     
     
     
