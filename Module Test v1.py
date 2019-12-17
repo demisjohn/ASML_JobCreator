@@ -25,7 +25,7 @@ print('Running...')
 
 
 import ASML_JobCreator as asml
-
+MyJob = asml.Job()
 
 
 
