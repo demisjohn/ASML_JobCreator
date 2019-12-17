@@ -16,10 +16,11 @@ Demis D. John, Univ. of California Santa Barbara; Nanofabrication Facility; 2019
 # Module setup etc.
 
 from .__globals import *            # global variables/methods to the module.
-from .Cell import Cell             # Class Cell - Cell Structure options
+from .Cell import Cell              # Class Cell - Cell Structure options
 from .Image import Image                    # Class Image 
 from .Alignment import Alignment            # Class Alignment
-from .Layer import Layer                    # class Layer
+from .Layer import Layer                    # Class Layer
+from .Defaults import Defaults              # Class Default
 
 
 ####################################################
@@ -50,7 +51,10 @@ class Job(object):
         self.Alignment = Alignment()    # Alignment object
         self.Cell = Cell()      # Cell object
         self.Image = Image      # Image constructor
+        self.ImageList = []
         self.Layer = Layer      # Layer constructor
+        self.LayerList = []
+        self.Defaults = Defaults()  # `Default` object
         
         """
         if kwargs:
@@ -70,6 +74,16 @@ class Job(object):
         '''Return string to `print` this object.'''
         str = ""
         str += "ASML_JobCreator.Job object:\n"
+        str += "--- Cell ---\n"
+        str += str(self.Cell)
+        str += "--- Images ---\n"
+        for i in self.ImageList:
+            str += str(self.i)
+        str += "--- Layers ---\n"
+        for i in self.LayerList:
+            str += str(self.i)
+        str += "--- Alignment ---\n"
+        str += str(self.Alignment)
         
         return str
     #end __str__
