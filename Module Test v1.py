@@ -27,6 +27,11 @@ print('Running...')
 import ASML_JobCreator as asml
 MyJob = asml.Job()
 
+print( MyJob.get_comment() )
+MyJob.set_comment("Test Job", "Line2", "Line3")
+print( MyJob.get_comment() )    
+
+
 
 
 print('done.')

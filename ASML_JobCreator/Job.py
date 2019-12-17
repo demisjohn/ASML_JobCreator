@@ -1,11 +1,15 @@
 """
 This file is part of the ASML_JobCreator package for Python 3.x.
 
-version.py
-    Contains only versioning info and strings/variables.
-    ** Update this file when you increment the module version number. **
-    Some of the strings in this file will be printed upon module import
+Job.py
+    Contains the `Job` class, master class for defining an ASML Job.
     
+    
+- - - - - - - - - - - - - - -
+
+TO DO: 
+MyJob.check_cell( [C,R] ) - check if cell is on the wafer
+
 - - - - - - - - - - - - - - -
 
 Demis D. John, Univ. of California Santa Barbara; Nanofabrication Facility; 2019
@@ -20,7 +24,6 @@ from .Cell import Cell              # Class Cell - Cell Structure options
 from .Image import Image                    # Class Image 
 from .Alignment import Alignment            # Class Alignment
 from .Layer import Layer                    # Class Layer
-from .Defaults import Defaults              # Class Default
 
 
 ####################################################
@@ -54,7 +57,6 @@ class Job(object):
         self.ImageList = []
         self.Layer = Layer      # Layer constructor
         self.LayerList = []
-        self.Defaults = Defaults()  # `Default` object
         
         """
         if kwargs:
@@ -100,20 +102,73 @@ class Job(object):
     ##############################################
     #       Setters/Getters
     ##############################################
-    def set_waveguide_length(self, length):
-        '''Set the expected waveguide length. This is usually the length on your mask plate or measured fiber length.'''
-        self.waveguide_length = length
+    def set_comment(self, line1="", line2="", line3=""):
+        '''Set the comment lines for this job, in three separate lines. Visible in PAS *Batch Append* screen.
+        
+        Parameters
+        ----------
+        line1, line2, line3 : string
+            Maximum length = XYZ characters.  Only Sun-UNIX compatible characters!'''
+        self.comment_line1 = str(line1)
+        self.comment_line2 = str(line2)
+        self.comment_line3 = str(line3)
     #end
     
-    def get_waveguide_length(self):
-        '''Return waveguide length.'''
+    def get_comment(self):
+        '''Return job comment lines, as three separate strings.'''
         try:
-            return self.waveguide_length
+            return (self.comment_line1, self.comment_line2, self.comment_line3)
         except AttributeError:
-            raise AttributeError("waveguide_length has not been set yet.  Use `set_waveguide_length()` or `scale_to_group_index()`.")
+            warn("Using default values for Job `comment`.")
+            self.comment_line1, self.comment_line2, self.comment_line3 = \
+                Defaults.comment_line1, Defaults.comment_line2, Defaults.comment_line3
+            return (self.comment_line1, self.comment_line2, self.comment_line3) 
     #end
     
     
+    def set_ExposeEdgeDie(self, b):
+        '''Enable/Disable the exposure of die all the way to the wafer edge, by setting the "Number of Die Per Cell" to 10x10, and Minimum Number of Die to 1.
+        
+        Parameters
+        ----------
+        b : {True | False}
+            Expose the edge die?
+        '''
+        if b == True:
+            self.Cell.NumberDiePerCell = [10, 10]
+        else:
+            self.Cell.NumberDiePerCell = [1, 1]
+        #end if(b)
+        self.Cell.MinNumberDie = 1
+    #end
+    
+    def get_NumberDiePerCell(self):
+        '''Return Number of Die per Cell, as two-valued Col/Row list.'''
+        try:
+            return self.Cell.NumberDiePerCell
+        except AttributeError:
+            warn("Using default values for `NumberDiePerCell`.")
+            self.Cell.NumberDiePerCell =  Defaults.CELL_SIZE
+            return self.Cell.NumberDiePerCell
+    #end
+    
+    def get_MinNumberDie(self):
+        '''Return Minimum Number of Die on the wafer to force exposure.'''
+        try:
+            return self.Cell.MinNumberDie
+        except AttributeError:
+            warn("Using default values for `MinNumberDie`.")
+            self.Cell.MinNumberDie =  Defaults.MIN_NUMBER_DIES
+            return self.Cell.MinNumberDie
+    #end
+    
+    
+    # - - - - - - - - - - - - - - - - - - - - - 
+    
+    def get_WaferDiameter(self):
+        '''Return Wafer Diameter in mm.'''
+        return Defaults.WFR_DIAMETER
+    #end
     
     
     ##############################################

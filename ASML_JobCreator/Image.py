@@ -53,7 +53,7 @@ class Image(object):
         
         See `help(Image)` for description of arguments.
         """
-        
+        pass
         
     #end __init__
     

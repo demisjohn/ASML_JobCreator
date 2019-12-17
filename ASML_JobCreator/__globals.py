@@ -13,6 +13,11 @@ Demis D. John, 2018
 ####################################################
 # Module setup etc.
 
+from .Defaults import Defaults              # Class Default
+Defaults = Defaults()  # `Default` object
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - 
+
 import numpy as np
 import matplotlib.pyplot as plt
 #import time                       # Get current date/time
@@ -20,7 +25,7 @@ from datetime import datetime      # better date/time handling
 
 #from collections import OrderedDict as oDict    # Dictionary that maintains order
 
-from warnings import warn       # for non-breaking warnings
+from warnings import warn       # for non-breaking warnings, warn("message")
 
 #from scipy import constants as const    # speed of light, planks constant etc.
 from scipy.constants import c   # 299792458 m/s

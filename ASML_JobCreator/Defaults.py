@@ -175,6 +175,18 @@ class Defaults(object):
         self.ReticleData_GLOBAL_LEVEL_POINT_1                          = [0.000000, 0.000000]
         self.ReticleData_GLOBAL_LEVEL_POINT_2                          = [0.000000, 0.000000]
         self.ReticleData_GLOBAL_LEVEL_POINT_3                          = [0.000000, 0.000000]
+        
+        
+        ########################################
+        #
+        #   Defaults for user-settings
+        #
+        ########################################
+        self.comment_line1 = "Created with python ASML_JobCreator"
+        self.comment_line2 = "Univ. of California Santa Barbara"
+        self.comment_line3 = "UCSB Nanofab, Demis D. John"
+        
+        
     #end LoadDefaultValues()
     
 #end class(Default)
