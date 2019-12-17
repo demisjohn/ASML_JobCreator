@@ -37,8 +37,7 @@ print( "\nASML_JobCreator   (v."  +  __version__  +  "   "  +  __versiondate__ +
 # Module setup etc.
 
 from .__globals import * # global variables/methods to the module.
-from .Job import Job      # objects for the "Wafer Layout" section
-from .defaults import Defaults
+from .Job import Job      # objects for the ASML Job
 
 
 ####################################################
