@@ -23,7 +23,7 @@ from .__globals import *            # global variables/methods to the module.
 from .Cell import Cell              # Class Cell - Cell Structure options
 from .Image import Image                    # Class Image 
 from .Alignment import Alignment            # Class Alignment
-from .Layer import Layer                    # Class Layer
+from .Layer import Layer as Lyr                    # Class Layer
 
 
 ####################################################
@@ -35,39 +35,21 @@ class Job(object):
     '''
     Class for defining ASML Job file.
         
-    Attributes
-    ----------
-    data : Data object
-        Contains loaded data from file
-    fits : list
-        list of Fit objects, defining fitting regions and fiting data (losses, slopes etc.)
+    MyJob = Job( )
+    
     
     TO DO: 
 	- MyJob.check_cell( [C,R] ) - check if cell is on the wafer
 
-    
-    
     '''
     
     def __init__(self):
-        '''Calls `self._buildfromdict(datadict)`. See `help(Trace)` for more info.'''
+        '''Job object constructor.  See `help(Job)` for parameters.'''
         self.Alignment = Alignment()    # Alignment object
         self.Cell = Cell()      # Cell object
         self.ImageList = []
-        self.Layer = Layer      # Layer constructor
         self.LayerList = []
         
-        """
-        if kwargs:
-            '''pop any required kwargs'''
-            pass
-            '''If there are unused key-word arguments'''
-            ErrStr = "WARNING: Trace(): Unrecognized keywords provided: {"
-            for k in kwargs.iterkeys():
-                ErrStr += "'" + k + "', "
-            ErrStr += "}.    Continuing..."
-            print(ErrStr)
-        """
     #end __init__
     
     
@@ -185,7 +167,7 @@ class Job(object):
     #end Image()
     
     
-    def add_images(self, *images):
+    def add_Images(self, *images):
         """
         Add Image objects to this Job.
     
@@ -206,7 +188,51 @@ class Job(object):
             else:
                 raise ValueError( "Expected `Image` object, instead got: " + str(type(ii)) + " at argument #%i"%(i) )
         #end for(ImgList)
+    #end add_images()
     
+    
+    
+    
+    def Layer(self, LayerID="", CombinedWithZeroLayer=False):
+        """
+        Return a Layer object for this Job.
+    
+        Layer( LayerID="", CombinedWithZeroLayer=False )
+    
+        Parameters
+        ----------
+        LayerID : string
+            String identifying this Layer.
+        CombinedWithZeroLayer : { True | False }, optional
+            Whether this layer should also shoot alignment marks on Layer 0. Defaults to False.
+            NOT IMPLEMENTED YET.
+    
+        """
+        return Layer( LayerID="", CombinedWithZeroLayer=False, parent=self)
+    #end Layer()
+    
+    def add_Layers(self, *layers):
+        """
+        Add Layer objects to this Job.
+    
+        Parameters
+        ----------
+        *layers : Layer objects
+            Can pass Layer objects each as it's own argument, or an array-like/iterable containing the Layer objects.  Order of the Layers will determine the order in the ASML job - first argument/item will be Layer #1.
+        """
+        if len(layers) == 1 and np.iterable( layers[0] ):
+            LyrList = layers[0]
+        else:
+            LyrList = layers
+        #end if(images)
+        
+        for i,ii in enumerate(LyrList):
+            if isinstance(ii, Layer):
+                self.LayerList.append( ii )
+            else:
+                raise ValueError( "Expected `Layer` object, instead got: " + str(type(ii)) + " at argument #%i"%(i) )
+        #end for(LyrList)
+    #end add_layers()
     
   
 #end class(Job)

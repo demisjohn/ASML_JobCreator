@@ -51,19 +51,33 @@ class Layer(object):
     """
     Class for holding all Layer Layout options
     
+    Layer( LayerID="", CombinedWithZeroLayer=False )
     
-    Attributes
+    Parameters
     ----------
-    data : Data object
-        Contains loaded data from file
-    fits : list
-        list of Fit objects, defining fitting regions and fiting data (losses, slopes etc.)
-        
+    LayerID : string
+        String identifying this Layer.
+    CombinedWithZeroLayer : { True | False }, optional
+        Whether this layer should also shoot alignment marks on Layer 0. Defaults to False.
+        NOT IMPLEMENTED YET.
+    parent : Job object
+        The Job object that spawned this instance.
+    
     """
     
-    def __init__(self, datadict, **kwargs):
-        '''Empty object'''
-        pass
+    def __init__(self, LayerID="", CombinedWithZeroLayer=False, parent=None):
+        '''Layer object constructor.  See `help(Layer)` for parameters.
+        '''
+        self.LayerID = str(LayerID) # To Do: Sanitize LayerID text
+        self.CombinedWithZeroLayer = bool(CombinedWithZeroLayer)
+        self.ImageList = []
+        self.EnergyList=[]
+        self.FocusList=[]
+        self.FocusTiltList=[]
+        self.NAList=[]
+        self.Sig_oList=[]
+        self.Sig_iList=[]
+        self.IlluminationModeList=[]
     #end __init__
     
     
@@ -87,29 +101,140 @@ class Layer(object):
     ##############################################
     #       Setters/Getters
     ##############################################
-    def set_waveguide_length(self, length):
-        '''Set the expected waveguide length. This is usually the length on your mask plate or measured fiber length.'''
-        self.waveguide_length = length
+    def set_CellSize(self, xy=[10,10] ):
+        '''Set the Cell Size in millimeters, [x,y].'''
+        if len(xy)==2: 
+            self.CellSize = (xy[0], xy[1])
+        else:
+            raise ValueError("Expected x,y pair of numbers, instead got: " + str(xy))
     #end
     
-    def get_waveguide_length(self):
-        '''Return waveguide length.'''
+    def get_CellSize(self):
+        '''Return Cell Size in mm, as two-valued list.'''
         try:
-            return self.waveguide_length
+            return self.CellSize
         except AttributeError:
-            raise AttributeError("waveguide_length has not been set yet.  Use `set_waveguide_length()` or `scale_to_group_index()`.")
+            if WARN(): warn("Using default values for `CellSize`.")
+            self.set_CellSize( Defaults.CELL_SIZE)
+            return self.CellSize
+    #end
+    
+    
+    ##############################################
+    #       Alignment etc.
+    ##############################################
+    
+    #########
+    # To do
+    #
+    #set_strategy(Strat1) - or None
+    #.set_Prealignment(Mark1, Mark2) - ignored if combined zero/first.
+    #   also turns on optical prealignment
+    #If any layer has "combined zero/first' set:
+    #       MarksExposure - set layer 0 to expose all marks
+    
+    
+    
+    ##############################################
+    #       Process Data
+    ##############################################
+    #
+    # To DO:
+    # .set/unset/get_shifted_measurement_scans()
+    #
+    
+    
+    def set_LayerShift(self, xy=[0,0] ):
+        '''Set the Layer Shift in millimeters, [x,y].'''
+        if len(xy)==2 and np.isscalar(xy[0]) and np.isscalar(xy[1]): 
+            self.LayerShift = (xy[0], xy[1])
+        else:
+            raise ValueError("Expected x,y pair of numbers, instead got: " + str(xy))
+    #end
+    
+    def get_shift(self):
+        '''Return Layer Shift in mm, as two-valued list.'''
+        try:
+            return self.LayerShift
+        except AttributeError:
+            if WARN(): warn("Using default values for `LayerShift`.")
+            self.set_LayerShift( Defaults.ProcessData_LAYER_SHIFT)
+            return self.LayerShift
+    #end
+    
+    def set_GlobalLevelPoints(self, xy1=[0,0], xy2=[0,0], xy3=[0,0] ):
+        '''Set the Global Level/Tilt points in millimeters, [x,y].'''
+        if len(xy1)==2 and np.isscalar(xy1[0]) and np.isscalar(xy1[1]): 
+            self.GlobalLevel_Point1 = (xy1[0], xy1[1])
+        else:
+            raise ValueError("Expected x,y pair of numbers for `xy1`, instead got: " + str(xy1))
+        #end if
+        
+        if len(xy2)==2 and np.isscalar(xy2[0]) and np.isscalar(xy2[1]): 
+            self.GlobalLevel_Point2 = (xy2[0], xy2[1])
+        else:
+            raise ValueError("Expected x,y pair of numbers for `xy2`, instead got: " + str(xy2))
+        #end if
+        
+        if len(xy3)==2 and np.isscalar(xy3[0]) and np.isscalar(xy3[1]): 
+            self.GlobalLevel_Point3 = (xy3[0], xy3[1])
+        else:
+            raise ValueError("Expected x,y pair of numbers from `xy3`, instead got: " + str(xy3))
+        #end if
+    #end
+    
+    def get_GlobalLevelPoints(self):
+        '''Return the three Global Level/Titl points in mm, as three two-valued tuples.'''
+        try:
+            return (self.GlobalLevel_Point1, self.GlobalLevel_Point2, self.GlobalLevel_Point3)
+        except AttributeError:
+            if WARN(): warn("Using default values for `GlobalLevel_Point1/2/3`.")
+            self.set_GlobalLevelPoints(xy1=[0,0], xy2=[0,0], xy3=[0,0] )
+            return (self.GlobalLevel_Point1, self.GlobalLevel_Point2, self.GlobalLevel_Point3)
     #end
     
     
     
-    
     ##############################################
-    #       Plotting etc.
+    #       Reticle Data
     ##############################################
+    #
+    # To DO:
+    # 
     
+    def ExposeImage(self, Image=None, Energy=20, Focus=0.000, FocusTilt=[0,0], NA=0.570, Sig_o=0.750, Sig_i=0.5, IlluminationMode="Conventional")
+        """
+        Set Layer to expose an Image.
     
+        ExposeImage( Image, Energy=20, Focus=0.000, FocusTilt=[0,0], NA=0.570, Sig_o=0.750, Sig_i=0.5, IlluminationMode="Conventional" )
     
+        Parameters
+        ----------
+        Image : Image object
+            Pass the Image object to expose.
+        Energy : number
+            Exposure energy in mJ.
+        Focus : number
+            The focus offset in mm.
+        FocusTilt : two-valued array-like, optional
+            Rx,Ry focus tilt values. Defaults to [0,0]
+        NA : number, optional
+            Numerical Aperture, defaults to 0.570
+        Sig_o, Sig_i : numbers, optional
+            Sigma Inner & Outer.  Defaul to Sig_o=0.750, Sig_i=0.5
+        IlluminationMode : {"Conventional", "Annular"}
     
+        """
+        # TO DO: santize args
+        self.ImageList.append( Image )
+        self.EnergyList.append( Energy )
+        self.FocusList.append( Focus )
+        self.FocusTiltList.append( FocusTilt )
+        self.NAList.append( NA )
+        self.Sig_oList.append( Sig_o )
+        self.Sig_iList.append( Sig_i )
+        self.IlluminationModeList.append( IlluminationMode )
+    #end
     
     
   
