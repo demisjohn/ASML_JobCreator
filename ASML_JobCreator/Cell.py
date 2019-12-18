@@ -68,10 +68,10 @@ class Cell(object):
     
     def __str__(self):
         '''Return string to `print` this object.'''
-        str = ""
-        str += "ASML_JobCreator.Cell object:\n"
+        s = ""
+        s += "ASML_JobCreator.Cell object:\n"
         
-        return str
+        return s
     #end __str__
     
     
@@ -88,7 +88,7 @@ class Cell(object):
     ##############################################
     def set_CellSize(self, xy=[10,10] ):
         '''Set the Cell Size in millimeters, [x,y].'''
-        if len(xy==2): 
+        if len(xy)==2: 
             self.CellSize = (xy[0], xy[1])
         else:
             raise ValueError("Expected x,y pair of numbers, instead got: " + str(xy))
@@ -99,14 +99,14 @@ class Cell(object):
         try:
             return self.CellSize
         except AttributeError:
-            warn("Using default values for `CellSize`.")
+            if WARN(): warn("Using default values for `CellSize`.")
             self.set_CellSize( Defaults.CELL_SIZE)
             return self.CellSize
     #end
     
     def set_MatrixShift(self, xy=[0,0] ):
         '''Set the Cell Matrix Shift in millimeters, [x,y].'''
-        if len(xy==2): 
+        if len(xy)==2: 
             self.MatrixShift = (xy[0], xy[1])
         else:
             raise ValueError("Expected x,y pair of numbers, instead got: " + str(xy))
@@ -117,7 +117,7 @@ class Cell(object):
         try:
             return self.MatrixShift
         except AttributeError:
-            warn("Using default values for `MatrixShift`.")
+            if WARN(): warn("Using default values for `MatrixShift`.")
             self.set_MatrixShift( Defaults.MATRIX_SHIFT )
             return self.MatrixShift
     #end
@@ -128,7 +128,7 @@ class Cell(object):
         try:
             return self.NumberDiePerCell
         except AttributeError:
-            warn("Using default values for `NumberDiePerCell`.")
+            if WARN(): warn("Using default values for `NumberDiePerCell`.")
             self.NumberDiePerCell =  Defaults.CELL_SIZE
             return self.NumberDiePerCell
     #end
@@ -138,7 +138,7 @@ class Cell(object):
         try:
             return self.MinNumberDie
         except AttributeError:
-            warn("Using default values for `MinNumberDie`.")
+            if WARN(): warn("Using default values for `MinNumberDie`.")
             self.MinNumberDie =  Defaults.MIN_NUMBER_DIES
             return self.MinNumberDie
     #end

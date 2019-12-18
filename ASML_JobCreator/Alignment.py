@@ -46,9 +46,9 @@ class Alignment(object):
     
     def __str__(self):
         '''Return string to `print` this object.'''
-        str = ""
-        str += "OBR_Analysis.Trace object:\n"
-        return str
+        s = ""
+        s += "ASML_JobCreator.Alignment object:\n"
+        return s
     #end __str__
     
     

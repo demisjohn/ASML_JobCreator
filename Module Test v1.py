@@ -31,9 +31,23 @@ print( MyJob.get_comment() )
 MyJob.set_comment("Test Job", "Line2", "Line3")
 print( MyJob.get_comment() )    
 
+MyJob.Cell.set_CellSize( [4,4] )
 
+MyJob.Cell.set_MatrixShift( [2,2] ) # defaults
 
+Res = MyJob.Image("UCSB_Res", "UCSB-OPC1", [3, 3], [4,5])
+MA6 = MyJob.Image("UCSB_MA6", "UCSB-OPC1", [2, 2], [-4,-5])
 
+for r in range(10):
+    for c in range(10):
+        Res.distribute( [c,r] )
+    #end for(c)
+#end for(r)
+print( Res )
+
+MyJob.add_images(Res,MA6)
+
+print(MyJob)
 print('done.')
 
 

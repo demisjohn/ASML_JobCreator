@@ -36,11 +36,11 @@ class Defaults(object):
     
     def __str__(self):
         '''Return string to `print` this object.'''
-        str = ""
-        str += "ASML_JobCreator.Default object:\n"
-        str += str( self.__dict__ )
+        s = ""
+        s += "ASML_JobCreator.Default object:\n"
+        s += str( self.__dict__ )
         
-        return str
+        return s
     #end __str__
     
     

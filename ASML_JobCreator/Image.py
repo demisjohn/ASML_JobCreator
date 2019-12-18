@@ -23,7 +23,7 @@ class Image(object):
     """
     Class corresponding to Wafer layout > Image Definition & Image Distribution.   
     
-    Image("ImageID", "ReticleID", [size_x, size_y], [shift_x, shift_y])
+    Image( ImageID="MyImage", ReticleID="ReticleBarcode", sizeXY=[size_x, size_y], shiftXY=[shift_x, shift_y], parent=JobObj )
     
     Parameters
     ----------
@@ -33,11 +33,14 @@ class Image(object):
     ReticleID : string
         The Barcode printed on the reticle.
         
-    size_x, size_y : iterable of two numbers
-        Image Size in millimeters, passed as a single iterable (list, array, tuple) with two values. This should be the exact size of the Image extents on your reticle, not including the Image-Border region around it.
+    size_x, size_y : two-valued array-like
+        Image Size in millimeters, passed as a single iterable (list, array, tuple) with two values. This should be the exact size of the Image extents on your reticle, not including the Image-Border region around it. eg. [10, 10]
         
-    shift_x, shift_y : iterable of two numbers
-        Image Shift in millimeters, passed as a single iterable (list, array, tuple) with two values. This is the coordinate to the center of the Image, with respect to the center of the reticle.
+    shift_x, shift_y : two-valued array-like
+        Image Shift in millimeters, passed as a single iterable (list, array, tuple) with two values. This is the coordinate to the center of the Image, with respect to the center of the reticle. eg. [0, 0]
+    
+    parent : Job object
+        The Parent object that spawned this Image, containing relevant Cell parameters etc. 
     
     To Do
     -----
@@ -47,23 +50,55 @@ class Image(object):
         § (future) logic if Cell is outside wafer diam?  
     """
     
-    def __init__(self, ImageID, ReticleID, sizeList, shiftList):
+    def __init__(self, ImageID="", ReticleID="", sizeXY=[10,10], shiftXY=[0,0], parent=None):
         """
         Image object constructor.
         
         See `help(Image)` for description of arguments.
         """
-        pass
+        self.Job = parent
+        self.ImageID = str(ImageID)
+        self.ReticleID = str(ReticleID)
+        if len(sizeXY) == 2 and np.isscalar(sizeXY[0]) and np.isscalar(sizeXY[1]):
+            self.sizeXY = (sizeXY[0], sizeXY[1])
+        else:
+            raise ValueError("Expected x,y pair of numbers for `sizeXY`, instead got: " + str(sizeXY))
+        #end len(sizeXY)
         
+        if len(shiftXY) == 2 and np.isscalar(shiftXY[0]) and np.isscalar(shiftXY[1]):
+            self.shiftXY = (shiftXY[0], shiftXY[1])
+        else:
+            raise ValueError("Expected x,y pair of numbers for `shiftXY`, instead got: " + str(shiftXY))
+        #end len(sizeXY)
+        
+        self.Cells = []
+        self.Shifts = []
     #end __init__
     
     
     def __str__(self):
         '''Return string to `print` this object.'''
-        str = ""
-        str += "ASML_JobCreator.Image object:\n"
+        s = ""
+        s += "ASML_JobCreator.Image object:\n"
+        s += " Image ID = '" + str(self.ImageID) + "'\n"
+        s += " Reticle ID = '" + str(self.ReticleID) + "'\n"
+        s += " --- Image Distribution ---\n" 
+        if len( self.get_distribution() ) > 0:
+            s += "    [CellCol,CellRow] , [ShiftX,ShiftY]\n"
+        else:
+            s += "    Image Not Distributed\n"
         
-        return str
+        ellipsis = False
+        for i,ii in enumerate( self.get_distribution() ):
+            if len( self.get_distribution() ) < 20 or i<10 or i>(  len( self.get_distribution() ) - 10  ):
+                s += "    %000i: ["%(i) + str(ii[0]) + " , " + str(ii[1]) + "]\n"
+            else:
+                if ellipsis==False: 
+                    s+="    ...\n"
+                    ellipsis=True
+                #end if(ellipse)
+            #end if(10>i>len-10)
+        return s
     #end __str__
     
     
@@ -78,19 +113,25 @@ class Image(object):
     ##############################################
     #       Setters/Getters
     ##############################################
-    def set_waveguide_length(self, length):
-        '''Set the expected waveguide length. This is usually the length on your mask plate or measured fiber length.'''
-        self.waveguide_length = length
+    """
+    def set_CellSize(self, xy=[10,10] ):
+        '''Set the Cell Size in millimeters, [x,y].'''
+        if len(xy)==2: 
+            self.CellSize = (xy[0], xy[1])
+        else:
+            raise ValueError("Expected x,y pair of numbers, instead got: " + str(xy))
     #end
     
-    def get_waveguide_length(self):
-        '''Return waveguide length.'''
+    def get_CellSize(self):
+        '''Return Cell Size in mm, as two-valued list.'''
         try:
-            return self.waveguide_length
+            return self.CellSize
         except AttributeError:
-            raise AttributeError("waveguide_length has not been set yet.  Use `set_waveguide_length()` or `scale_to_group_index()`.")
+            if WARN(): warn("Using default values for `CellSize`.")
+            self.set_CellSize( Defaults.CELL_SIZE)
+            return self.CellSize
     #end
-    
+    """
     
     
     
@@ -98,26 +139,63 @@ class Image(object):
     #       Other methods
     ##############################################
     
-    def Distribute(self, cell, shift):
+    def distribute(self, cellCR, shiftXY=[0,0]):
         """
-        Dist( Cell=[C,R], ImgShift=[x,y] )
-            Cell : two-valued iterable of integers
-                Which cell coordinate to distribute the Image object to.
-            Shift :  two-valued iterable of floats, optional
-                Image-to-Cell Shift. defaults to [0,0]
-                warns if shift >= cell size / 2
-                (future) logic if Cell is outside wafer diam?  
+        Distribute this Image to specified cells with specified Image-to-Cell-Shift.
+        
+        distribute( CellCR=[C,R], ImgShiftXY=[x,y] )
+        
+        Parameters
+        ---------
+        CellCR : 2-valued array-like of integers
+            Cell coordinates to distribute this Image to. An Image can only be distributed into a Cell once.  To distribute the same reticle image onto a Cell multiple times, define separate Images for each insertion. Eg. [1,3] or [-5,10]
+        ShiftXY : 2-valued array-like of coordinates, optional
+            X/Y coordinates for shifting the image insertion, with respect to the center of the Cell (aka. "Image-to-Cell Shift"). Defaults to [0,0]
+            (future) logic if Cell is outside wafer diam?  
+            warns if shift >= cell size / 2
         """
-        pass
+        if len(cellCR) != 2:
+            raise ValueError( "Expected x,y pair of numbers for cellCR, instead got: " + str(cellCR) )
+        elif ( cellCR[0] != int(cellCR[0]) ) or ( cellCR[1] != int(cellCR[1]) ):
+            raise ValueError( "Expected x,y to be integers, instead got: " + str(cellCR) )
+        else:
+            self.Cells.append(   ( cellCR[0], cellCR[1] )   )
+        #end if(cellCR)
+        
+        if len(shiftXY) != 2:
+            raise ValueError( "Expected x,y pair of numbers for cellCR, instead got: " + str(cellCR) )
+        else:
+            self.Shifts.append(   ( shiftXY[0], shiftXY[1] )   )
     #end Distribute()
     
-    
-    
+    def get_distribution(self):
+        '''Return list of [CellC,CellR], [ShiftX,ShiftY] pairs corresponding to each distribution of this Image.'''
+        return list( zip(self.Cells, self.Shifts) )
     
   
 #end class(Image)
 
 
+
+
+"""
+class ImageDist(object):
+    '''Class for holding Cells and Image-Shifts for Image Distribution.
+    
+    ImageDist( CellCR=[C,R], ShiftXY=[X,Y] )
+    
+    Parameters
+    ----------
+    CellCR : 2-valued array-like of integers
+        Cell coordinates to distribute this Image to. An Image can only be distributed into a Cell once.  To distribute the same reticle image onto a Cell multiple times, define separate Images for each insertion. Eg. [1,3] or [-5,10]
+    ShiftXY : 2-valued array-like of coordinates
+        X/Y coordinates for shifting the image insertion, with respect to the center of the Cell.
+    '''
+    
+    def __init__(self, CellCR=[0,0], ShiftXY=[0,0]):
+        
+ABORT - decided a simple list of Cells & corresponding shifts would be better, much easier to check uniqueness of each Cell.
+"""
 
 
 ################################################

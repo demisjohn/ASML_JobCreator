@@ -53,7 +53,6 @@ class Job(object):
         '''Calls `self._buildfromdict(datadict)`. See `help(Trace)` for more info.'''
         self.Alignment = Alignment()    # Alignment object
         self.Cell = Cell()      # Cell object
-        self.Image = Image      # Image constructor
         self.ImageList = []
         self.Layer = Layer      # Layer constructor
         self.LayerList = []
@@ -74,20 +73,22 @@ class Job(object):
     
     def __str__(self):
         '''Return string to `print` this object.'''
-        str = ""
-        str += "ASML_JobCreator.Job object:\n"
-        str += "--- Cell ---\n"
-        str += str(self.Cell)
-        str += "--- Images ---\n"
-        for i in self.ImageList:
-            str += str(self.i)
-        str += "--- Layers ---\n"
-        for i in self.LayerList:
-            str += str(self.i)
-        str += "--- Alignment ---\n"
-        str += str(self.Alignment)
+        s = ""
+        s += "ASML_JobCreator.Job object:\n"
+        s += " ======= Cell =======\n"
+        s += str(self.Cell)
+        s += " ====== Images ======\n"
+        for i,ii in enumerate(self.ImageList):
+            if i>0:    s += " - - - - - - - - -\n"
+            s += str(ii)
+        s += " ====== Layers ======\n"
+        for i,ii in enumerate(self.LayerList):
+            if i>0:    s += " - - - - - - - - -\n"
+            s += str(i)
+        s += " ==== Alignment =====\n"
+        s += str(self.Alignment)
         
-        return str
+        return s
     #end __str__
     
     
@@ -119,22 +120,22 @@ class Job(object):
         try:
             return (self.comment_line1, self.comment_line2, self.comment_line3)
         except AttributeError:
-            warn("Using default values for Job `comment`.")
+            if WARN(): warn("Using default values for Job `comment`.")
             self.comment_line1, self.comment_line2, self.comment_line3 = \
                 Defaults.comment_line1, Defaults.comment_line2, Defaults.comment_line3
             return (self.comment_line1, self.comment_line2, self.comment_line3) 
     #end
     
     
-    def set_ExposeEdgeDie(self, b):
+    def set_ExposeEdgeDie(self, tf):
         '''Enable/Disable the exposure of die all the way to the wafer edge, by setting the "Number of Die Per Cell" to 10x10, and Minimum Number of Die to 1.
         
         Parameters
         ----------
-        b : {True | False}
+        tf : {True | False}
             Expose the edge die?
         '''
-        if b == True:
+        if tf == True:
             self.Cell.NumberDiePerCell = [10, 10]
         else:
             self.Cell.NumberDiePerCell = [1, 1]
@@ -142,25 +143,6 @@ class Job(object):
         self.Cell.MinNumberDie = 1
     #end
     
-    def get_NumberDiePerCell(self):
-        '''Return Number of Die per Cell, as two-valued Col/Row list.'''
-        try:
-            return self.Cell.NumberDiePerCell
-        except AttributeError:
-            warn("Using default values for `NumberDiePerCell`.")
-            self.Cell.NumberDiePerCell =  Defaults.CELL_SIZE
-            return self.Cell.NumberDiePerCell
-    #end
-    
-    def get_MinNumberDie(self):
-        '''Return Minimum Number of Die on the wafer to force exposure.'''
-        try:
-            return self.Cell.MinNumberDie
-        except AttributeError:
-            warn("Using default values for `MinNumberDie`.")
-            self.Cell.MinNumberDie =  Defaults.MIN_NUMBER_DIES
-            return self.Cell.MinNumberDie
-    #end
     
     
     # - - - - - - - - - - - - - - - - - - - - - 
@@ -172,18 +154,62 @@ class Job(object):
     
     
     ##############################################
-    #       Plotting etc.
+    #       Adding Objects etc.
     ##############################################
     
+    def Image(self, ImageID="", ReticleID="", sizeXY=[10,10], shiftXY=[0,0]):
+        """
+        Return Image object corresponding to Wafer layout > Image Definition & Image Distribution. After distributing the Image, make sure to add it into this Job with `Job.add_Images()``.
+    
+        Image( ImageID="MyImage", ReticleID="ReticleBarcode", sizeXY=[size_x, size_y], shiftXY=[shift_x, shift_y] )
+    
+        Parameters
+        ----------
+        JobObj : Job object
+            The parent Job object that initiated this call.
+        
+        ImageID : string
+            Your name for this Image.
+        
+        ReticleID : string
+            The Barcode printed on the reticle.
+        
+        size_x, size_y : two-valued array-like
+            Image Size in millimeters, passed as a single iterable (list, array, tuple) with two values. This should be the exact size of the Image extents on your reticle, not including the Image-Border region around it. eg. [10, 10]
+        
+        shift_x, shift_y : two-valued array-like
+            Image Shift in millimeters, passed as a single iterable (list, array, tuple) with two values. This is the coordinate to the center of the Image, with respect to the center of the reticle. eg. [0, 0]
+     
+        """
+        return Image(  ImageID=ImageID, ReticleID=ReticleID, sizeXY=sizeXY, shiftXY=shiftXY, parent=self)
+    #end Image()
     
     
+    def add_images(self, *images):
+        """
+        Add Image objects to this Job.
     
+        Parameters
+        ----------
+        *images : Image objects
+            Can pass Image objects each as it's own argument, or an array-like/iterable containing the Image objects.  Order of the Images will determine the order in the ASML job - first argument/item will be Image #1.
+        """
+        if len(images) == 1 and np.iterable( images[0] ):
+            ImgList = images[0]
+        else:
+            ImgList = images
+        #end if(images)
+        
+        for i,ii in enumerate(ImgList):
+            if isinstance(ii, Image):
+                self.ImageList.append( ii )
+            else:
+                raise ValueError( "Expected `Image` object, instead got: " + str(type(ii)) + " at argument #%i"%(i) )
+        #end for(ImgList)
     
     
   
 #end class(Job)
-
-
 
 
 

@@ -52,10 +52,10 @@ class Strategy(object):
     
     def __str__(self):
         '''Return string to `print` this object.'''
-        str = ""
-        str += "OBR_Analysis.Trace object:\n"
+        s = ""
+        s += "ASML_JobCreator.Strategy object:\n"
         
-        return str
+        return s
     #end __str__
     
     

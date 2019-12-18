@@ -13,6 +13,10 @@ ASML_JobCreator
     software option "Job Creator", which allows for import of ASCII job files into
     the native binary format via the command `pas_recipe_import`.
     
+    Conventions
+    -----------
+    All length units are specified in millimeters, and all coordinates are specified at 1x "wafer scale". X/Y Coordinates should be passed in a two-valued array-like iterable, such as a two-valued [List], (Tuple), numpy array etc.  Eg. [10, -5] means 10mm in X and -5mm in Y.
+    
 
     __init__.py
         The main file that imports all other module files and functions.  
