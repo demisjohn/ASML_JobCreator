@@ -85,7 +85,12 @@ class Layer(object):
         '''Return string to `print` this object.'''
         s = ""
         s += "ASML_JobCreator.Layer object:\n"
-        
+        s += "  Exposed Images:\n"
+        for i in range( len(self.ImageList) ):
+            s += "  %i:" % i   +   str(self.ImageList[i].ImageID)   + "\n"
+            s += "    Energy = %f mJ/cm^2\n" % self.EnergyList[i]
+            s += "    Focus Offset = %0.3f mm\n" % self.FocusList[i]
+            s += "    NA = %0.3f\n" % self.NAList[i]
         return s
     #end __str__
     
@@ -152,7 +157,7 @@ class Layer(object):
             raise ValueError("Expected x,y pair of numbers, instead got: " + str(xy))
     #end
     
-    def get_shift(self):
+    def get_LayerShift(self):
         '''Return Layer Shift in mm, as two-valued list.'''
         try:
             return self.LayerShift
@@ -202,7 +207,7 @@ class Layer(object):
     # To DO:
     # 
     
-    def ExposeImage(self, Image=None, Energy=20, Focus=0.000, FocusTilt=[0,0], NA=0.570, Sig_o=0.750, Sig_i=0.5, IlluminationMode="Conventional")
+    def ExposeImage(self, Image=None, Energy=20, Focus=0.000, FocusTilt=[0,0], NA=0.570, Sig_o=0.750, Sig_i=0.5, IlluminationMode="Conventional"):
         """
         Set Layer to expose an Image.
     

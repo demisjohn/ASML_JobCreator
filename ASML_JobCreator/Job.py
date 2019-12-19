@@ -23,7 +23,7 @@ from .__globals import *            # global variables/methods to the module.
 from .Cell import Cell              # Class Cell - Cell Structure options
 from .Image import Image                    # Class Image 
 from .Alignment import Alignment            # Class Alignment
-from .Layer import Layer as Lyr                    # Class Layer
+from .Layer import Layer                    # Class Layer
 
 
 ####################################################
@@ -57,17 +57,17 @@ class Job(object):
         '''Return string to `print` this object.'''
         s = ""
         s += "ASML_JobCreator.Job object:\n"
-        s += " ======= Cell =======\n"
+        s += "======= Cell =======\n"
         s += str(self.Cell)
-        s += " ====== Images ======\n"
+        s += "====== Images ======\n"
         for i,ii in enumerate(self.ImageList):
             if i>0:    s += " - - - - - - - - -\n"
             s += str(ii)
-        s += " ====== Layers ======\n"
+        s += "====== Layers ======\n"
         for i,ii in enumerate(self.LayerList):
             if i>0:    s += " - - - - - - - - -\n"
-            s += str(i)
-        s += " ==== Alignment =====\n"
+            s += str(ii)
+        s += "==== Alignment =====\n"
         s += str(self.Alignment)
         
         return s
@@ -210,6 +210,7 @@ class Job(object):
         """
         return Layer( LayerID="", CombinedWithZeroLayer=False, parent=self)
     #end Layer()
+    
     
     def add_Layers(self, *layers):
         """

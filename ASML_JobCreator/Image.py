@@ -139,11 +139,11 @@ class Image(object):
     #       Other methods
     ##############################################
     
-    def distribute(self, cellCR, shiftXY=[0,0]):
+    def distribute(self, cellCR=None, shiftXY=[0,0]):
         """
         Distribute this Image to specified cells with specified Image-to-Cell-Shift.
         
-        distribute( CellCR=[C,R], ImgShiftXY=[x,y] )
+        distribute( [Col,Row], shiftXY=[x,y] )
         
         Parameters
         ---------

@@ -35,8 +35,10 @@ MyJob.Cell.set_CellSize( [4,4] )
 
 MyJob.Cell.set_MatrixShift( [2,2] ) # defaults
 
-Res = MyJob.Image("UCSB_Res", "UCSB-OPC1", [3, 3], [4,5])
-MA6 = MyJob.Image("UCSB_MA6", "UCSB-OPC1", [2, 2], [-4,-5])
+Res = MyJob.Image("UCSB_Res", "UCSB-OPC1", sizeXY=[3, 3], shiftXY=[4,5])
+MA6 = MyJob.Image("UCSB_MA6", "UCSB-OPC1", sizeXY=[2, 2], shiftXY=[-4,-5])
+
+MA6.distribute( cellCR=[-5,-5], shiftXY=[-2,-2] )
 
 for r in range(10):
     for c in range(10):
@@ -45,9 +47,20 @@ for r in range(10):
 #end for(r)
 print( Res )
 
-MyJob.add_images(Res,MA6)
+MyJob.add_Images(Res,MA6)
+
+
+MetalLyr = MyJob.Layer("Metal")
+MetalLyr.ExposeImage(Res, Energy=21, Focus=-0.10)
+MyJob.add_Layers(MetalLyr)
 
 print(MyJob)
+
+
+
+
+
+
 print('done.')
 
 
