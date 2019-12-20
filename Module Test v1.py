@@ -51,6 +51,9 @@ print( Res )
 
 MyJob.add_Images(Res,MA6)
 
+ZeroLyr = MyJob.Layer("0")
+MyJob.add_Layers(ZeroLyr)
+
 
 MetalLyr = MyJob.Layer("Metal")
 MetalLyr.expose_Image(Res, Energy=21, Focus=-0.10)

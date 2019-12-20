@@ -235,7 +235,7 @@ class Job(object):
         #end for(LyrList)
     #end add_layers()
     
-    def export(self, filepath=""):
+    def export(self, filepath="ASML_Job.txt"):
         """
         Export an ASCII text file of this job, that can be imported by the ASML PAS software (with Job Creator software option installed).
     
@@ -244,8 +244,10 @@ class Job(object):
         filepath : string
             Path to save the text file to.  
         """
-        s = self.__genascii()
+        s = self.__genascii()       # get the text to write
         ascii = s.encode('ascii')
+        
+        # open the file & write it:
         with open(filepath, 'wb') as f:
             f.write(ascii)
         #end with file(filepath)
@@ -260,23 +262,46 @@ class Job(object):
         col1 = 50       # Num Characters to offset column 1
         
         def indent(startstr='', spc = ' ', indent=col1):
-            """Return string containing enough spaces so that any following text is indented `col1` characters, after `startstr`."""
+            """Return a string containing enough spaces so that any following text is indented `col1` characters, after `startstr`."""
             return spc * (  indent - len(startstr)  )
         #end indent()
         
-        def add(string, cmd='', val='', tab=tab, cells=False):
-            """Returns input `string` + `cmd` + `val` with the appropriate tab, indent and newlines."""
+        def add(string="", cmd='', val=[0,0], tab=tab, integers=False):
+            """Returns input `string` + `cmd` + `val` with the appropriate tab, indent and newlines.
+            
+            Parameters
+            ----------
+            string : str
+                The string that the result should be appended to.
+            cmd : str
+                The command or variable name to insert into the string, first text on the line.
+            val : { str | 2-valued array-like of numbers }
+                Value of the above command/variable, second text on the line.
+            tab : str, optional
+                Text to use as a tab, defaults to 3 spaces '   '.
+            integers : { True | False }, optional
+                If True, 2-valued iterables will be inserted as quoted integers, eg.
+                    "10" "-5"
+                which is the case for cell selection/indexing.  If False, use floats with precision of 6, eg:
+                    10.000000 -5.000000
+                Which is the case for arbitrary X/Y coordinates. 
+                Defaults to False.
+            """
             s1 = tab + cmd
             if isinstance(val, str):
                 s2 = indent(s1) + '"' + val + '"'
             elif np.size(val) == 2:
-                if not cells:
-                    s2 = indent(s1) + "%0.6f %0.6f" % tuple(val)
+                if not integers:
+                    s2 = indent(s1) + "%0.6f %0.6f" % tuple(val) # X/Y coords
                 else:
-                    s2 = indent(s1) + '"%i" "%i"' % tuple(val)
+                    s2 = indent(s1) + '"%i" "%i"' % tuple(val)  # Cell Index, quoted
                 #end if(cells)
             else:
-                s2 = indent(s1) + "%0.6f" % (val)
+                if integers:
+                    s2 = indent(s1) + "%0.6f" % (val)
+                else:
+                    s2 = indent(s1) + '%i' % (val)  # layer ID #
+                #end if(integers)
             #end if(str)
             return string + s1 + s2 + "\n"
         #end add()
@@ -330,7 +355,7 @@ class Job(object):
             for D in I.get_distribution():
                 s += "START_SECTION IMAGE_DISTRIBUTION\n"
                 s = add(s, "IMAGE_ID", I.ImageID)
-                s = add(s, "CELL_SELECTION", D[0], cells=True)
+                s = add(s, "CELL_SELECTION", D[0], integers=True)
                 s = add(s, "DISTRIBUTION_ACTION", Defaults.Image_DISTRIBUTION_ACTION)
                 s = add(s, "OPTIMIZE_ROUTE", Defaults.Image_OPTIMIZE_ROUTE)
                 s = add(s, "IMAGE_CELL_SHIFT", D[1])
@@ -339,7 +364,15 @@ class Job(object):
             #end for(dist)
             s += "\n\n\n\n\n"
         #end for(ImageList)
-                
+        
+        for i,L in enumerate(self.LayerList):
+            s += "START_SECTION LAYER_DEFINITION\n"
+            s = add(s, "LAYER_NO", i)
+            s = add(s, "LAYER_ID", L.LayerID)
+            s = add(s, "WAFER_SIDE", Defaults.Layer_WAFER_SIDE)
+            s += "END_SECTION\n"
+            s += "\n\n"
+        #end for(LayerList)
         
         return s
     #end __genascii()
