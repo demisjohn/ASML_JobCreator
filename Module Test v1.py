@@ -58,8 +58,10 @@ MetalLyr.expose_Image(MA6, Energy=22)
 MetalLyr.expose_Image(GCA, Energy=22)
 MyJob.add_Layers(MetalLyr)
 
+
 print(MyJob)
 
+MyJob.export('testoutput.txt')
 
 
 
