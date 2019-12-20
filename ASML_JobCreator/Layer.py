@@ -68,6 +68,7 @@ class Layer(object):
     def __init__(self, LayerID="", CombinedWithZeroLayer=False, parent=None):
         '''Layer object constructor.  See `help(Layer)` for parameters.
         '''
+        self.Job = parent
         self.LayerID = str(LayerID) # To Do: Sanitize LayerID text
         self.CombinedWithZeroLayer = bool(CombinedWithZeroLayer)
         self.ImageList = []
@@ -87,7 +88,7 @@ class Layer(object):
         s += "ASML_JobCreator.Layer object:\n"
         s += "  Exposed Images:\n"
         for i in range( len(self.ImageList) ):
-            s += "  %i:" % i   +   str(self.ImageList[i].ImageID)   + "\n"
+            s += "  %i: '%s'\n" % (i, self.ImageList[i].ImageID)
             s += "    Energy = %f mJ/cm^2\n" % self.EnergyList[i]
             s += "    Focus Offset = %0.3f mm\n" % self.FocusList[i]
             s += "    NA = %0.3f\n" % self.NAList[i]
@@ -207,11 +208,11 @@ class Layer(object):
     # To DO:
     # 
     
-    def ExposeImage(self, Image=None, Energy=20, Focus=0.000, FocusTilt=[0,0], NA=0.570, Sig_o=0.750, Sig_i=0.5, IlluminationMode="Conventional"):
+    def expose_Image(self, Image=None, Energy=20, Focus=0.000, FocusTilt=[0,0], NA=0.570, Sig_o=0.750, Sig_i=0.5, IlluminationMode="Conventional"):
         """
         Set Layer to expose an Image.
     
-        ExposeImage( Image, Energy=20, Focus=0.000, FocusTilt=[0,0], NA=0.570, Sig_o=0.750, Sig_i=0.5, IlluminationMode="Conventional" )
+        expose_Image( Image, Energy=20, Focus=0.000, FocusTilt=[0,0], NA=0.570, Sig_o=0.750, Sig_i=0.5, IlluminationMode="Conventional" )
     
         Parameters
         ----------
@@ -239,6 +240,10 @@ class Layer(object):
         self.Sig_oList.append( Sig_o )
         self.Sig_iList.append( Sig_i )
         self.IlluminationModeList.append( IlluminationMode )
+        
+        ## NOT IMPLEMENTED:
+        # add to the parent Job
+        #self.Job.add_Layers(self)  # should check for duplicate Layers and check that Image is in the Job
     #end
     
     
