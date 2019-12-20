@@ -235,7 +235,30 @@ class Job(object):
         #end for(LyrList)
     #end add_layers()
     
-  
+    def export(self, filepath=""):
+        """
+        Export an ASCII text file of this job, that can be imported by the ASML PAS software (with Job Creator software option installed).
+    
+        Parameters
+        ----------
+        filepath : string
+            Path to save the text file to.  
+        """
+        s = self.__genascii()
+        ascii = s.encode('ascii')
+        with open(filepath, 'wb') as f:
+            f.write(ascii)
+        #end with file(filepath)
+    #end export()
+    
+    
+    def __genascii(self):
+        """
+        Return ASCII string for writing to a file, in ASML PAS compatible format. Pulls in all object data as defined by user.
+        """
+        pass
+        return "testing"
+    #end __genascii()
 #end class(Job)
 
 
