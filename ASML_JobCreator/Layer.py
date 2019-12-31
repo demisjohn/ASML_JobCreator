@@ -107,23 +107,6 @@ class Layer(object):
     ##############################################
     #       Setters/Getters
     ##############################################
-    def set_CellSize(self, xy=[10,10] ):
-        '''Set the Cell Size in millimeters, [x,y].'''
-        if len(xy)==2: 
-            self.CellSize = (xy[0], xy[1])
-        else:
-            raise ValueError("Expected x,y pair of numbers, instead got: " + str(xy))
-    #end
-    
-    def get_CellSize(self):
-        '''Return Cell Size in mm, as two-valued list.'''
-        try:
-            return self.CellSize
-        except AttributeError:
-            if WARN(): warn("Using default values for `CellSize`.")
-            self.set_CellSize( Defaults.CELL_SIZE)
-            return self.CellSize
-    #end
     
     
     ##############################################

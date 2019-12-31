@@ -208,7 +208,7 @@ class Job(object):
             NOT IMPLEMENTED YET.
     
         """
-        return Layer( LayerID="", CombinedWithZeroLayer=False, parent=self)
+        return Layer( LayerID=LayerID, CombinedWithZeroLayer=CombinedWithZeroLayer, parent=self)
     #end Layer()
     
     
@@ -366,9 +366,17 @@ class Job(object):
         #end for(ImageList)
         
         for i,L in enumerate(self.LayerList):
+            if DEBUG(): print( "Layer #%i, ID='%s'" %(i, str(L.LayerID) ) )
             s += "START_SECTION LAYER_DEFINITION\n"
             s = add(s, "LAYER_NO", i)
-            s = add(s, "LAYER_ID", L.LayerID)
+            if L.LayerID.isalnum():
+                LyrIDstr = L.LayerID
+            else:
+                warnstr = 'Layer # %i: Layer ID string "%s" is invalid, using layer number.' % (i, str(L.LayerID))
+                if WARN(): warn(warnstr)
+                LyrIDstr = str(i)
+            #end if(LayerID is alphanumeric)
+            s = add(s, "LAYER_ID", LyrIDstr)
             s = add(s, "WAFER_SIDE", Defaults.Layer_WAFER_SIDE)
             s += "END_SECTION\n"
             s += "\n\n"
