@@ -191,7 +191,7 @@ class Layer(object):
     # To DO:
     # 
     
-    def expose_Image(self, Image=None, Energy=20, Focus=0.000, FocusTilt=[0,0], NA=0.570, Sig_o=0.750, Sig_i=0.5, IlluminationMode="Conventional"):
+    def expose_Image(self, Image=None, Energy=20, Focus=0.000, FocusTilt=[0,0], NA=0.570, Sig_o=0.750, Sig_i=None, IlluminationMode="Default"):
         """
         Set Layer to expose an Image.
     
@@ -211,7 +211,8 @@ class Layer(object):
             Numerical Aperture, defaults to 0.570
         Sig_o, Sig_i : numbers, optional
             Sigma Inner & Outer.  Defaul to Sig_o=0.750, Sig_i=0.5
-        IlluminationMode : {"Conventional", "Annular"}
+        IlluminationMode : {"Default", "Conventional", "Annular"}, optional
+            Defaults to "Default", which is whatever the machine default is, usually "Conventional"
     
         """
         # TO DO: santize args
