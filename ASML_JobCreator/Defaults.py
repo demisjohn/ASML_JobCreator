@@ -62,7 +62,18 @@ class Defaults(object):
     ###########################################
     
     def LoadDefaultValues(self):
-        ## Non-Editable Defaults
+        
+        ########################################
+        #
+        #   Defaults for user-settings
+        #
+        ########################################
+        self.comment_line1 = "Created with python ASML_JobCreator"
+        self.comment_line2 = "Univ. of California Santa Barbara"
+        self.comment_line3 = "UCSB Nanofab, Demis D. John"
+        
+        
+        ## Defaults Hard-Coded here:
         self.MACHINE_TYPE = "PAS5500/300"
         self.RETICLE_SIZE = 6        # inches
         self.WFR_DIAMETER = 100.0      #mm
@@ -86,16 +97,21 @@ class Defaults(object):
         self.CELL_SIZE = [10, 10]    #mm
         self.MATRIX_SHIFT = [0.0, 0.0]
         self.COMBINE_ZERO_FIRST = "N"
-    
-    
+        
+        
+        
         ## Image Defaults
         self.Image_VARIANT_ID = ""
         self.Image_OPTIMIZE_ROUTE = "N"
         self.Image_DISTRIBUTION_ACTION = "I"
-    
+        
+        
+        
         ## Layer Defaults
         self.Layer_WAFER_SIDE = "A"
-    
+        
+        
+        
         ## Process Data > Layer Defualts
         # copy/pasted from from ResFEM.txt
         self.ProcessData_LENS_REDUCTION                                = 4.0
@@ -144,7 +160,9 @@ class Defaults(object):
         self.ProcessData_FOCUS_MONITORING_SCANNER                      = "D"
         self.ProcessData_DYN_PERF_MONITORING                           = "D"
         self.ProcessData_FORCE_MEANDER_ENABLED                         = "N"
-    
+        
+        
+        
         ## Reticle Data defaults
         #self.ReticleData_IMAGE_USAGE                                   = "Y"
         #self.ReticleData_RETICLE_ID                                    = "UCSB-OPC1"
@@ -175,17 +193,6 @@ class Defaults(object):
         self.ReticleData_GLOBAL_LEVEL_POINT_1                          = [0.000000, 0.000000]
         self.ReticleData_GLOBAL_LEVEL_POINT_2                          = [0.000000, 0.000000]
         self.ReticleData_GLOBAL_LEVEL_POINT_3                          = [0.000000, 0.000000]
-        
-        
-        ########################################
-        #
-        #   Defaults for user-settings
-        #
-        ########################################
-        self.comment_line1 = "Created with python ASML_JobCreator"
-        self.comment_line2 = "Univ. of California Santa Barbara"
-        self.comment_line3 = "UCSB Nanofab, Demis D. John"
-        
         
     #end LoadDefaultValues()
     
