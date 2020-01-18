@@ -38,7 +38,7 @@ from scipy.constants import pi
 
 
 global _DEBUG
-_DEBUG = True   # set to true for verbose outputs onto Python console - applies to all submodules/files
+_DEBUG = False   # set to true for verbose outputs onto Python console - applies to all submodules/files
 # can be changed at run-time via `set/unset_DEBUG()`
 
 global _WARN
