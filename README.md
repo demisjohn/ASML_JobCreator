@@ -81,8 +81,10 @@ Make a new layer, and choose which Images get exposed on it:
 
 The resulting text file can then be imported into the ASML PAS software as a binary job file, with the `pas_import_recipe` command-line tool.
 
+## Defaults
+
+Default values for most options are specified in the file `ASML_JobCreator/Defaults.py`.  For the UCSB Nanofab PAS 5500/300, this includes settings such as 100mm wafer with flat, 6-inch reticle size, default alignment methods and edge exclusion zones etc.
+
 # Author(s)
 
-[Demis D. John](https://wiki.nanotech.ucsb.edu/wiki/index.php/Demis_D._John)
-
-Scientist at the [UCSB Nanofabrication Facility](http://www.nanotech.ucsb.edu), [Univ. of California Santa Barbara](http://www.ucsb.edu)
+[Demis D. John](https://wiki.nanotech.ucsb.edu/wiki/index.php/Demis_D._John), Scientist at the [UCSB Nanofabrication Facility](http://www.nanotech.ucsb.edu), [Univ. of California Santa Barbara](http://www.ucsb.edu)
