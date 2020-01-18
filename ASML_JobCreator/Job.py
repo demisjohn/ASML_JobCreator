@@ -148,9 +148,6 @@ class Job(object):
     
         Parameters
         ----------
-        JobObj : Job object
-            The parent Job object that initiated this call.
-        
         ImageID : string
             Your name for this Image.
         
