@@ -250,9 +250,10 @@ class Job(object):
         
         # open the file & write it:
         with open(filepath, 'wb') as f:
+            if DEBUG(): print( "Opened file for writing at %s" %filepath)
             f.write(ascii)
         #end with file(filepath)
-        if DEBUG(): print("Job.export(): ASCII Text file written.")
+        if DEBUG(): print("Job.export(): ASCII Text file written succesfully.")
     #end export()
     
     

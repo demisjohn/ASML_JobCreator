@@ -28,7 +28,7 @@ import ASML_JobCreator as asml
 MyJob = asml.Job()
 
 print( MyJob.get_comment() )
-MyJob.set_comment("Test Job", "Line2", "Line3")
+MyJob.set_comment("Demo Job", "Exported from ", "Python ASML_JobCreator")
 print( MyJob.get_comment() )    
 
 MyJob.Cell.set_CellSize( [4,4] )
@@ -49,8 +49,9 @@ for r in range(10):
 #end for(r)
 print( Res )
 
-MyJob.add_Images(Res,MA6)
+MyJob.add_Images(Res,MA6, GCA)
 
+# is this necessary?
 ZeroLyr = MyJob.Layer()
 MyJob.add_Layers(ZeroLyr)
 
@@ -64,7 +65,7 @@ MyJob.add_Layers(MetalLyr)
 
 print(MyJob)
 
-MyJob.export('testoutput.txt')
+MyJob.export('TestJob_NoAlign.txt')
 
 
 
