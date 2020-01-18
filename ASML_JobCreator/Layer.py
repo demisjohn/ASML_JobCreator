@@ -146,7 +146,7 @@ class Layer(object):
         try:
             return self.LayerShift
         except AttributeError:
-            if WARN(): warn("Using default values for `LayerShift`.")
+            if WARN(): print("Using default values for `LayerShift`.")
             self.set_LayerShift( Defaults.ProcessData_LAYER_SHIFT)
             return self.LayerShift
     #end
@@ -177,7 +177,7 @@ class Layer(object):
         try:
             return (self.GlobalLevel_Point1, self.GlobalLevel_Point2, self.GlobalLevel_Point3)
         except AttributeError:
-            if WARN(): warn("Using default values for `GlobalLevel_Point1/2/3`.")
+            if WARN(): print("Using default values for `GlobalLevel_Point1/2/3`.")
             self.set_GlobalLevelPoints(xy1=[0,0], xy2=[0,0], xy3=[0,0] )
             return (self.GlobalLevel_Point1, self.GlobalLevel_Point2, self.GlobalLevel_Point3)
     #end

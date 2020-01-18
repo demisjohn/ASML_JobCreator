@@ -99,7 +99,7 @@ class Cell(object):
         try:
             return self.CellSize
         except AttributeError:
-            if WARN(): warn("Using default values for `CellSize`.")
+            if WARN(): print("Using default values for `CellSize`.")
             self.set_CellSize( Defaults.CELL_SIZE)
             return self.CellSize
     #end
@@ -117,7 +117,7 @@ class Cell(object):
         try:
             return self.MatrixShift
         except AttributeError:
-            if WARN(): warn("Using default values for `MatrixShift`.")
+            if WARN(): print("Using default values for `MatrixShift`.")
             self.set_MatrixShift( Defaults.MATRIX_SHIFT )
             return self.MatrixShift
     #end
@@ -128,7 +128,7 @@ class Cell(object):
         try:
             return self.NumberDiePerCell
         except AttributeError:
-            if WARN(): warn("Using default values for `NumberDiePerCell`.")
+            if WARN(): print("Using default values for `NumberDiePerCell`.")
             self.NumberDiePerCell =  Defaults.CELL_SIZE
             return self.NumberDiePerCell
     #end
@@ -138,7 +138,7 @@ class Cell(object):
         try:
             return self.MinNumberDie
         except AttributeError:
-            if WARN(): warn("Using default values for `MinNumberDie`.")
+            if WARN(): print("Using default values for `MinNumberDie`.")
             self.MinNumberDie =  Defaults.MIN_NUMBER_DIES
             return self.MinNumberDie
     #end

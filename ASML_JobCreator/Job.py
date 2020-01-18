@@ -103,7 +103,7 @@ class Job(object):
         try:
             return (self.comment_line1, self.comment_line2, self.comment_line3)
         except AttributeError:
-            if WARN(): warn("Using default values for Job `comment`.")
+            if WARN(): print("Using default values for Job `comment`.")
             self.comment_line1, self.comment_line2, self.comment_line3 = \
                 Defaults.comment_line1, Defaults.comment_line2, Defaults.comment_line3
             return (self.comment_line1, self.comment_line2, self.comment_line3) 
@@ -393,7 +393,7 @@ class Job(object):
                 LyrIDstr = L.LayerID
             else:
                 warnstr = 'Layer # %i: Layer ID string "%s" is invalid, setting ID string to layer number.' % (i, str(L.LayerID))
-                if WARN(): warn(warnstr)
+                if WARN(): print(warnstr)
                 LyrIDstr = str(i)
                 L.LayerID = LyrIDstr
             #end if(LayerID is alphanumeric)

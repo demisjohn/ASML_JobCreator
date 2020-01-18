@@ -127,7 +127,7 @@ class Image(object):
         try:
             return self.CellSize
         except AttributeError:
-            if WARN(): warn("Using default values for `CellSize`.")
+            if WARN(): print("Using default values for `CellSize`.")
             self.set_CellSize( Defaults.CELL_SIZE)
             return self.CellSize
     #end
