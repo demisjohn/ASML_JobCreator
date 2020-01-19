@@ -22,18 +22,17 @@ For help: after running once, use commands like:
 ####################################################
 # Module setup etc.
 
-import numpy as np  # NumPy (multidimensional arrays, linear algebra, ...)
+import ASML_JobCreator as asml
 
 ####################################################
 
 print('Running...')
 
-
-import ASML_JobCreator as asml
 MyJob = asml.Job()
 
 MyJob.set_comment("Demo Job", "Exported from ", "Python ASML_JobCreator")
-print( MyJob.get_comment() )    # Return the current comment lines
+#print( MyJob.get_comment(), "\n" )    # Return the current comment lines
+
 
 ## Cell Structure:
 MyJob.Cell.set_CellSize( [4.00, 4.00] )    # cell size [X,Y] in millimeters
@@ -56,27 +55,22 @@ MA6.distribute( cellCR=[-5,-5], shiftXY=[-2.00, -2.00] )
 GCA.distribute( cellCR=[5,5], shiftXY=[-2.00, -2.00] )
 
 # Distribute Image "Res" in a 3x3 array with no shift:
-for r in range(3):
-    for c in range(3):
+for r in [-1,0,1]:
+    for c in [-1,0,1]:
         Res.distribute( [c,r] )
     #end for(c)
 #end for(r)
-print( Res )
-
-MyJob.add_Images(Res,MA6, GCA)  # Add distributed images to our Job
 
 
 ## Layer Definition & Reticle Data - 
 # Add Zero layer - possibly unnecessary for no alignment.
 ZeroLyr = MyJob.Layer() # Empty Layer with default values
-MyJob.add_Layers(ZeroLyr)
 
 # Choose Images to expose on this Layer:
 MetalLyr = MyJob.Layer( LayerID="Metal" )
 MetalLyr.expose_Image(Res, Energy=21, Focus=-0.10)
 MetalLyr.expose_Image(MA6, Energy=22)
 MetalLyr.expose_Image(GCA, Energy=22)
-MyJob.add_Layers(MetalLyr)  # Add these Images to the Layer
 
 
 print(MyJob)

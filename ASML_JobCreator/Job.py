@@ -233,15 +233,26 @@ class Job(object):
         #end for(LyrList)
     #end add_layers()
     
-    def export(self, filepath="ASML_Job.txt"):
+    def export(self, filepath="ASML_Job.txt", overwrite=False):
         """
-        Export an ASCII text file of this job, that can be imported by the ASML PAS software (with Job Creator software option installed).
+        Export an ASCII text file of this job, that can be imported by the ASML PAS software.
     
         Parameters
         ----------
         filepath : string
             Path to save the text file to.  
         """
+        import os.path
+        
+        if os.path.exists(filepath):
+            if (overwrite):
+                if WARN(): print( "Overwriting output file at '%s'." %( os.path.abspath(filepath) ) )
+            else:
+                errstr = "File already exists at '%s' and argument `overwrite` is False." % ( os.path.abspath(filepath) )
+                raise IOError(errstr)
+            #end if(overwrite)
+        #end if(exists(filepath))
+        
         s = self.__genascii()       # get the text to write
         ascii = s.encode('ascii')
         
