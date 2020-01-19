@@ -73,6 +73,9 @@ class Image(object):
         
         self.Cells = []
         self.Shifts = []
+        
+        # add this Image ot the parent Job:
+        self.Job.add_Images( self )
     #end __init__
     
     

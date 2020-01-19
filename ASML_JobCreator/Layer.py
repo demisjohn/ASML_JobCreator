@@ -79,6 +79,9 @@ class Layer(object):
         self.Sig_oList=[]
         self.Sig_iList=[]
         self.IlluminationModeList=[]
+        
+        # add this Layer to the Job:
+        self.Job.add_Layers( self )
     #end __init__
     
     
@@ -86,6 +89,7 @@ class Layer(object):
         '''Return string to `print` this object.'''
         s = ""
         s += "ASML_JobCreator.Layer object:\n"
+        s += "  Layer ID = '%s'\n" % self.LayerID
         s += "  Exposed Images:\n"
         for i in range( len(self.ImageList) ):
             s += "  %i: '%s'\n" % (i, self.ImageList[i].ImageID)
