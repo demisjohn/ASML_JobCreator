@@ -28,35 +28,6 @@ class Cell(object):
     
     Cell(  ):
         Creates empty object with default values.
-    
-    Methods
-    -------
-    set_CellSize( [x,y] )
-        Required to be set by user.
-        
-	set_EdgeClearance( [x,y] )
-	    Defaults to....
-
-    set_EdgeExclusion( exc )
-        Defaults to...
-
-	¿ [w]afer cover
-
-    set_DiePerCell( [x,y] )
-        Defaults to 1 x 1.
-        
-    set_MinDiePerCell()
-        Defaults to [1] die per cell.
-        
-    set_MatrixShift( [x,y] )
-        Defaults to [0,0] default
-    
-    
-    Attributes
-    ----------
-    x : integer
-        Some Attribute
-
         
     """
     
@@ -70,8 +41,8 @@ class Cell(object):
         '''Return string to `print` this object.'''
         s = ""
         s += "ASML_JobCreator.Cell object:\n"
-        s += " Cell Size = '" + str( self.get_CellSize() ) + "mm'\n"
-        s += " Cell Matrix Shift = '" + str( self.get_MatrixShift() ) + "mm'\n"
+        s += " Cell Size = " + str( self.get_CellSize() ) + " mm\n"
+        s += " Cell Matrix Shift = " + str( self.get_MatrixShift() ) + " mm\n"
         s += " Die Per Cell = %s; Minimum for exposure = %i die\n" %( str( self.get_NumberDiePerCell() ), self.get_MinNumberDie() )
         s += " Edge Exclusion = %0.6f mm\n" % self.get_EdgeExclusion()
         s += " Round/Flat Clearance = %0.6f mm / %0.6f mm\n" % ( self.get_RoundEdgeClearance() , self.get_FlatEdgeClearance() )
