@@ -70,7 +70,11 @@ class Cell(object):
         '''Return string to `print` this object.'''
         s = ""
         s += "ASML_JobCreator.Cell object:\n"
-        
+        s += " Cell Size = '" + str( self.get_CellSize() ) + "mm'\n"
+        s += " Cell Matrix Shift = '" + str( self.get_MatrixShift() ) + "mm'\n"
+        s += " Die Per Cell = %s; Minimum for exposure = %i die\n" %( str( get_NumberDiePerCell() ), get_MinNumberDie() )
+        s += " Edge Exclusion = %0.6f mm\n" % get_EdgeExclusion()
+        s += " Round/Flat Clearance = %0.6f mm / %0.6f mm\n" % ( get_RoundEdgeClearance() , get_FlatEdgeClearance() )
         return s
     #end __str__
     
@@ -123,6 +127,18 @@ class Cell(object):
     #end
     
     
+    def set_NumberDiePerCell(self, cellCR):
+        '''Set number of internal Die exposed per Cell, as two-valued integer iterable. Eg. (1,1) or [3,3]'''
+        try:
+            self.NumberDiePerCell = [1,1]
+            self.NumberDiePerCell[0] = cellCR[0]
+            self.NumberDiePerCell[1] = cellCR[1]
+        except IndexError:
+            errstr = "Expected `cellCR` to be two-valued integer iterable. Eg. (1,1) or [3,3].  Instead got '%s'." % cellCR
+            raise IndexError(errstr)
+        #end try
+    #end
+    
     def get_NumberDiePerCell(self):
         '''Return Number of Die per Cell, as two-valued Col/Row list.'''
         try:
@@ -131,6 +147,17 @@ class Cell(object):
             if WARN(): print("Using default values for `NumberDiePerCell`.")
             self.NumberDiePerCell =  Defaults.CELL_SIZE
             return self.NumberDiePerCell
+    #end
+    
+    
+    def set_MinNumberDie(self, num):
+        '''Set minimum number of internal Die that must fit on the wafer in order for Cell to get an exposure, as integer.'''
+        try:
+            self.MinNumberDie = int(num)
+        except ValueError:
+            errstr = "Expected `num`` to be a single integer.  Instead got '%s'." % num
+            raise ValueError(errstr)
+        #end try
     #end
     
     def get_MinNumberDie(self):
