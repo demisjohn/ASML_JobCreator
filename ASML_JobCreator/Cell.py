@@ -72,9 +72,9 @@ class Cell(object):
         s += "ASML_JobCreator.Cell object:\n"
         s += " Cell Size = '" + str( self.get_CellSize() ) + "mm'\n"
         s += " Cell Matrix Shift = '" + str( self.get_MatrixShift() ) + "mm'\n"
-        s += " Die Per Cell = %s; Minimum for exposure = %i die\n" %( str( get_NumberDiePerCell() ), get_MinNumberDie() )
-        s += " Edge Exclusion = %0.6f mm\n" % get_EdgeExclusion()
-        s += " Round/Flat Clearance = %0.6f mm / %0.6f mm\n" % ( get_RoundEdgeClearance() , get_FlatEdgeClearance() )
+        s += " Die Per Cell = %s; Minimum for exposure = %i die\n" %( str( self.get_NumberDiePerCell() ), self.get_MinNumberDie() )
+        s += " Edge Exclusion = %0.6f mm\n" % self.get_EdgeExclusion()
+        s += " Round/Flat Clearance = %0.6f mm / %0.6f mm\n" % ( self.get_RoundEdgeClearance() , self.get_FlatEdgeClearance() )
         return s
     #end __str__
     
@@ -107,6 +107,7 @@ class Cell(object):
             self.set_CellSize( Defaults.CELL_SIZE)
             return self.CellSize
     #end
+    
     
     def set_MatrixShift(self, xy=[0,0] ):
         '''Set the Cell Matrix Shift in millimeters, [x,y].'''
@@ -145,7 +146,7 @@ class Cell(object):
             return self.NumberDiePerCell
         except AttributeError:
             if WARN(): print("Using default values for `NumberDiePerCell`.")
-            self.NumberDiePerCell =  Defaults.CELL_SIZE
+            self.NumberDiePerCell =  Defaults.NUMBER_DIES
             return self.NumberDiePerCell
     #end
     
