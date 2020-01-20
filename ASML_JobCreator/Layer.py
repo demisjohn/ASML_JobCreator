@@ -68,7 +68,7 @@ class Layer(object):
     def __init__(self, LayerID="", CombinedWithZeroLayer=False, parent=None):
         '''Layer object constructor.  See `help(Layer)` for parameters.
         '''
-        self.Job = parent
+        self.parent = parent    # parent Job object
         self.LayerID = str(LayerID) # To Do: Sanitize LayerID text
         self.CombinedWithZeroLayer = bool(CombinedWithZeroLayer)
         self.ImageList = []
@@ -81,7 +81,7 @@ class Layer(object):
         self.IlluminationModeList=[]
         
         # add this Layer to the Job:
-        self.Job.add_Layers( self )
+        self.parent.add_Layers( self )
     #end __init__
     
     
@@ -188,12 +188,6 @@ class Layer(object):
     
     
     
-    ##############################################
-    #       Reticle Data
-    ##############################################
-    #
-    # To DO:
-    # 
     
     def expose_Image(self, Image=None, Energy=20, Focus=0.000, FocusTilt=[0,0], NA=0.570, Sig_o=0.750, Sig_i=None, IlluminationMode="Default"):
         """
@@ -229,9 +223,6 @@ class Layer(object):
         self.Sig_iList.append( Sig_i )
         self.IlluminationModeList.append( IlluminationMode )
         
-        ## NOT IMPLEMENTED:
-        # add to the parent Job
-        #self.Job.add_Layers(self)  # should check for duplicate Layers and check that Image is in the Job
     #end
     
     

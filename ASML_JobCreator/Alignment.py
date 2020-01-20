@@ -30,16 +30,15 @@ class Alignment(object):
     
     Attributes
     ----------
-    data : Data object
-        Contains loaded data from file
-    fits : list
-        list of Fit objects, defining fitting regions and fiting data (losses, slopes etc.)
+    MarksList : List of Mark objects added to this Job/Alignment.
+    StrategyList : List of Strategy objects added to this Job/Alignment.
+    Job : The parent Job object, that this Alignment belongs to.
         
     """
     
     def __init__(self, parent=None):
         '''Create empty Alignment object, with pointers to the Mark and Strategy classes.'''
-        self.Job = parent
+        self.parent = parent    # parent Job object
         self.MarkList = []
         self.StrategyList = []
     #end __init__
@@ -49,7 +48,13 @@ class Alignment(object):
         '''Return string to `print` this object.'''
         s = ""
         s += "ASML_JobCreator.Alignment object:\n"
-        s +=
+        for m in self.MarkList:
+            s += str(m)
+            s += " - - - - - - -"
+        s+= "----------------"
+        for a in self.StrategyList:
+            s += str(s)
+            s += " - - - - - - -"
         return s
     #end __str__
     
@@ -67,10 +72,12 @@ class Alignment(object):
     ##############################################
     def Mark(self, MarkID, MarkType="PM", cell_index=None, cell_shift=None, wafer_coord=None):
         '''
+        Mark(MarkID, MarkType="PM", cell_index=None, cell_shift=None, wafer_coord=None)
+        
         Define an alignment mark, either by cell_index/cell_shift OR wafer_coord, not both.
         Returns a Mark object, calls Mark constructor.
         '''
-        m = Mark(MarkID, MarkType, cell_index, cell_shift, wafer_coord, parent=self, Job=self.Job)
+        m = Mark(MarkID, MarkType, cell_index, cell_shift, wafer_coord, parent=self)
         #self.Job.add_marks ?
         return m
     #end Mark()
@@ -88,7 +95,7 @@ class Alignment(object):
         Define an alignment mark, either by cell_index/cell_shift OR wafer_coord, not both.
         Returns a Mark object, calls Mark constructor.
         '''
-        m = Strategy(ID, marks=None, parent=self, Job=self.Job)
+        m = Strategy(ID, marks, parent=self)
         #self.Job.add_marks ?  Make sure marks are in the Alignment?
         return m
     #end Mark()

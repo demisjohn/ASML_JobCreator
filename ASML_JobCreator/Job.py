@@ -37,6 +37,12 @@ class Job(object):
         
     MyJob = Job( )
     
+    Attributes
+    ----------
+    Cell : `Cell` object, containing Wafer Cell parameters.
+    ImageList : List of Image objects added to this Job.
+    LayerList : List of Layer objects added to this Job. Layers will utilize the Image objects in the ImageList.
+    Alignment : Alignment object that contains Alignment Marks & Alignment Strategies.
     
     TO DO: 
 	- MyJob.check_cell( [C,R] ) - check if cell is on the wafer

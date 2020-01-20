@@ -29,10 +29,7 @@ class Strategy(object):
     
     Attributes
     ----------
-    data : Data object
-        Contains loaded data from file
-    fits : list
-        list of Fit objects, defining fitting regions and fiting data (losses, slopes etc.)
+        Job : The parent Job object, that this Alignment belongs to.
         
     """
     
@@ -46,17 +43,17 @@ class Strategy(object):
         marks : iterable
             Iterable containing Mark objects to add to this strategy.
         
-        parent : Job object
-            The Job object this Strategy belongs to.
+        parent : Alignment object
+            The Alignment object this Strategy belongs to.
         '''
-        self.Job = parent
+        self.parent = parent    # parent Alignment object
         self.MarkList = []
         if marks:
             for m in marks:
                 self.add_mark( m )
         #end if(marks)
         
-        self.Alignment.add_Strategy(self)
+        self.parent.add_Strategy(self)
     #end __init__
     
     

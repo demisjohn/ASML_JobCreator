@@ -33,7 +33,7 @@ class Cell(object):
     
     def __init__(self, parent=None):
         '''Creates empty object.'''
-        self.Job = parent
+        self.parent = parent    # parent Job object
     #end __init__
     
     

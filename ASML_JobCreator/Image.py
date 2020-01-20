@@ -56,7 +56,7 @@ class Image(object):
         
         See `help(Image)` for description of arguments.
         """
-        self.Job = parent
+        self.parent = parent    # parent Job object
         self.ImageID = str(ImageID)
         self.ReticleID = str(ReticleID)
         if len(sizeXY) == 2 and np.isscalar(sizeXY[0]) and np.isscalar(sizeXY[1]):
@@ -75,7 +75,7 @@ class Image(object):
         self.Shifts = []
         
         # add this Image ot the parent Job:
-        self.Job.add_Images( self )
+        self.parent.add_Images( self )
     #end __init__
     
     
