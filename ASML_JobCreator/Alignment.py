@@ -70,21 +70,26 @@ class Alignment(object):
     ##############################################
     #       Classes
     ##############################################
-    def Mark(self, MarkID, MarkType="PM", cell_index=None, cell_shift=None, wafer_coord=None):
+    def Mark(self, MarkID, MarkType="PM", wafer_coordXY=None):
         '''
-        Mark(MarkID, MarkType="PM", cell_index=None, cell_shift=None, wafer_coord=None)
+        Mark(MarkID, MarkType="PM", cell_index=None, cell_shift=None, wafer_coordXY=None)
         
         Define an alignment mark, either by cell_index/cell_shift OR wafer_coord, not both.
         Returns a Mark object, calls Mark constructor.
         '''
-        m = Mark(MarkID, MarkType, cell_index, cell_shift, wafer_coord, parent=self)
-        #self.Job.add_marks ?
+        if not DEBUG():
+            errstr = "This function is not fully implemented yet."
+            raise NotImplementedError(errstr)
+        #end if(DEBUG)
+        
+        m = Mark(MarkID, MarkType, wafer_coordXY, parent=self)
+        self.add_marks( self )
         return m
     #end Mark()
         
     
     
-    def add_Marks(self, *args):
+    def add_marks(self, *args):
         '''Add the Marks to this job. Takes any number of Marks objects as arguments.  Optionally a single iterable containing the Mark objects. Adds the passed Marks to the Job.'''
         return None
     #end
@@ -95,6 +100,11 @@ class Alignment(object):
         Define an alignment mark, either by cell_index/cell_shift OR wafer_coord, not both.
         Returns a Mark object, calls Mark constructor.
         '''
+        if not DEBUG():
+            errstr = "This function is not fully implemented yet."
+            raise NotImplementedError(errstr)
+        #end if(DEBUG)
+        
         m = Strategy(ID, marks, parent=self)
         #self.Job.add_marks ?  Make sure marks are in the Alignment?
         return m

@@ -35,34 +35,33 @@ class Mark(object):
         
     """
     
-    def __init__(self, MarkID, MarkType="PM", cell_index=None, cell_shift=None, wafer_coord=None, parent=None):
+    def __init__(self, MarkID, MarkType="PM", wafer_coordXY=None, parent=None):
         '''Define an alignment mark, either by cell_index/cell_shift OR wafer_coord (not both).
             
-            Parameters
-            ----------
-            MarkID : string
-                Name of the Mark
-            
-            MarkType : {"PM", "SPM_X", "SPM_Y" etc.}, optional
-                Type of mark. Defaults to Primary Mark with both X/Y gratings, "PM".
-            
-            parent : Alignment object
-                The Alignment object this Mark belongs to.
-            
-            ...
-			- warn if cell is not on wafer
-            '''
-            self.parent = parent    # parent Alignment object
-            self.MarkID = str(MarkID)
-            self.MarkType = MarkType
-            
-            ## TO DO: Check for cell_index+cell_shift OR wafer_coord
-            self.cell_index = cell_index
-            self.cell_shift = cell_shift
-            
-            self.wafer_cord = wafer_coord
-            
-            self.parent.add_Marks(self)
+        Parameters
+        ----------
+        MarkID : string
+            Name of the Mark
+        
+        MarkType : {"PM", "SPM_X", "SPM_Y" etc.}, optional
+            Type of mark. Defaults to Primary Mark with both X/Y gratings, "PM".
+        
+        wafer_coordXY : two-valued iterable
+            Wafer [X,Y] coordinates for this mark.
+        
+        parent : Alignment object
+            The Alignment object this Mark belongs to.
+        
+        ...
+        - warn if cell is not on wafer
+        '''
+        self.parent = parent    # parent Alignment object
+        self.MarkID = str(MarkID)
+        self.MarkType = MarkType
+        
+        self.wafer_coord = wafer_coordXY
+        
+        self.parent.add_Marks(self)
     #end __init__
     
     

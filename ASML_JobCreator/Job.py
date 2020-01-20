@@ -256,6 +256,9 @@ class Job(object):
         """
         import os.path
         
+        s = self.__genascii()       # get the text to write
+        ascii = s.encode('ascii')
+        
         if os.path.exists(filepath):
             if (overwrite):
                 if WARN(): print( "Overwriting output file at '%s'." %( os.path.abspath(filepath) ) )
@@ -264,9 +267,6 @@ class Job(object):
                 raise IOError(errstr)
             #end if(overwrite)
         #end if(exists(filepath))
-        
-        s = self.__genascii()       # get the text to write
-        ascii = s.encode('ascii')
         
         # open the file & write it:
         with open(filepath, 'wb') as f:
