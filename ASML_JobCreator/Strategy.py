@@ -14,6 +14,7 @@ Demis D. John, Univ. of California Santa Barbara; Nanofabrication Facility; 2019
 # Module setup etc.
 
 from .__globals import *    # global variables/methods to the module.
+from .Mark import Mark as __Mark      # Mark class
 
 
 ####################################################
@@ -35,7 +36,7 @@ class Strategy(object):
         
     """
     
-    def __init__(self, ID, marks):
+    def __init__(self, ID, marks=None, parent=None):
         '''
         Parameters
         ----------
@@ -44,9 +45,18 @@ class Strategy(object):
         
         marks : iterable
             Iterable containing Mark objects to add to this strategy.
+        
+        parent : Job object
+            The Job object this Strategy belongs to.
         '''
-        pass
-        #call self.add_mark() on each amrk passed.
+        self.Job = parent
+        self.MarkList = []
+        if marks:
+            for m in marks:
+                self.add_mark( m )
+        #end if(marks)
+        
+        self.Alignment.add_Strategy(self)
     #end __init__
     
     
@@ -70,6 +80,7 @@ class Strategy(object):
     ##############################################
     #       Setters/Getters
     ##############################################
+    """
     def set_waveguide_length(self, length):
         '''Set the expected waveguide length. This is usually the length on your mask plate or measured fiber length.'''
         self.waveguide_length = length
@@ -82,27 +93,33 @@ class Strategy(object):
         except AttributeError:
             raise AttributeError("waveguide_length has not been set yet.  Use `set_waveguide_length()` or `scale_to_group_index()`.")
     #end
+    """
     
     
     
     
     ##############################################
-    #       Plotting etc.
+    #       General Functions
     ##############################################
-    def add_mark ( self, preference, *args ) :
-        '''
-        add_mark ( preference= , Marks ) :
-        
+    def add_mark ( self, marks, preference="preferred" ) :
+        '''        
         Parameters
         ----------
-        preference ="Backup"/"Preferred"
+        Marks : an iterable of Mark objects
+            Pass the Mark objects to add to this Alignment Strategy. Accepts each Mark as 
+            a single iterable containing Mark objects.
         
-        Marks : Mark objects
-            Pass the Mark objects to add to this Alignment Strategy. Accepts each Mark as separate arguments,
-            or optionally a single iterable of Mark objects is acceptable.
-        
+        preference : {"Backup", "Preferred"}, optional
+            Should Mark(s) be added as prefferred or backup marks? Preferred is default.
+            Synonyms for "preferred" include "p", not case-sensitive
+            Synonyms for "backup" include "b", not case-sensitive
         '''
-        pass
+        for m in marks:
+            if isinstance( m, __Mark ):
+                self.MarkList.append( m )
+            else:
+                errstr = "Expected Mark object, instead got `%s` %s." %( str(m), str(type(m)) )
+                raise ValueError(errstr)
     #end (add_mark)
     
     

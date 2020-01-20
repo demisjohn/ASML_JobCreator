@@ -35,13 +35,19 @@ class Mark(object):
         
     """
     
-    def __init__(self, MarkID, MarkType, cell_index, cell_shift, wafer_coord):
+    def __init__(self, MarkID, MarkType="PM", cell_index=None, cell_shift=None, wafer_coord=None, parent=None):
         '''Define an alignment mark, either by cell_index/cell_shift OR wafer_coord, not both.
             
             Parameters
             ----------
             MarkID : string
                 Name of the Mark
+            
+            MarkType : {"PM", "SPM_X", "SPM_Y" etc.}, optional
+                Type of mark. Defaults to Primary Mark with both X/Y gratings, "PM".
+            
+            parent : Job object
+                The Job object this Mark belongs to.
             
             ...
 			- warn if cell is not on wafer

@@ -31,9 +31,9 @@ class Cell(object):
         
     """
     
-    def __init__(self):
+    def __init__(self, parent=None):
         '''Creates empty object.'''
-        pass
+        self.Job = parent
     #end __init__
     
     

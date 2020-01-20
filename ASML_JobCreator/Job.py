@@ -45,8 +45,8 @@ class Job(object):
     
     def __init__(self):
         '''Job object constructor.  See `help(Job)` for parameters.'''
-        self.Alignment = Alignment()    # Alignment object
-        self.Cell = Cell()      # Cell object
+        self.Alignment = Alignment(parent=self)    # Alignment object
+        self.Cell = Cell(parent=self)      # Cell object
         self.ImageList = []
         self.LayerList = []
         self.defaults = Defaults
@@ -232,6 +232,12 @@ class Job(object):
                 raise ValueError( "Expected `Layer` object, instead got: " + str(type(ii)) + " at argument #%i"%(i) )
         #end for(LyrList)
     #end add_layers()
+    
+    
+    
+    ##############################################
+    #       Exporting to Text
+    ##############################################
     
     def export(self, filepath="ASML_Job.txt", overwrite=False):
         """
