@@ -226,7 +226,7 @@ class Layer(object):
     #If any layer has "combined zero/first' set:
     #       MarksExposure - set layer 0 to expose all marks
     
-    sef expose_Marks(self, Marks=[], Energy=20, Focus=0, FocusTilt=[0,0], NA=0.570, Sig_o=0.750, Sig_i=None, IlluminationMode="Default")
+    def expose_Marks(self, Marks=[], Energy=20, Focus=0, FocusTilt=[0,0], NA=0.570, Sig_o=0.750, Sig_i=None, IlluminationMode="Default"):
         """
         Set Layer to expose some Alignment Marks.
     
