@@ -113,19 +113,6 @@ class Layer(object):
     ##############################################
     
     
-    ##############################################
-    #       Alignment etc.
-    ##############################################
-    
-    #########
-    # To do
-    #
-    #set_strategy(Strat1) - or None
-    #.set_Prealignment(Mark1, Mark2) - ignored if combined zero/first.
-    #   also turns on optical prealignment
-    #If any layer has "combined zero/first' set:
-    #       MarksExposure - set layer 0 to expose all marks
-    
     
     
     ##############################################
@@ -226,6 +213,67 @@ class Layer(object):
     #end
     
     
+    ##############################################
+    #       Alignment etc.
+    ##############################################
+    
+    #########
+    # To do
+    #
+    #set_strategy(Strat1) - or None
+    #.set_Prealignment(Mark1, Mark2) - ignored if combined zero/first.
+    #   also turns on optical prealignment
+    #If any layer has "combined zero/first' set:
+    #       MarksExposure - set layer 0 to expose all marks
+    
+    sef expose_Marks(self, Marks=[], Energy=20, Focus=0, FocusTilt=[0,0], NA=0.570, Sig_o=0.750, Sig_i=None, IlluminationMode="Default")
+        """
+        Set Layer to expose some Alignment Marks.
+    
+        expose_Image( Image, Energy=20, Focus=0.000, FocusTilt=[0,0], NA=0.570, Sig_o=0.750, Sig_i=0.5, IlluminationMode="Conventional" )
+
+        Parameters
+        ----------
+        Marks : List of Mark objects
+            Pass an iterable of Mark objects to expose.
+        Energy : number
+            Exposure energy in mJ.
+        Focus : number
+            The focus offset in mm.
+        FocusTilt : two-valued array-like, optional
+            Rx,Ry focus tilt values. Defaults to [0,0]
+        NA : number, optional
+            Numerical Aperture, defaults to 0.570
+        Sig_o, Sig_i : numbers, optional
+            Sigma Inner & Outer.  Defaul to Sig_o=0.750, Sig_i=0.5
+        IlluminationMode : {"Default", "Conventional", "Annular"}, optional
+            Defaults to "Default", which is whatever the machine default is, usually "Conventional"
+
+        """
+        errstr = "This function is not implemented yet."
+        raise NotImplementedError(errstr)
+    #end expose_Marks()
+    
+    def set_PreAlignment(self,  mark1, mark2 ):
+        """
+        Enable Optical Prealignment on this Layer.
+        Pass the two Mark objects corresponding to the alignment marks to be used for Optical Prealignment.
+        
+        Note that the chosen marks must lie in the limited region reachable by th eoptical prealignment camera system, and must be on opposide side of the wafer.
+        """
+        errstr = "This function is not implemented yet."
+        raise NotImplementedError(errstr)
+    #end set_PreAlignment()
+    
+    def set_GlobalAlignment(self,  strategy ):
+        """
+        Enable Global Alignment on this Layer.
+        Pass the Alignment `Strategy` Object to be used for global alignment.
+        """
+        errstr = "This function is not implemented yet."
+        raise NotImplementedError(errstr)
+    #end set_GlobalAlignment()
+        
   
 #end class(Layer)
 
