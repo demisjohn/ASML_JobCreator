@@ -11,23 +11,29 @@ Common easy-to-install Scientific Python IDE's include [Anaconda Python](https:/
 
 Download the latest ASML_JobCreator package from [GitHub/ASML_JobCreator/Releases](https://github.com/demisjohn/ASML_JobCreator/releases), and extract into a directory of your choice.  
 
+# Usage
+
+Example usage, to export a text file for import into ASML PAS stepper system via `pas_recipe_import`.
+
 Edit the *Example* file to your needs and execute the script with your Python interpreter.
 
 The text file produced can be copied to your ASML PAS system.  On the system, execute the converter `pas_recipe_import` (with appropriate arguments) to generate the binary file that can be loaded into the PAS "*Job Definition*" GUI for further editing or the "*Task Streaming Queue*" for usage.
 
-# Usage
+For help on a command: after importing module and creating Job object, use commands like:
 
-Example usage, to export a text file for import into ASML PAS stepper system via `pas_recipe_import`.
+    help( asml )
+    help( MyJob )   # Print documentation on the object
+    dir ( MyJob )   # Lists all available attributes
+    help( MyJob.Cell.set_CellSize )
+
+## Conventions
 
 All units are in **millimeters**.  
 
 Coordinates and sizes are specified as two-valued iterables like `[X,Y]`
 
-For help on a command: after importing module and creating Job object, use commands like:
+All coordinates and sizes are specified at **1x wafer-scale** (not reticle 4x/5x scale).
 
-    help( asml )
-    help( MyJob )
-    help( MyJob.Cell.set_CellSize )
 
 ## Examples of Syntax
 
@@ -49,7 +55,7 @@ All info will be added to this `Job` object.  Commands like `help(MyJob)` or `di
 ### Image Definition: Define pattern location on printed reticle.
 Arguments for adding an Image: 
 
-&nbsp;&nbsp;&nbsp;`MyJob.Image( <ImageID>, <ReticleID_Barcode>, sizeXY=coords, shiftXY=coords)`
+&nbsp;&nbsp;&nbsp;&nbsp;`MyJob.Image( <ImageID>, <ReticleID_Barcode>, sizeXY=coords, shiftXY=coords)`
 
 see `help( MyJob.Image )` for full description of arguments.
 
@@ -63,7 +69,7 @@ see `help( MyJob.Image )` for full description of arguments.
 ### Image Distribution: Define wafer location of the above Images
 Arguments for distributing an Image on the wafer: 
 
-&nbsp;&nbsp;&nbsp;`MyImage.distribute( cellCR=[Col,Row], shiftXY=[X_Shift, Y_shift] )`
+&nbsp;&nbsp;&nbsp;&nbsp;`MyImage.distribute( cellCR=[Col,Row], shiftXY=[X_Shift, Y_shift] )`
 
 `cellCR` is integer pair of Col/Row specification
 
