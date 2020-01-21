@@ -1,15 +1,9 @@
 """
-This file is part of the ASML_JobCreator package for Python 3.x.
+This file is part of the ASML_JobCreator package.
 
 Job.py
     Contains the `Job` class, master class for defining an ASML Job.
     
-    
-- - - - - - - - - - - - - - -
-
-TO DO: 
-MyJob.check_cell( [C,R] ) - check if cell is on the wafer
-
 - - - - - - - - - - - - - - -
 
 Demis D. John, Univ. of California Santa Barbara; Nanofabrication Facility; 2019
@@ -44,6 +38,7 @@ class Job(object):
     LayerList : List of Layer objects added to this Job. Layers will utilize the Image objects in the ImageList.
     Alignment : Alignment object that contains Alignment Marks & Alignment Strategies.
     
+    - - - - - - - 
     TO DO: 
 	- MyJob.check_cell( [C,R] ) - check if cell is on the wafer
 
@@ -55,7 +50,7 @@ class Job(object):
         self.Cell = Cell(parent=self)      # Cell object
         self.ImageList = []
         self.LayerList = []
-        self.defaults = Defaults
+        self.defaults = Defaults    # imported in .__globals
         
     #end __init__
     
@@ -74,7 +69,7 @@ class Job(object):
         for i,ii in enumerate(self.LayerList):
             if i>0:    s += " - - - - - - - - -\n"
             s += str(ii)
-        s += "==== Alignment =====\n"
+        s += "===== Alignment ====\n"
         s += str(self.Alignment)
         
         return s
@@ -93,7 +88,7 @@ class Job(object):
     #       Setters/Getters
     ##############################################
     def set_comment(self, line1="", line2="", line3=""):
-        '''Set the comment lines for this job, in three separate lines. Visible in PAS *Batch Append* screen.
+        '''Set the comment lines for this job, in three separate lines. These lines will be visible in PAS *Batch Append* screen.
         
         Parameters
         ----------
@@ -117,7 +112,7 @@ class Job(object):
     
     
     def set_ExposeEdgeDie(self, tf):
-        '''Enable/Disable the exposure of die all the way to the wafer edge, by setting the "Number of Die Per Cell" to 10x10, and Minimum Number of Die to 1.
+        '''Pass either `True`/`False` to Enable/Disable the exposure of die all the way to the wafer edge, by internally setting the "Number of Die Per Cell" to 10x10, and Minimum Number of Die to 1.
         
         Parameters
         ----------
@@ -253,9 +248,14 @@ class Job(object):
         ----------
         filepath : string
             Path to save the text file to.  
+        
+        overwrite : {True | False}, optional
+            Whether to overwrite the file if it already exists.
+            If asml.WARN() is enabled, will pop a warning before overwriting.
+            Will fail with IOError if file exists and `overwrite` is False.
         """
         import os.path
-        from .exportlib import _genascii  # The export function is in separate file
+        from .exportlib import _genascii 
     
         s = _genascii(self)       # get the text to write
         ascii = s.encode('ascii')
