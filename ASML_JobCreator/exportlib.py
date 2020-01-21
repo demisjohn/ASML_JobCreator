@@ -31,7 +31,7 @@ def _genascii(JobObj):
         return spc * (  indent - len(startstr)  )
     #end indent()
     
-    def add(string="", cmd='', val=[0,0], tab=tab, integers=False):
+    def add(string="", cmd='', val=[0,0], tab=tab, integers=False, quoted=True):
         """Returns input `string` + `cmd` + `val` with the appropriate tab, indent and newlines.
         
         Parameters
@@ -51,6 +51,8 @@ def _genascii(JobObj):
                 10.000000 -5.000000
             Which is the case for arbitrary X/Y coordinates. 
             Defaults to False.
+        quoted : { True | False }, optional
+            Optionally force the removal of quotes for 2-valued integers, such as NUMBER_DIES. Defaults to True.
         """
         s1 = tab + cmd
         if isinstance(val, str):
@@ -59,7 +61,10 @@ def _genascii(JobObj):
             if not integers:
                 s2 = indent(s1) + "%0.6f %0.6f" % tuple(val) # X/Y coords
             else:
-                s2 = indent(s1) + '"%i" "%i"' % tuple(val)  # Cell Index, quoted
+                if quoted:
+                    s2 = indent(s1) + '"%i" "%i"' % tuple(val)  # Cell Index, quoted
+                else:
+                    s2 = indent(s1) + '%i %i' % tuple(val)  # NUMBER_DIES, unquoted
             #end if(cells)
         elif np.size(val) == 3:
             if not integers:
@@ -99,7 +104,7 @@ def _genascii(JobObj):
     s = add(s, "", JobObj.get_comment()[1] )
     s = add(s, "", JobObj.get_comment()[2] )
     s = add(s, "MACHINE_TYPE", Defaults.MACHINE_TYPE)
-    s = add(s, "RETICLE_SIZE", Defaults.RETICLE_SIZE)
+    s = add(s, "RETICLE_SIZE", Defaults.RETICLE_SIZE, integers=True)
     s = add(s, "WFR_DIAMETER", Defaults.WFR_DIAMETER)
     s = add(s, "WFR_NOTCH", Defaults.WFR_NOTCH)
     s = add(s, "CELL_SIZE", JobObj.Cell.get_CellSize() )
@@ -107,8 +112,8 @@ def _genascii(JobObj):
     s = add(s, "FLAT_EDGE_CLEARANCE", JobObj.Cell.get_FlatEdgeClearance() )
     s = add(s, "EDGE_EXCLUSION", JobObj.Cell.get_EdgeExclusion() )
     s = add(s, "COVER_MODE", Defaults.COVER_MODE)
-    s = add(s, "NUMBER_DIES", JobObj.Cell.get_NumberDiePerCell() )
-    s = add(s, "MIN_NUMBER_DIES", JobObj.Cell.get_MinNumberDie() )
+    s = add(s, "NUMBER_DIES", JobObj.Cell.get_NumberDiePerCell() , integers=True, quoted=False)
+    s = add(s, "MIN_NUMBER_DIES", JobObj.Cell.get_MinNumberDie() , integers=True)
     s = add(s, "PLACEMENT_MODE", Defaults.PLACEMENT_MODE)
     s = add(s, "MATRIX_SHIFT", JobObj.Cell.get_MatrixShift())
     s = add(s, "PREALIGN_METHOD", Defaults.PREALIGN_METHOD)
