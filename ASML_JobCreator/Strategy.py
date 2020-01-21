@@ -46,8 +46,8 @@ class Strategy(object):
         ID : string
             Name of the strategy
         
-        marks : iterable
-            Iterable containing Mark objects to add to this strategy.
+        marks : iterable of Mark objects, optional
+            Iterable containing Mark objects to add to this strategy. Can instead add later with `add_mark()`.
         
         parent : Alignment object
             The Alignment object this Strategy belongs to.
@@ -133,7 +133,9 @@ class Strategy(object):
             elif np.any(  np.isin( BStrings , s )  ):
                 return 'b'
             else:
-                errstr = "Passed argument option `%s` is not in th elist of valid options, which are:\n\t" + str(PStrings) + "\n\t" +str(BStrings)
+                errstr = "Passed argument option `%s` is not in the list of valid options, which are:\n\t" + \
+                    str(PStrings) + "\n\t" + \
+                    str(BStrings)
                 raise ValueError(errstr)
             #end if
         #end get_markpref()

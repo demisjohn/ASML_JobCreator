@@ -52,23 +52,50 @@ class Mark(object):
         parent : Alignment object
             The Alignment object this Mark belongs to.
         
-        ...
-        - warn if cell is not on wafer
         '''
         self.parent = parent    # parent Alignment object
         self.MarkID = str(MarkID)
-        self.MarkType = MarkType
+        self.MarkType = self.__get_marktype(MarkType)
         
-        self.wafer_coord = wafer_coordXY
+        self.wafer_coord = [0,0]
+        self.wafer_coord[0] = float( wafer_coordXY[0] )
+        self.wafer_coord[1] = float( wafer_coordXY[1] )
         
-        self.parent.add_Marks(self)
+        self.parent.add_Marks(self) # add this mark to the parent Alignment object
     #end __init__
+    
+    
+    def __get_marktype( s ):
+        '''Analyze string argument `s` and Return sanitized strings for the Mark Type.'''
+        # argument synonym options:
+        PMStrings = ["pm","p"]
+        SPM_X_Strings = ["spm_x","spmx"]
+        SPM_Y_Strings = ["spm_y","spmy"]
+        
+        s = str(s).strip().lower()
+        if np.any(  np.isin( PMStrings , s )  ):
+            return 'pm'
+        elif np.any(  np.isin( SPM_X_Strings , s )  ):
+            return 'spm_x'
+        elif np.any(  np.isin( SPM_Y_Strings , s )  ):
+            return 'spm_y'
+        else:
+            errstr = "Passed argument option `%s` is not in the list of valid options, which are:\n\t" + \
+                str(PMStrings) + "\n\t" + \
+                str(SPM_X_Strings) + "\n\t" + \
+                str(SPM_Y_Strings)
+            raise ValueError(errstr)
+        #end if
+    #end get_marktype()
     
     
     def __str__(self):
         '''Return string to `print` this object.'''
         s = ""
         s += "ASML_JobCreator.Mark object:\n"
+        s += "  MarkID = '%s'\n" % self.MarkID
+        s += "  MarkType = '%s'\n" % self.MarkType
+        s += "  Wafer Location = (%0.6f, %0.6f) mm\n" %(self.wafer_coord[0], self.wafer_coord[1])
         
         return s
     #end __str__
