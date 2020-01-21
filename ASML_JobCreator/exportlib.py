@@ -14,45 +14,13 @@ Demis D. John, Univ. of California Santa Barbara; Nanofabrication Facility; 2019
 # Module setup etc.
 
 from .__globals import *    # global variables/methods to the module.
-
+if DEBUG(): print("exportlib.py importing...")
 
 ####################################################
 
-def export(self, filepath="ASML_Job.txt", overwrite=False):
+def _genascii(JobObj):
     """
-    Export an ASCII text file of this job, that can be imported by the ASML PAS software.
-
-    Parameters
-    ----------
-    filepath : string
-        Path to save the text file to.  
-    """
-    import os.path
-    
-    s = self.__genascii()       # get the text to write
-    ascii = s.encode('ascii')
-    
-    if os.path.exists(filepath):
-        if (overwrite):
-            if WARN(): print( "Overwriting output file at '%s'." %( os.path.abspath(filepath) ) )
-        else:
-            errstr = "File already exists at '%s' and argument `overwrite` is False." % ( os.path.abspath(filepath) )
-            raise IOError(errstr)
-        #end if(overwrite)
-    #end if(exists(filepath))
-    
-    # open the file & write it:
-    with open(filepath, 'wb') as f:
-        if DEBUG(): print( "Opened file for writing at %s" %filepath)
-        f.write(ascii)
-    #end with file(filepath)
-    if DEBUG(): print("Job.export(): ASCII Text file written succesfully.")
-#end export()
-
-
-def __genascii(self):
-    """
-    Return ASCII string for writing to a file, in ASML PAS compatible format. Pulls in all object data as defined by user.
+    Return ASCII string for writing to a file, in ASML PAS compatible format. Pulls in all Job object data as defined by `JobObj``.
     """
     if DEBUG(): print("Job.__genascii(): Generating ASCII Text...")
     tab = '   '
@@ -121,28 +89,28 @@ def __genascii(self):
     
     """
     s1 = tab + "COMMENT"
-    s2 = indent(s1) + self.get_comment()[0]
+    s2 = indent(s1) + JobObj.get_comment()[0]
     s += s1 + s2
     
-    s += indent() + self.get_comment()[1]
-    s += indent() + self.get_comment()[2]
+    s += indent() + JobObj.get_comment()[1]
+    s += indent() + JobObj.get_comment()[2]
     """
-    s = add(s, "COMMENT", self.get_comment()[0] )
-    s = add(s, "", self.get_comment()[1] )
-    s = add(s, "", self.get_comment()[2] )
+    s = add(s, "COMMENT", JobObj.get_comment()[0] )
+    s = add(s, "", JobObj.get_comment()[1] )
+    s = add(s, "", JobObj.get_comment()[2] )
     s = add(s, "MACHINE_TYPE", Defaults.MACHINE_TYPE)
     s = add(s, "RETICLE_SIZE", Defaults.RETICLE_SIZE)
     s = add(s, "WFR_DIAMETER", Defaults.WFR_DIAMETER)
     s = add(s, "WFR_NOTCH", Defaults.WFR_NOTCH)
-    s = add(s, "CELL_SIZE", self.Cell.get_CellSize() )
-    s = add(s, "ROUND_EDGE_CLEARANCE", self.Cell.get_RoundEdgeClearance() )
-    s = add(s, "FLAT_EDGE_CLEARANCE", self.Cell.get_FlatEdgeClearance() )
-    s = add(s, "EDGE_EXCLUSION", self.Cell.get_EdgeExclusion() )
+    s = add(s, "CELL_SIZE", JobObj.Cell.get_CellSize() )
+    s = add(s, "ROUND_EDGE_CLEARANCE", JobObj.Cell.get_RoundEdgeClearance() )
+    s = add(s, "FLAT_EDGE_CLEARANCE", JobObj.Cell.get_FlatEdgeClearance() )
+    s = add(s, "EDGE_EXCLUSION", JobObj.Cell.get_EdgeExclusion() )
     s = add(s, "COVER_MODE", Defaults.COVER_MODE)
-    s = add(s, "NUMBER_DIES", self.Cell.get_NumberDiePerCell() )
-    s = add(s, "MIN_NUMBER_DIES", self.Cell.get_MinNumberDie() )
+    s = add(s, "NUMBER_DIES", JobObj.Cell.get_NumberDiePerCell() )
+    s = add(s, "MIN_NUMBER_DIES", JobObj.Cell.get_MinNumberDie() )
     s = add(s, "PLACEMENT_MODE", Defaults.PLACEMENT_MODE)
-    s = add(s, "MATRIX_SHIFT", self.Cell.get_MatrixShift())
+    s = add(s, "MATRIX_SHIFT", JobObj.Cell.get_MatrixShift())
     s = add(s, "PREALIGN_METHOD", Defaults.PREALIGN_METHOD)
     s = add(s, "WAFER_ROTATION", Defaults.WAFER_ROTATION)
     s = add(s, "COMBINE_ZERO_FIRST", Defaults.COMBINE_ZERO_FIRST)
@@ -152,7 +120,7 @@ def __genascii(self):
     
     
     if DEBUG(): print("Generating Text Sections 'IMAGE_DEFINITION' & 'IMAGE_DISTRIBUTION'")
-    for I in self.ImageList:
+    for I in JobObj.ImageList:
         s += "START_SECTION IMAGE_DEFINITION\n"
         s = add(s, "IMAGE_ID", I.ImageID)
         s = add(s, "RETICLE_ID", I.ReticleID)
@@ -181,7 +149,7 @@ def __genascii(self):
     
     
     if DEBUG(): print("Generating Text Section 'LAYER_DEFINITION'")
-    for i,L in enumerate(self.LayerList):
+    for i,L in enumerate(JobObj.LayerList):
         if DEBUG(): print( "Layer #%i, ID='%s'" %(i, str(L.LayerID) ) )
         s += "START_SECTION LAYER_DEFINITION\n"
         s = add(s, "LAYER_NO", i, integers=True)
@@ -206,7 +174,7 @@ def __genascii(self):
     # Process Data #
     ################
     if DEBUG(): print("Generating Text Section 'PROCESS_DATA'...")
-    for i,L in enumerate(self.LayerList):
+    for i,L in enumerate(JobObj.LayerList):
         s += "START_SECTION PROCESS_DATA\n"
         s = add(s, "LAYER_ID", L.LayerID)
         s = add(s, "LENS_REDUCTION", Defaults.ProcessData_LENS_REDUCTION, integers=True)
@@ -311,7 +279,7 @@ def __genascii(self):
     # Reticle Data #
     ################
     if DEBUG(): print("Generating Text Section 'RETICLE_DATA'...")
-    for i,L in enumerate(self.LayerList):
+    for i,L in enumerate(JobObj.LayerList):
         if DEBUG(): print(   " RETICLE_DATA: Layer %i, '%s'" % ( i, str(L.LayerID) )   )
         for ii,I in enumerate(L.ImageList):
             if DEBUG(): print(   "  RETICLE_DATA: Image %i, '%s'" % ( ii, str(I.ImageID) )   )
@@ -354,6 +322,6 @@ def __genascii(self):
     # end for(LayerList)
     
     
-    if DEBUG(): print("Job.__genascii(): done generating ASCII string.")
+    if DEBUG(): print("_genascii(): done generating ASCII string.")
     return s
-#end __genascii()
+#end _genascii()

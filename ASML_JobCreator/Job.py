@@ -244,7 +244,38 @@ class Job(object):
     ##############################################
     #       Exporting to Text
     ##############################################
-    from .export import export  # The export function is in separate file
+    
+    def export(self, filepath="ASML_Job.txt", overwrite=False):
+        """
+        Export an ASCII text file of this job, that can be imported by the ASML PAS software.
+
+        Parameters
+        ----------
+        filepath : string
+            Path to save the text file to.  
+        """
+        import os.path
+        from .exportlib import _genascii  # The export function is in separate file
+    
+        s = _genascii(self)       # get the text to write
+        ascii = s.encode('ascii')
+    
+        if os.path.exists(filepath):
+            if (overwrite):
+                if WARN(): print( "Overwriting output file at '%s'." %( os.path.abspath(filepath) ) )
+            else:
+                errstr = "File already exists at '%s' and argument `overwrite` is False." % ( os.path.abspath(filepath) )
+                raise IOError(errstr)
+            #end if(overwrite)
+        #end if(exists(filepath))
+    
+        # open the file & write it:
+        with open(filepath, 'wb') as f:
+            if DEBUG(): print( "Opened file for writing at %s" %filepath)
+            f.write(ascii)
+        #end with file(filepath)
+        if DEBUG(): print("Job.export(): ASCII Text file written succesfully.")
+    #end export()
     
     
 #end class(Job)
