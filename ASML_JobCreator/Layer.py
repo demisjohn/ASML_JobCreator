@@ -94,7 +94,7 @@ class Layer(object):
         for i in range( len(self.ImageList) ):
             s += "  %i: '%s'\n" % (i, self.ImageList[i].ImageID)
             s += "    Energy = %f mJ/cm^2\n" % self.EnergyList[i]
-            s += "    Focus Offset = %0.3f mm\n" % self.FocusList[i]
+            s += "    Focus Offset = %0.3f um\n" % self.FocusList[i]
             s += "    NA = %0.3f\n" % self.NAList[i]
         return s
     #end __str__

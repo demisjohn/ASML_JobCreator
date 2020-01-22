@@ -93,10 +93,12 @@ class Job(object):
         Parameters
         ----------
         line1, line2, line3 : string
-            Maximum length = XYZ characters.  Only Sun-UNIX compatible characters!'''
-        self.comment_line1 = str(line1)
-        self.comment_line2 = str(line2)
-        self.comment_line3 = str(line3)
+            Maximum length = 50 characters.
+        '''
+        # replace non-ascii characters with '?', and ensure max 50 characters are kept:
+        self.comment_line1 = str(line1).encode('ascii', errors='replace').decode()[0:50]
+        self.comment_line2 = str(line2).encode('ascii', errors='replace').decode()[0:50]
+        self.comment_line3 = str(line3).encode('ascii', errors='replace').decode()[0:50]
     #end
     
     def get_comment(self):
@@ -111,13 +113,13 @@ class Job(object):
     #end
     
     
-    def set_ExposeEdgeDie(self, tf):
+    def set_ExposeEdgeDie(self, tf=True):
         '''Pass either `True`/`False` to Enable/Disable the exposure of die all the way to the wafer edge, by internally setting the "Number of Die Per Cell" to 10x10, and Minimum Number of Die to 1.
         
         Parameters
         ----------
         tf : {True | False}
-            Expose the edge die?
+            Expose the edge die? Defaults to True if no arguments passed.
         '''
         if tf == True:
             self.Cell.NumberDiePerCell = [10, 10]
@@ -128,13 +130,27 @@ class Job(object):
     #end
     
     
-    
-    # - - - - - - - - - - - - - - - - - - - - - 
-    
     def get_WaferDiameter(self):
         '''Return Wafer Diameter in mm.'''
         return Defaults.WFR_DIAMETER
     #end
+    
+    
+    def set_LensReduction(self, mag=4):
+        '''Set the Lens Reduction/Magnifications as integer. Defaults to 4.  Corresponding `get_LensReduction()` function will return value from Defaults.py if unset by user.'''
+        self.LensReduction = int(mag)
+    #end
+    
+    def get_LensReduction(self):
+        '''Return the Lens Reduction/Magnification.'''
+        try:
+            return self.LensReduction
+        except AttributeError:
+            self.LensReduction = Defaults.ProcessData_LENS_REDUCTION
+            if WARN(): print(   "Using default values for Job `LensReduction` : %s" % (self.LensReduction)   )
+            return self.LensReduction
+    #end
+    
     
     
     ##############################################

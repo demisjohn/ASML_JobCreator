@@ -116,25 +116,20 @@ class Image(object):
     ##############################################
     #       Setters/Getters
     ##############################################
-    """
-    def set_CellSize(self, xy=[10,10] ):
-        '''Set the Cell Size in millimeters, [x,y].'''
-        if len(xy)==2: 
-            self.CellSize = (xy[0], xy[1])
-        else:
-            raise ValueError("Expected x,y pair of numbers, instead got: " + str(xy))
+    
+    def get_ReticleSize(self):
+        '''Return the Image Size scaled to Reticle-scale (using `Job.get_LensReduction()`` ), in millimeters, [x,y].'''
+        mag = self.parent.get_LensReduction()
+        if DEBUG(): print("get_ReticleSize(): mag = ", mag)
+        return (self.sizeXY[0] * mag , self.sizeXY[1] * mag)
     #end
     
-    def get_CellSize(self):
-        '''Return Cell Size in mm, as two-valued list.'''
-        try:
-            return self.CellSize
-        except AttributeError:
-            if WARN(): print("Using default values for `CellSize`.")
-            self.set_CellSize( Defaults.CELL_SIZE)
-            return self.CellSize
+    def get_ReticleShift(self):
+        '''Return the Image Shift scaled to Reticle-scale (using `Job.get_LensReduction()`` ), in millimeters, [x,y].'''
+        mag = self.parent.get_LensReduction()
+        return (self.shiftXY[0] * mag , self.shiftXY[1] * mag)
     #end
-    """
+    
     
     
     

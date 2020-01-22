@@ -14,7 +14,6 @@ Demis D. John, Univ. of California Santa Barbara; Nanofabrication Facility; 2019
 # Module setup etc.
 
 from .__globals import *    # global variables/methods to the module.
-if DEBUG(): print("exportlib.py importing...")
 
 ####################################################
 
@@ -23,6 +22,7 @@ def _genascii(JobObj):
     Return ASCII string for writing to a file, in ASML PAS compatible format. Pulls in all Job object data as defined by `JobObj``.
     """
     if DEBUG(): print("Job.__genascii(): Generating ASCII Text...")
+    
     tab = '   '
     col1 = 50       # Num Characters to offset column 1
     
@@ -52,7 +52,7 @@ def _genascii(JobObj):
             Which is the case for arbitrary X/Y coordinates. 
             Defaults to False.
         quoted : { True | False }, optional
-            Optionally force the removal of quotes for 2-valued integers, such as NUMBER_DIES. Defaults to True.
+            Optionally force the removal of quotes for 2-valued integers by setting this to `False`, such as for NUMBER_DIES. Defaults to True.
         """
         s1 = tab + cmd
         if isinstance(val, str):
@@ -91,15 +91,6 @@ def _genascii(JobObj):
     s = ''
     s += "\n\n"
     s += "START_SECTION GENERAL\n"
-    
-    """
-    s1 = tab + "COMMENT"
-    s2 = indent(s1) + JobObj.get_comment()[0]
-    s += s1 + s2
-    
-    s += indent() + JobObj.get_comment()[1]
-    s += indent() + JobObj.get_comment()[2]
-    """
     s = add(s, "COMMENT", JobObj.get_comment()[0] )
     s = add(s, "", JobObj.get_comment()[1] )
     s = add(s, "", JobObj.get_comment()[2] )
@@ -129,13 +120,13 @@ def _genascii(JobObj):
         s += "START_SECTION IMAGE_DEFINITION\n"
         s = add(s, "IMAGE_ID", I.ImageID)
         s = add(s, "RETICLE_ID", I.ReticleID)
-        s = add(s, "IMAGE_SIZE", I.sizeXY)
-        s = add(s, "IMAGE_SHIFT", I.shiftXY)
-        s = add(s, "MASK_SIZE", I.sizeXY)
-        s = add(s, "MASK_SHIFT", I.shiftXY)
+        s = add(s, "IMAGE_SIZE", I.get_ReticleSize() )
+        s = add(s, "IMAGE_SHIFT", I.get_ReticleShift() )
+        s = add(s, "MASK_SIZE", I.get_ReticleSize() )
+        s = add(s, "MASK_SHIFT", I.get_ReticleShift() )
         s = add(s, "VARIANT_ID", Defaults.Image_VARIANT_ID)
         s += "END_SECTION\n"
-        s += "\n\n\n\n\n"
+        s += "\n\n\n"
         for D in I.get_distribution():
             s += "START_SECTION IMAGE_DISTRIBUTION\n"
             s = add(s, "IMAGE_ID", I.ImageID)
@@ -146,7 +137,7 @@ def _genascii(JobObj):
             s += "END_SECTION\n"
             s += "\n"
         #end for(dist)
-        s += "\n\n\n"
+        s += "\n\n\n\n\n"
     #end for(ImageList)
     
     s += "\n\n"
@@ -182,7 +173,7 @@ def _genascii(JobObj):
     for i,L in enumerate(JobObj.LayerList):
         s += "START_SECTION PROCESS_DATA\n"
         s = add(s, "LAYER_ID", L.LayerID)
-        s = add(s, "LENS_REDUCTION", Defaults.ProcessData_LENS_REDUCTION, integers=True)
+        s = add(s, "LENS_REDUCTION", JobObj.get_LensReduction(), integers=True)
         s = add(s, "CALIBRATION", Defaults.ProcessData_CALIBRATION)
         
         s = add(s, "OPTICAL_PREALIGNMENT", Defaults.ProcessData_OPTICAL_PREALIGNMENT)
@@ -278,7 +269,7 @@ def _genascii(JobObj):
         s += "END_SECTION\n\n"
     # end for(LayerList)
     
-    s += "\n\n"
+    s += "\n\n\n"
     
     ################
     # Reticle Data #
@@ -293,10 +284,10 @@ def _genascii(JobObj):
             s = add(s, "IMAGE_ID", I.ImageID)
             s = add(s, "IMAGE_USAGE", "Y")
             s = add(s, "RETICLE_ID", I.ReticleID)
-            s = add(s, "IMAGE_SIZE", I.sizeXY )
-            s = add(s, "IMAGE_SHIFT", I.shiftXY )
-            s = add(s, "MASK_SIZE", I.sizeXY )
-            s = add(s, "MASK_SHIFT", I.shiftXY )
+            s = add(s, "IMAGE_SIZE", I.get_ReticleSize() )      # <-------------
+            s = add(s, "IMAGE_SHIFT", I.get_ReticleShift() )
+            s = add(s, "MASK_SIZE", I.get_ReticleSize() )
+            s = add(s, "MASK_SHIFT", I.get_ReticleShift() )     # <-------------
             s = add(s, "ENERGY_ACTUAL", L.EnergyList[i] )
             s = add(s, "FOCUS_ACTUAL", L.FocusList[i] )
             s = add(s, "FOCUS_TILT", L.FocusTiltList[i] )
