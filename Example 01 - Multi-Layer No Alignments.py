@@ -2,7 +2,7 @@
 """
 ASML_JobCreator - Example 01
     Example usage, to export a text file for import into ASML PAS system.
-    Multi-layer job, multiple images per layer, no alignments.
+    Multi-layer job, multiple images per layer, no alignments or mark exposure.
 
 @author: Demis D. John
 Univ. of California Santa Barbara
@@ -12,10 +12,12 @@ UCSB Nanofabrication Facility: http://www.nanotech.ucsb.edu
 
 All units are in millimeters.  
 Coordinates and sizes are specified as two-valued iterables like [X,Y]
+All sizes and shifts are specified at 1x wafer-scale (NOT 4x/5x reticle-scale)
 
 For help: after running once, use commands like:
     help( asml )
     help( MyJob )
+    dir( MyJob.Cell )
     help( MyJob.Cell.set_CellSize )
 """
 
@@ -68,11 +70,11 @@ ZeroLyr = MyJob.Layer() # Empty Layer with default values
 
 # Choose Images to expose on this Layer:
 MetalLyr = MyJob.Layer( LayerID="Metal" )
-MetalLyr.expose_Image(Res, Energy=21, Focus=-0.10)
-MetalLyr.expose_Image(MA6, Energy=22)
-MetalLyr.expose_Image(GCA, Energy=22)
+MetalLyr.expose_Image( Res, Energy=21, Focus=-0.10 )
+MetalLyr.expose_Image( MA6, Energy=22 )
+MetalLyr.expose_Image( GCA, Energy=22 )
 
-
+# Print all data added to this Job:
 print(MyJob)
 
 ## Export the text file:
