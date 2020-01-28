@@ -3,7 +3,7 @@ This file is part of the ASML_JobCreator package for Python 3.x.
 
 defaults.py
     Contains & instantiates object of class Default, 
-    containing hard-coded defualt values for many options.
+    containing hard-coded default values for many options.
     
 - - - - - - - - - - - - - - -
 
@@ -63,40 +63,32 @@ class Defaults(object):
     
     def LoadDefaultValues(self):
         
-        ########################################
-        #
-        #   Defaults for user-settings
-        #
-        ########################################
+        ##  Defaults for user-editable settings:
         self.comment_line1 = "Created with python ASML_JobCreator"
         self.comment_line2 = "Univ. of California Santa Barbara"
         self.comment_line3 = "UCSB Nanofab, Demis D. John"
-        
-        
-        ## Defaults Hard-Coded here:
-        self.MACHINE_TYPE = "PAS5500/300"
-        self.RETICLE_SIZE = 6        # inches
-        self.WFR_DIAMETER = 100.0      #mm
-        self.WFR_NOTCH = "N"
-        self.COVER_MODE = "W"
-        self.PLACEMENT_MODE = "O"
-        self.PREALIGN_METHOD = "STANDARD"
-        self.WAFER_ROTATION = 0.0
-        self.MATCHING_SET_ID = "DEFAULT"
-    
-    
         self.ROUND_EDGE_CLEARANCE = 5.0
         self.FLAT_EDGE_CLEARANCE = 5.0
         self.EDGE_EXCLUSION = 3.0
         self.NUMBER_DIES = [1, 1]
         self.MIN_NUMBER_DIES = 1
     
-    
-    
-        ## Params editable by user:
         self.CELL_SIZE = [10, 10]    #mm
         self.MATRIX_SHIFT = [0.0, 0.0]
         self.COMBINE_ZERO_FIRST = "N"
+        
+        
+        
+        ## Machine Defaults Hard-Coded here:
+        self.MACHINE_TYPE = "PAS5500/300"
+        self.RETICLE_SIZE = 6           # inches
+        self.WFR_DIAMETER = 100.0       # mm
+        self.WFR_NOTCH = "N"
+        self.COVER_MODE = "W"
+        self.PLACEMENT_MODE = "O"
+        self.PREALIGN_METHOD = "STANDARD"
+        self.WAFER_ROTATION = 0.0
+        self.MATCHING_SET_ID = "DEFAULT"
         
         
         
@@ -112,11 +104,10 @@ class Defaults(object):
         
         
         
-        ## Process Data > Layer Defualts
-        # copy/pasted from from ResFEM.txt
-        self.ProcessData_LENS_REDUCTION                                = 4.0
+        ## Process Data > Layer Defaults
+        self.ProcessData_LENS_REDUCTION                                = 4.0    # DUV: 4.0 // I-Line: 5.0
         self.ProcessData_CALIBRATION                                   = "N"
-        self.ProcessData_OPTICAL_PREALIGNMENT                          = "N"     # Alignment
+        self.ProcessData_OPTICAL_PREALIGNMENT                          = "N"
         self.ProcessData_COO_REDUCTION                                 = "D"
         self.ProcessData_MIN_NUMBER_PULSES_IN_SLIT                     = "D"
         self.ProcessData_MIN_NUMBER_PULSES                             = 21
@@ -129,7 +120,7 @@ class Defaults(object):
         self.ProcessData_RET_COOL_START_ON_LOAD                        = "Y"
         self.ProcessData_RET_COOL_USAGE                                = "W"
         self.ProcessData_GLBL_OVERLAY_ENHANCEMENT                      = "N"
-        self.ProcessData_LAYER_SHIFT                                   = [0.000000, 0.000000]    # shift - editable?
+        self.ProcessData_LAYER_SHIFT                                   = [0.000000, 0.000000]
         self.ProcessData_CORR_INTER_FLD_EXPANSION                      = [0.000000, 0.000000]
         self.ProcessData_CORR_INTER_FLD_NONORTHO                       = 0.000000
         self.ProcessData_CORR_INTER_FLD_ROTATION                       = 0.000000
@@ -164,6 +155,7 @@ class Defaults(object):
         
         
         ## Reticle Data defaults
+        #   Disabled, required to be set by user:
         #self.ReticleData_IMAGE_USAGE                                   = "Y"
         #self.ReticleData_RETICLE_ID                                    = "UCSB-OPC1"
         #self.ReticleData_IMAGE_SIZE                                    = 2.420000 4.020000
