@@ -96,6 +96,9 @@ Make a new layer, and choose which Images get exposed on it:
 
     print(MyJob)    # Print all info about this Job, including Images, Layers etc.
 
+### Alignment
+Alignment between layers is not yet implemented. Currently the jobs will align to the wafer-flat before exposure. Check back for updates!
+
 ### Export the text file:
     MyJob.export( 'TestJob_NoAlign.txt' )
     
