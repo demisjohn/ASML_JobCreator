@@ -50,9 +50,9 @@ class Plot(object):
         # Arc angles:
         F = self.parent.defaults.WFR_FLAT_LENGTH    # wafer flat length, mm
         D = self.parent.defaults.WFR_DIAMETER   # wafer diameter, mm
-        A = np.rad2deg(  np.arcsin( (F/2) / (D/2) )  )  # arc angle corresponding to flat
+        A = np.rad2deg(  np.arcsin( (F/2) / (D/2) )  )  # arc angle corresponding to 1/2 of wafer flat
         # matplotlib.patches.Arc(xy, width, height, angle=0.0, theta1=0.0, theta2=360.0) :
-        wf = mplp.Arc( (0,0) , D, D, angle=-90, theta1=A, theta2=-A , color='silver', hatch='....')
+        wf = mplp.Arc( (0,0) , D, D, angle=-90, theta1=A, theta2=-A , color='darkgrey', hatch='....')
         ax.add_patch( wf )
         
         
@@ -83,7 +83,7 @@ class Plot(object):
             # shift grid by half-die, which is ASML default layout (with a die in wafer center)
             #major = major - inc/2
             
-            print("gen_grid():", major, minor, index)
+            if DEBUG(): print("gen_grid():", major, minor, index)
             return major, minor, index
         #end gen_grid()
                     
@@ -96,7 +96,7 @@ class Plot(object):
         gridy, mgridy, Iy = gen_grid(CellSizeY, D/2, shift= CellShiftY)
         
         
-        
+        # Plot grid, using Major grid for enumeration labels but no gridlines or ticks, and minor grid for gridlines and tick marks but no text-labels
         plt.axis('scaled')  # aurtoscale the axes
         ax.set_xlabel("Cell Column")
         ax.set_ylabel("Cell Row")

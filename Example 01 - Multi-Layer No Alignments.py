@@ -77,6 +77,9 @@ MetalLyr.expose_Image( GCA, Energy=22 )
 # Print all data added to this Job:
 print(MyJob)
 
+# Plot the wafer layout and distributed Images:
+MyJob.Plot.plot_wafer()
+
 ## Export the text file:
 MyJob.export('TestJob_NoAlign.txt')
 
