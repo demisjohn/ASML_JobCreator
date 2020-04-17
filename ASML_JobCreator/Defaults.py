@@ -3,7 +3,7 @@ This file is part of the ASML_JobCreator package for Python 3.x.
 
 defaults.py
     Contains & instantiates object of class Default, 
-    containing hard-coded defualt values for many options.
+    containing hard-coded default values for many options.
     
 - - - - - - - - - - - - - - -
 
@@ -63,11 +63,7 @@ class Defaults(object):
     
     def LoadDefaultValues(self):
         
-        ########################################
-        #
-        #   Defaults for user-settings
-        #
-        ########################################
+        ##  Defaults for user-editable settings:
         self.comment_line1 = "Created with python ASML_JobCreator"
         self.comment_line2 = "Univ. of California Santa Barbara"
         self.comment_line3 = "UCSB Nanofab, Demis D. John"
@@ -91,13 +87,21 @@ class Defaults(object):
         self.EDGE_EXCLUSION = 3.0
         self.NUMBER_DIES = [1, 1]       # number of Die per Cell
         self.MIN_NUMBER_DIES = 1
-    
-    
-    
-        ## Params editable by user:
         self.CELL_SIZE = [10, 10]    #mm
         self.MATRIX_SHIFT = [0.0, 0.0]
-        self.COMBINE_ZERO_FIRST = "N"
+        
+        
+        
+        ## Machine Defaults Hard-Coded here:
+        self.MACHINE_TYPE = "PAS5500/300"
+        self.RETICLE_SIZE = 6           # inches
+        self.WFR_DIAMETER = 100.0       # mm
+        self.WFR_NOTCH = "N"
+        self.COVER_MODE = "W"
+        self.PLACEMENT_MODE = "O"
+        self.PREALIGN_METHOD = "STANDARD"
+        self.WAFER_ROTATION = 0.0
+        self.MATCHING_SET_ID = "DEFAULT"
         
         
         
@@ -113,10 +117,11 @@ class Defaults(object):
         
         
         
-        ## Process Data > Layer Defualts
-        self.ProcessData_LENS_REDUCTION                                = 4.0
+        ## Process Data > Layer Defaults
+        self.COMBINE_ZERO_FIRST                                        = "N"
+        self.ProcessData_LENS_REDUCTION                                = 4.0    # DUV: 4.0 // I-Line: 5.0
         self.ProcessData_CALIBRATION                                   = "N"
-        self.ProcessData_OPTICAL_PREALIGNMENT                          = "N"     # Alignment
+        self.ProcessData_OPTICAL_PREALIGNMENT                          = "N"
         self.ProcessData_COO_REDUCTION                                 = "D"
         self.ProcessData_MIN_NUMBER_PULSES_IN_SLIT                     = "D"
         self.ProcessData_MIN_NUMBER_PULSES                             = 21
@@ -164,6 +169,7 @@ class Defaults(object):
         
         
         ## Reticle Data defaults
+        #   Disabled, required to be set by user:
         #self.ReticleData_IMAGE_USAGE                                   = "Y"
         #self.ReticleData_RETICLE_ID                                    = "UCSB-OPC1"
         #self.ReticleData_IMAGE_SIZE                                    = 2.420000 4.020000
