@@ -97,7 +97,6 @@ class Plot(object):
         
         
         # Plot grid, using Major grid for enumeration labels but no gridlines or ticks, and minor grid for gridlines and tick marks but no text-labels
-        plt.axis('scaled')  # aurtoscale the axes
         ax.set_xlabel("Cell Column")
         ax.set_ylabel("Cell Row")
         
@@ -143,7 +142,15 @@ class Plot(object):
             #end for(ImgDistr)
         #end for(Imagelist)
         
-        ax.legend(handles=LegendEntries, loc='upper left', bbox_to_anchor=(1.05, 1), title="Images", borderaxespad=0.)
+        # Shrink current axis by 20% for legend to fit
+        box = ax.get_position()
+        print("box=", box.x0, box.y0)   
+        ax.set_position([box.x0 * 0.8, box.y0, box.width * 0.8, box.height])
+        ax.axis('scaled')  # proportional axes
+
+        # Put a legend to the right of the current axis
+        ax.legend(handles=LegendEntries, loc='upper left', bbox_to_anchor=(1.01, 1), title="Images", borderaxespad=0.)
+        
         fig.show()
         return fig, ax
     #end plot_wafer()
