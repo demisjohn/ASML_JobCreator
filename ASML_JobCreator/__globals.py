@@ -35,6 +35,14 @@ from scipy.constants import pi
 ####################################################
 
 
+# Plot options
+PlotTickLabelSize = 'small'
+PlotLabelFontSize = 'medium'
+WaferPlotBox = [0.8, 1, 0.8, 1] # PosX, PosY, Width, Height
+
+
+#---------------------------------------#
+
 
 global _DEBUG
 _DEBUG = False   # set to true for verbose outputs onto Python console - applies to all submodules/files
@@ -82,15 +90,5 @@ def WARN():
 
 #---------------------------------------#
 
-# custom colormaps:
-#from .colormap_HotCold import cm_hotcold
-
-# Plot options
-#PlotLabelFontSize = 16.0
-#PlotLineWidth = 0.5     # ax.plot(... , linewidth=PlotLineWidth )
-
-
-
-#---------------------------------------#
 
 #if DEBUG(): print("Globals.py imported")

@@ -25,19 +25,22 @@ class Plot(object):
     Class to hold Plotting functions.
     """
     
+    
     def __init__(self, parent=None):
         '''Create empty Plot object.'''
         self.parent = parent    # parent Job object
     #end __init__
     
     
+    
     def plot_wafer(self):
         """
         Plot the Wafer layout and distributed Images.
+        Note that some plotting options, such as font size and axis positioning, are set in __globals.py
         
         Returns
         -------
-        fig, ax : Matplotlib Figure and Axis objects containing the plot.
+        fig, ax : Matplotlib Figure and Axis objects containing the schematic. Use these handles to manipulate the plot after generation. Matplotlib Patches are used to draw the shapes.
         """
         import matplotlib.pyplot as plt
         import matplotlib.patches as mplp   # for plotting shapes
@@ -97,11 +100,11 @@ class Plot(object):
         
         
         # Plot grid, using Major grid for enumeration labels but no gridlines or ticks, and minor grid for gridlines and tick marks but no text-labels
-        ax.set_xlabel("Cell Column")
-        ax.set_ylabel("Cell Row")
+        ax.set_xlabel("Cell Column", fontsize=PlotLabelFontSize)
+        ax.set_ylabel("Cell Row", fontsize=PlotLabelFontSize)
         
         ax.set_xticks( gridx, minor=False )  # major tick locations
-        ax.set_xticklabels(  [str(int(i)) for i in Ix]  )
+        ax.set_xticklabels(  [str(int(i)) for i in Ix], fontsize=PlotTickLabelSize )
         ax.set_xticks( mgridx, minor=True)  # minor tick locations
         for tick in ax.xaxis.get_major_ticks():
             tick.tick1line.set_markersize(0)
@@ -110,7 +113,7 @@ class Plot(object):
         #end for(xtick)
         
         ax.set_yticks( gridy, minor=False )
-        ax.set_yticklabels(  [str(int(i)) for i in Iy]  )
+        ax.set_yticklabels(  [str(int(i)) for i in Iy], fontsize=PlotTickLabelSize )
         ax.set_yticks( mgridy, minor=True)
         for tick in ax.yaxis.get_major_ticks():
             tick.tick1line.set_markersize(0)
@@ -145,19 +148,26 @@ class Plot(object):
         # Shrink current axis by 20% for legend to fit
         box = ax.get_position()
         print("box=", box.x0, box.y0)   
-        ax.set_position([box.x0 * 0.8, box.y0, box.width * 0.8, box.height])
+        ax.set_position([box.x0 * WaferPlotBox[0], box.y0 * WaferPlotBox[1], box.width * WaferPlotBox[2], box.height * WaferPlotBox[3]])
         ax.axis('scaled')  # proportional axes
 
         # Put a legend to the right of the current axis
-        ax.legend(handles=LegendEntries, loc='upper left', bbox_to_anchor=(1.01, 1), title="Images", borderaxespad=0.)
+        ax.legend(handles=LegendEntries, title="Images", fontsize="small", loc='upper left', bbox_to_anchor=(1.01, 1), borderaxespad=0.)
         
         fig.show()
         return fig, ax
     #end plot_wafer()
     
+    
+    
     def plot_reticle(self):
         """
         Plot the Reticle layout(s).  If multiple Reticle ID's are detected, multiple reticles will be plotted.
+        Note that some plotting options, such as font size and axis positioning, are set in __globals.py
+        
+        Returns
+        -------
+        fig, ax : Matplotlib Figure and Axis objects containing the schematic. Use these handles to manipulate the plot after generation. Matplotlib Patches are used to draw the shapes.
         """
         pass
     #end plot_wafer()
