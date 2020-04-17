@@ -19,8 +19,7 @@ Defaults = Defaults()  # `Default` object
 # - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 import numpy as np
-import matplotlib.pyplot as plt
-#import time                       # Get current date/time
+#import matplotlib.pyplot as plt    # import this as-needed, not globally
 from datetime import datetime      # better date/time handling
 
 #from collections import OrderedDict as oDict    # Dictionary that maintains order
@@ -87,8 +86,8 @@ def WARN():
 #from .colormap_HotCold import cm_hotcold
 
 # Plot options
-PlotLabelFontSize = 16.0
-PlotLineWidth = 0.5     # ax.plot(... , linewidth=PlotLineWidth )
+#PlotLabelFontSize = 16.0
+#PlotLineWidth = 0.5     # ax.plot(... , linewidth=PlotLineWidth )
 
 
 

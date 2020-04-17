@@ -76,7 +76,8 @@ class Defaults(object):
         ## Defaults Hard-Coded here:
         self.MACHINE_TYPE = "PAS5500/300"
         self.RETICLE_SIZE = 6        # inches
-        self.WFR_DIAMETER = 100.0      #mm
+        self.WFR_DIAMETER = 100.0       # mm
+        self.WFR_FLAT_LENGTH = 32.5     # mm, used for MPL plotting only, custom param
         self.WFR_NOTCH = "N"
         self.COVER_MODE = "W"
         self.PLACEMENT_MODE = "O"
@@ -84,11 +85,11 @@ class Defaults(object):
         self.WAFER_ROTATION = 0.0
         self.MATCHING_SET_ID = "DEFAULT"
     
-    
+        ## Cell Structure:
         self.ROUND_EDGE_CLEARANCE = 5.0
         self.FLAT_EDGE_CLEARANCE = 5.0
         self.EDGE_EXCLUSION = 3.0
-        self.NUMBER_DIES = [1, 1]
+        self.NUMBER_DIES = [1, 1]       # number of Die per Cell
         self.MIN_NUMBER_DIES = 1
     
     
@@ -113,7 +114,6 @@ class Defaults(object):
         
         
         ## Process Data > Layer Defualts
-        # copy/pasted from from ResFEM.txt
         self.ProcessData_LENS_REDUCTION                                = 4.0
         self.ProcessData_CALIBRATION                                   = "N"
         self.ProcessData_OPTICAL_PREALIGNMENT                          = "N"     # Alignment
@@ -129,7 +129,7 @@ class Defaults(object):
         self.ProcessData_RET_COOL_START_ON_LOAD                        = "Y"
         self.ProcessData_RET_COOL_USAGE                                = "W"
         self.ProcessData_GLBL_OVERLAY_ENHANCEMENT                      = "N"
-        self.ProcessData_LAYER_SHIFT                                   = [0.000000, 0.000000]    # shift - editable?
+        self.ProcessData_LAYER_SHIFT                                   = [0.000000, 0.000000]
         self.ProcessData_CORR_INTER_FLD_EXPANSION                      = [0.000000, 0.000000]
         self.ProcessData_CORR_INTER_FLD_NONORTHO                       = 0.000000
         self.ProcessData_CORR_INTER_FLD_ROTATION                       = 0.000000
