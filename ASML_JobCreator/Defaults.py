@@ -67,15 +67,28 @@ class Defaults(object):
         self.comment_line1 = "Created with python ASML_JobCreator"
         self.comment_line2 = "Univ. of California Santa Barbara"
         self.comment_line3 = "UCSB Nanofab, Demis D. John"
+        
+        
+        ## Defaults Hard-Coded here:
+        self.MACHINE_TYPE = "PAS5500/300"
+        self.RETICLE_SIZE = 6        # inches
+        self.WFR_DIAMETER = 100.0       # mm
+        self.WFR_FLAT_LENGTH = 32.5     # mm, used for MPL plotting only, custom param
+        self.WFR_NOTCH = "N"
+        self.COVER_MODE = "W"
+        self.PLACEMENT_MODE = "O"
+        self.PREALIGN_METHOD = "STANDARD"
+        self.WAFER_ROTATION = 0.0
+        self.MATCHING_SET_ID = "DEFAULT"
+    
+        ## Cell Structure:
         self.ROUND_EDGE_CLEARANCE = 5.0
         self.FLAT_EDGE_CLEARANCE = 5.0
         self.EDGE_EXCLUSION = 3.0
-        self.NUMBER_DIES = [1, 1]
+        self.NUMBER_DIES = [1, 1]       # number of Die per Cell
         self.MIN_NUMBER_DIES = 1
-    
         self.CELL_SIZE = [10, 10]    #mm
         self.MATRIX_SHIFT = [0.0, 0.0]
-        self.COMBINE_ZERO_FIRST = "N"
         
         
         
@@ -105,6 +118,7 @@ class Defaults(object):
         
         
         ## Process Data > Layer Defaults
+        self.COMBINE_ZERO_FIRST                                        = "N"
         self.ProcessData_LENS_REDUCTION                                = 4.0    # DUV: 4.0 // I-Line: 5.0
         self.ProcessData_CALIBRATION                                   = "N"
         self.ProcessData_OPTICAL_PREALIGNMENT                          = "N"

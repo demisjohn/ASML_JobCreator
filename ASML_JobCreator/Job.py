@@ -18,7 +18,7 @@ from .Cell import Cell              # Class Cell - Cell Structure options
 from .Image import Image                    # Class Image 
 from .Alignment import Alignment            # Class Alignment
 from .Layer import Layer                    # Class Layer
-
+from .Plot import Plot                      # Class Plot
 
 ####################################################
 
@@ -51,6 +51,7 @@ class Job(object):
         self.ImageList = []
         self.LayerList = []
         self.defaults = Defaults    # imported in .__globals
+        self.Plot = Plot(parent=self)
         
     #end __init__
     
