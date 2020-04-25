@@ -201,6 +201,9 @@ class Job(object):
         for i,ii in enumerate(ImgList):
             if isinstance(ii, Image):
                 self.ImageList.append( ii )
+                if  ii.parent:
+                    print(   "WARNING: Image objects can only be part of a single Job object.  Setting parent of Image `%s` to Job `%s`." %( ii.ImageID, self.__repr__() )   )
+                ii.parent = self
             else:
                 raise ValueError( "Expected `Image` object, instead got: " + str(type(ii)) + " at argument #%i"%(i) )
         #end for(ImgList)
