@@ -74,8 +74,9 @@ class Image(object):
         self.Cells = []
         self.Shifts = []
         
-        # add this Image ot the parent Job:
-        self.parent.add_Images( self )
+        # add this Image to the parent Job, if the Job is defined. `Images` image library objects don't have a `parent` set.
+        if self.parent:
+            self.parent.add_Images( self )
     #end __init__
     
     

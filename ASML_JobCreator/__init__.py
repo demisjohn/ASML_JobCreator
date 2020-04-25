@@ -30,7 +30,7 @@ Demis D. John, Univ. of California Santa Barbara; Nanofabrication Facility; 2019
 @author: Demis D. John
 """
 # Define the sub-modules to import, that we want the user to use.
-__all__ = ["data", "trace"]
+__all__ = ["Images"]
 
 from .__version import version as __version__
 from .__version import versiondate as __versiondate__
@@ -42,7 +42,6 @@ print( "\nASML_JobCreator   (v."  +  __version__  +  "   "  +  __versiondate__ +
 
 from .__globals import * # global variables/methods to the module.
 from .Job import Job      # objects for the ASML Job
-
 
 ####################################################
 # Function setup etc.

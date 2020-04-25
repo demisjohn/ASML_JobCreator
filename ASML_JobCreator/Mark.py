@@ -24,19 +24,23 @@ from .__globals import *    # global variables/methods to the module.
 class Mark(object):
     """
     Class for defining alignment marks.
-    
         
-    Attributes
+    Mark( MarkID, MarkType="PM", waferXY=[X,Y] )
+    
+    Parameters
     ----------
-    data : Data object
-        Contains loaded data from file
-    fits : list
-        list of Fit objects, defining fitting regions and fiting data (losses, slopes etc.)
+    LayerID : string
+        String identifying this Alignment Mark.
+    MarkType : { "PM" | "SPM_X" | "SPM_Y" }, optional
+        Which type of alignment mark.
+    parent : Job object
+        The Job object that spawned this instance.  Only used internally.
         
     """
     
-    def __init__(self, MarkID, MarkType="PM", wafer_coordXY=None, parent=None):
-        '''Define an alignment mark, either by cell_index/cell_shift OR wafer_coord (not both).
+    def __init__(self, MarkID, MarkType="PM", waferXY=None, parent=None):
+        '''Define an alignment mark, either by cell_index/cell_shift OR wafer-coord (not both).
+        Only waferXY (on-wafer coordinates) are implemented.
             
         Parameters
         ----------
@@ -46,8 +50,8 @@ class Mark(object):
         MarkType : {"PM", "SPM_X", "SPM_Y" etc.}, optional
             Type of mark. Defaults to Primary Mark with both X/Y gratings, "PM".
         
-        wafer_coordXY : two-valued iterable
-            Wafer [X,Y] coordinates for this mark.
+        waferXY : two-valued iterable
+            Wafer [X,Y] coordinates for this mark, relative to wafer center.
         
         parent : Alignment object
             The Alignment object this Mark belongs to.
@@ -57,9 +61,9 @@ class Mark(object):
         self.MarkID = str(MarkID)
         self.MarkType = self.__get_marktype(MarkType)
         
-        self.wafer_coord = [0,0]
-        self.wafer_coord[0] = float( wafer_coordXY[0] )
-        self.wafer_coord[1] = float( wafer_coordXY[1] )
+        self.waferXY = [0,0]
+        self.waferXY[0] = float( waferXY[0] )
+        self.waferXY[1] = float( waferXY[1] )
         
         self.parent.add_Marks(self) # add this mark to the parent Alignment object
     #end __init__
@@ -67,12 +71,13 @@ class Mark(object):
     
     def __get_marktype( s ):
         '''Analyze string argument `s` and Return sanitized strings for the Mark Type.'''
+        s = str(s).strip().lower()
+        
         # argument synonym options:
         PMStrings = ["pm","p"]
         SPM_X_Strings = ["spm_x","spmx"]
         SPM_Y_Strings = ["spm_y","spmy"]
         
-        s = str(s).strip().lower()
         if np.any(  np.isin( PMStrings , s )  ):
             return 'pm'
         elif np.any(  np.isin( SPM_X_Strings , s )  ):
