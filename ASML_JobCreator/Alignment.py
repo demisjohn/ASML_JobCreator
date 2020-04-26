@@ -14,7 +14,7 @@ Demis D. John, Univ. of California Santa Barbara; Nanofabrication Facility; 2019
 # Module setup etc.
 
 from .__globals import *        # global variables/methods to the module.
-from .Mark import Mark          # Alignment Marks class
+from .Mark import Mark as MarkClass # Alignment Marks class
 from .Strategy import Strategy  # Alignment Strategy class
 
 ####################################################
@@ -70,28 +70,48 @@ class Alignment(object):
     ##############################################
     #       Classes
     ##############################################
-    def Mark(self, MarkID, MarkType="PM", wafer_coordXY=None):
-        '''
-        Mark(MarkID, MarkType="PM", cell_index=None, cell_shift=None, wafer_coordXY=None)
+    def Mark(self, MarkID, MarkType="PM", waferXY=None):
+        '''Define a new alignment mark.
+        Only waferXY (on-wafer coordinates) are implemented.
+            
+        Parameters
+        ----------
+        MarkID : string
+            Name of the Mark
         
-        Define an alignment mark, either by cell_index/cell_shift OR wafer_coord, not both.
-        Returns a Mark object, calls Mark constructor.
-        '''
-        if not DEBUG():
-            errstr = "This function is not fully implemented yet."
-            raise NotImplementedError(errstr)
-        #end if(DEBUG)
+        MarkType : {"PM", "SPM_X", "SPM_Y" etc.}, optional
+            Type of mark. Defaults to Primary Mark with both X/Y gratings, "PM".  See `help(Mark.set_marktype)` for full options.
         
-        m = Mark(MarkID, MarkType, wafer_coordXY, parent=self)
-        self.add_marks( self )
-        return m
+        waferXY : two-valued iterable
+            Wafer [X,Y] coordinates for this mark, relative to wafer center.
+        
+        Returns
+        -------
+        Returns the new Mark object, for later use in the Job.Alignment etc.
+        
+        ''' 
+        return MarkClass(MarkID, MarkType, waferXY=waferXY, parent=self)
     #end Mark()
         
     
     
-    def add_marks(self, *args):
-        '''Add the Marks to this job. Takes any number of Marks objects as arguments.  Optionally a single iterable containing the Mark objects. Adds the passed Marks to the Job.'''
-        return None
+    def add_marks(self, *marks):
+        """
+        Add Mark objects to this Alignment object.
+    
+        Parameters
+        ----------
+        *marks : Mark objects
+            Pass Mark objects, each as it's own argument. To pass an array-like/iterable containing the Mark objects, use star dereferencing.  
+        """
+        
+        for i,ii in enumerate(marks):
+            if isinstance(ii, MarkClass):
+                self.MarkList.append( ii )
+                ii.parent = self
+            else:
+                raise ValueError( "Expected `Mark` object, instead got: " + str(type(ii)) + " at argument #%i"%(i) )
+        #end for(marks)
     #end
     
     

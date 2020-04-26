@@ -196,10 +196,6 @@ class Job(object):
         ----------
         *images : Image objects
             Pass Image objects, each as it's own argument. To pass an array-like/iterable containing the Image objects, use star dereferencing.  Order of the Images will determine the order in the ASML job - first argument/item will be Image #1.
-        
-        Returns
-        -------
-        Returns the original argument(s) back, either a single Image or list of images.
         """
         
         for i,ii in enumerate(images):
