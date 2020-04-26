@@ -25,7 +25,7 @@ from ..Image import Image   # import the Image class
 PM = Image( 
         ImageID="PM", 
         ReticleID="4544020*", 
-        sizeXY=[1.640,1.640], 
+        sizeXY=[1.640/4, 1.640/4], 
         shiftXY=[0,0], 
         )
 

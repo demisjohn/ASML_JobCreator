@@ -25,7 +25,7 @@ from ..Image import Image   # import the Image class
 SPM_Y = Image( 
         ImageID="SPM-Y", 
         ReticleID="4544020*", 
-        sizeXY=[0.400000, 2.912000], 
-        shiftXY=[11.680000, -11.680000], 
+        sizeXY=[0.400000/4, 2.912000/4], 
+        shiftXY=[11.680000/4, -11.680000/4], 
         )
-# Note, ImageSize_X could actually be 0.28800mm, but non-identical masking is not implemented yet.
+# Note, ImageSize_X could actually be 0.28800mm/4, but non-identical masking is not implemented yet.
