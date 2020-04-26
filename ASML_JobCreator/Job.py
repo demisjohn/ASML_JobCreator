@@ -179,7 +179,12 @@ class Job(object):
             Image Shift in millimeters, passed as a single iterable (list, array, tuple) with two values. This is the coordinate to the center of the Image, with respect to the center of the reticle. eg. [0, 0]
      
         """
-        return Image(  ImageID=ImageID, ReticleID=ReticleID, sizeXY=sizeXY, shiftXY=shiftXY, parent=self)
+        if isinstance( ImageID, str):
+            return Image(  ImageID=ImageID, ReticleID=ReticleID, sizeXY=sizeXY, shiftXY=shiftXY, parent=self)
+        elif isinstance( ImageID, Image ):
+            '''Was passed an Image object, probably from the /Images/ library.'''
+            self.add_Images( ImageID )
+            return ImageID
     #end Image()
     
     
@@ -190,15 +195,14 @@ class Job(object):
         Parameters
         ----------
         *images : Image objects
-            Can pass Image objects each as it's own argument, or an array-like/iterable containing the Image objects.  Order of the Images will determine the order in the ASML job - first argument/item will be Image #1.
-        """
-        if len(images) == 1 and np.iterable( images[0] ):
-            ImgList = images[0]
-        else:
-            ImgList = images
-        #end if(images)
+            Pass Image objects, each as it's own argument. To pass an array-like/iterable containing the Image objects, use star dereferencing.  Order of the Images will determine the order in the ASML job - first argument/item will be Image #1.
         
-        for i,ii in enumerate(ImgList):
+        Returns
+        -------
+        Returns the original argument(s) back, either a single Image or list of images.
+        """
+        
+        for i,ii in enumerate(images):
             if isinstance(ii, Image):
                 self.ImageList.append( ii )
                 if  ii.parent:
@@ -238,15 +242,10 @@ class Job(object):
         Parameters
         ----------
         *layers : Layer objects
-            Can pass Layer objects each as it's own argument, or an array-like/iterable containing the Layer objects.  Order of the Layers will determine the order in the ASML job - first argument/item will be Layer #1.
+            Can pass Layer objects each as it's own argument. TO pass an array-like/iterable containing the Layer objects, use * dereferencing.  Order of the Layers will determine the order in the ASML job - first argument/item will be Layer #1.
         """
-        if len(layers) == 1 and np.iterable( layers[0] ):
-            LyrList = layers[0]
-        else:
-            LyrList = layers
-        #end if(images)
         
-        for i,ii in enumerate(LyrList):
+        for i,ii in enumerate(layers):
             if isinstance(ii, Layer):
                 self.LayerList.append( ii )
             else:

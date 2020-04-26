@@ -19,22 +19,22 @@ Demis D. John, Univ. of California Santa Barbara; Nanofabrication Facility; 2020
 # Module setup etc.
 
 #from ..__globals import *   # global variables/methods to the module.
-
+import importlib    # functions for importing modules/packages
+import os, sys
 
 ####################################################
 
 # The following directs init to import all the files within it's directory that match *.py
-#   from http://stackoverflow.com/questions/1057431/loading-all-modules-in-a-folder-in-python
-import importlib    # functions for importing modules/packages
-
-import os, sys
+#   Then the object named the same as the module's basename gets added to this Images module.
+thismodule = sys.modules[__name__]  # pointier to this Images module
 for module in os.listdir(os.path.dirname(__file__)):
     modbase, modext = os.path.splitext(  os.path.basename(module)  )
     if module == '__init__.py' or modext != '.py':
         continue
     #__import__(  module[:-3], locals(), globals()  )
-    importlib.import_module(  "."+modbase, __name__ )
+    lib = importlib.import_module(  "."+modbase, __name__ )
+    setattr(  thismodule, modbase, getattr(lib, modbase)  )
+#end for(listdir)
 
 # remove imported utility functions from the module namespace
-del module, modbase, modext, os, sys, importlib
-
+del module, modbase, modext, os, sys, importlib, lib
