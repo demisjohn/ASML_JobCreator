@@ -50,11 +50,11 @@ class Alignment(object):
         s += "ASML_JobCreator.Alignment object:\n"
         for m in self.MarkList:
             s += str(m)
-            s += " - - - - - - -"
-        s+= "----------------"
+            s += " - - - - - - -\n"
+        s+= "----------------\n"
         for a in self.StrategyList:
-            s += str(s)
-            s += " - - - - - - -"
+            s += str(a)
+            s += " - - - - - - -\n"
         return s
     #end __str__
     
