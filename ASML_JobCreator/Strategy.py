@@ -70,7 +70,24 @@ class Strategy(object):
         '''Return string to `print` this object.'''
         s = ""
         s += "ASML_JobCreator.Strategy object:\n"
+        s += " Strategy ID = '" + str( self.get_ID() ) + "'\n"
+        s += " --- Marks in this Strategy ---\n" 
+        if len( self.MarkList ) > 0:
+            s += "    MarkID, MarkType\t:\t[waferX,waferY]\n"
+        else:
+            s += "    No Marks Added\n"
         
+        ellipsis = False    # whether to print "..."
+        for i,m in enumerate( self.MarkList ):
+            if len( self.MarkList ) < 20 or i<10 or i>(  len( self.MarkList ) - 10  ):
+                s += "    %s,\t%s\t:\t[" % ( m.MarkID, m.get_marktype() ) + str(m.waferXY[0]) + " , " + str(m.waferXY[1]) + "]\n"
+            else:
+                if ellipsis==False: 
+                    s+="    ...\n"
+                    ellipsis=True
+                #end if(ellipse)
+            #end if(10>i>len-10)
+        #end for(MarksList)
         return s
     #end __str__
     
@@ -147,11 +164,11 @@ class Strategy(object):
         for i,m in enumerate(marks):
             if isinstance(m, _Mark):
                 if not np.isin( m, self.parent.MarkList ):
-                    raise ValueError(   "Strategy.add_mark(): Mark %s not found in parent Job %s. Can't add to Strategy."%(m.__repr__, self.parent.__repr__)   )
+                    raise ValueError(   "Strategy.add_mark(): Mark %s not found in parent Job %s. Can't add to Strategy."%(m.__repr__(), self.parent.__repr__() )   )
                 #end isin(Mark)
                 
                 if np.isin( m, self.MarkList ):
-                    raise ValueError(   "Strategy.add_mark(): Mark %s is already in this Strategy, can not add again."%(m.__repr__)   )
+                    raise ValueError(   "Strategy.add_mark(): Mark %s is already in this Strategy, can not add again."%(m.__repr__() )   )
                     
                 self.MarkList.append( m )
                 self.MarkPrefList.append( get_markpref(preference)  )

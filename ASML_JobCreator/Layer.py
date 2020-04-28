@@ -97,6 +97,8 @@ class Layer(object):
         s = ""
         s += "ASML_JobCreator.Layer object:\n"
         s += "  Layer ID = '%s'\n" % self.LayerID
+        s += "  Zero Layer = %s\n" % (  str(self.get_ZeroLayer())  )
+        s += "  CombineWithZero Layer = %s\n" % (  str(self.get_CombineWithZeroLayer())  )
         s += "  Exposed Images:\n"
         for i in range( len(self.ImageList) ):
             s += "  %i: '%s'\n" % (i, self.ImageList[i].ImageID)
@@ -145,21 +147,21 @@ class Layer(object):
     
     
     
-    def set_zero_layer(self):
+    def set_ZeroLayer(self):
         """
         Designated this Layer as a Zero layer.
         """
         self.zero = True
     #end
     
-    def unset_zero_layer(self):
+    def unset_ZeroLayer(self):
         """
         Un-Designated this Layer as a Zero layer.
         """
         self.zero = False
     #end
     
-    def get_zero_layer(self):
+    def get_ZeroLayer(self):
         """
         Return True|False whether this Layer is designated as a Zero layer.
         """
@@ -286,7 +288,7 @@ class Layer(object):
         
         ## Santize args
         if np.isin( Image, self.ImageList ):
-            raise ValueError(   "Image %s has already been added to this Layer %s."%( Image.__repr__, self.__repr__ )   )
+            raise ValueError(   "Image %s has already been added to this Layer %s."%( Image.__repr__(), self.__repr__() )   )
         IlluminationMode = self._parse_IllumMode(IlluminationMode)
         
         ## Set the internal attributes
@@ -370,7 +372,7 @@ class Layer(object):
         if isinstance(mark1, _Mark) and isinstance(mark2, _Mark):
             self.PreAlignMarksList = [mark1, mark2]
         else:
-            errstr = "Expected exactly two Mark objects, instead got %s and %s."%(mark1.__repr__, mark2.__repr__)
+            errstr = "Expected exactly two Mark objects, instead got %s and %s."%(mark1.__repr__(), mark2.__repr__() )
             raise ValueError(errstr)
     #end set_PreAlignment()
     
@@ -391,7 +393,7 @@ class Layer(object):
         if isinstance(strategy, _Strategy):
             self.GlobalStrategy = strategy
         else:
-            errstr = "Expected a Strategy object, instead got %s."%(strategy.__repr__)
+            errstr = "Expected a Strategy object, instead got %s."%(strategy.__repr__() )
             raise ValueError(errstr)
     #end set_GlobalAlignment()
     
