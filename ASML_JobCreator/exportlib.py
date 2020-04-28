@@ -1,8 +1,8 @@
 """
 This file is part of the ASML_JobCreator package for Python 3.x.
 
-Mark.py
-    Class 'Mark', for defining alignment marks.
+exportlib.py
+    Contains the functions necessary for generating the ASCII text file.
     
 - - - - - - - - - - - - - - -
 
@@ -276,9 +276,9 @@ def _genascii(JobObj):
     ################
     if DEBUG(): print("Generating Text Section 'RETICLE_DATA'...")
     for i,L in enumerate(JobObj.LayerList):
-        if DEBUG(): print(   " RETICLE_DATA: Layer %i, '%s'" % ( i, str(L.LayerID) )   )
+        if DEBUG(): print(   " RETICLE_DATA: Layer %i, '%s'" % ( i, L.LayerID )   )
         for ii,I in enumerate(L.ImageList):
-            if DEBUG(): print(   "  RETICLE_DATA: Image %i, '%s'" % ( ii, str(I.ImageID) )   )
+            if DEBUG(): print(   "  RETICLE_DATA: Image %i, '%s'" % ( ii, I.ImageID )   )
             s += "START_SECTION RETICLE_DATA\n"
             s = add(s, "LAYER_ID", L.LayerID)
             s = add(s, "IMAGE_ID", I.ImageID)
@@ -288,14 +288,15 @@ def _genascii(JobObj):
             s = add(s, "IMAGE_SHIFT", I.get_ReticleShift() )
             s = add(s, "MASK_SIZE", I.get_ReticleSize() )
             s = add(s, "MASK_SHIFT", I.get_ReticleShift() )     # <-------------
-            s = add(s, "ENERGY_ACTUAL", L.EnergyList[i] )
-            s = add(s, "FOCUS_ACTUAL", L.FocusList[i] )
-            s = add(s, "FOCUS_TILT", L.FocusTiltList[i] )
-            s = add(s, "NUMERICAL_APERTURE", L.NAList[i] )
-            s = add(s, "SIGMA_OUTER", L.Sig_oList[i] )
-            if L.Sig_iList[i]: s = add(s, "SIGMA_INNER", L.Sig_iList[i] ) 
+            if DEBUG(): print("  Layer: %s\t" %(L.LayerID) + "Image %i, '%s': EnergyList=" % ( ii, str(I.ImageID) ) +  str(L.EnergyList), "i=%i"%i  )
+            s = add(s, "ENERGY_ACTUAL", L.EnergyList[ii] )
+            s = add(s, "FOCUS_ACTUAL", L.FocusList[ii] )
+            s = add(s, "FOCUS_TILT", L.FocusTiltList[ii] )
+            s = add(s, "NUMERICAL_APERTURE", L.NAList[ii] )
+            s = add(s, "SIGMA_OUTER", L.Sig_oList[ii] )
+            if L.Sig_iList[ii]: s = add(s, "SIGMA_INNER", L.Sig_iList[ii] ) 
             s = add(s, "IMAGE_EXPOSURE_ORDER", 0, integers=True ) # IMAGE_EXPOSURE_ORDER 0
-            s = add(s, "LITHOGRAPHY_PROCESS", L.IlluminationModeList[i] )
+            s = add(s, "LITHOGRAPHY_PROCESS", L.IlluminationModeList[ii] )
             s = add(s, "IMAGE_INTRA_FLD_COR_TRANS", Defaults.ReticleData_IMAGE_INTRA_FLD_COR_TRANS )
             s = add(s, "IMAGE_INTRA_FLD_COR_ROT", Defaults.ReticleData_IMAGE_INTRA_FLD_COR_ROT )
             s = add(s, "IMAGE_INTRA_FLD_COR_MAG", Defaults.ReticleData_IMAGE_INTRA_FLD_COR_MAG )
