@@ -57,9 +57,12 @@ class Mark(object):
             The Alignment object this Mark belongs to.
         
         '''
+        from . import Images    # Image library from ./Images/
+        self.Images = Images    
+            
         self.parent = parent    # parent Alignment object
         self.MarkID = str(MarkID)
-        self.set_marktype(MarkType)
+        self.set_marktype(MarkType)     # also sets self.Image
         
         self.waferXY = [0,0]
         self.waferXY[0] = float( waferXY[0] )
@@ -71,39 +74,13 @@ class Mark(object):
     #end __init__
     
     
-    def __get_marktype( s ):
-        '''Analyze string argument `s` and Return sanitized strings for the Mark Type.'''
-        s = str(s).strip().lower()
-        
-        # argument synonym options:
-        PMStrings = ["pm","p"]
-        SPM_X_Strings = ["spm_x","spmx"]
-        SPM_Y_Strings = ["spm_y","spmy"]
-        
-        if np.any(  np.isin( PMStrings , s )  ):
-            return 'pm'
-        elif np.any(  np.isin( SPM_X_Strings , s )  ):
-            return 'spm_x'
-        elif np.any(  np.isin( SPM_Y_Strings , s )  ):
-            return 'spm_y'
-        else:
-            errstr = "Passed argument option `%s` is not in the list of valid options, which are:\n\t" + \
-                str(PMStrings) + "\n\t" + \
-                str(SPM_X_Strings) + "\n\t" + \
-                str(SPM_Y_Strings)
-            raise ValueError(errstr)
-        #end if
-    #end get_marktype()
-    
-    
     def __str__(self):
         '''Return string to `print` this object.'''
         s = ""
         s += "ASML_JobCreator.Mark object:\n"
         s += "  MarkID = '%s'\n" % self.MarkID
         s += "  MarkType = '%s'\n" % self.MarkType
-        s += "  Wafer Location = (%0.6f, %0.6f) mm\n" %(self.wafer_coord[0], self.wafer_coord[1])
-        
+        s += "  Wafer Location = (%0.6f, %0.6f) mm\n" %(self.waferXY[0], self.waferXY[1])
         return s
     #end __str__
     
@@ -135,7 +112,14 @@ class Mark(object):
             "PM" : Primary Mark, with both X and Y gratings. Dimensions 410 x 410 um
             "SPM-X" : Scribe-Line Primary Mark, X-oriented. Dimensions 728 x 72 um.
             "SPM-Y" : Scribe-Line Primary Mark, Y-oriented. Dimensions 72 x 728 um.
+        
+        Sets
+        ----
+        Mark.Image : Image object
+            The Image corresponding to this Mark type, allowing for exposure of the Mark.  The Images are pre-defined in the ASML_JobCreator/Images/ folder.
         '''
+        #Job = self.parent.parent
+        
         s = str(MarkType_str).strip().lower()
         
         # argument synonym options:
@@ -145,6 +129,7 @@ class Mark(object):
         
         if np.any(  np.isin( PMStrings , s )  ):
             out= 'pm'
+            self.Image = self.Images.PM
         elif np.any(  np.isin( SPM_X_Strings , s )  ):
             out= 'spm_x'
         elif np.any(  np.isin( SPM_Y_Strings , s )  ):

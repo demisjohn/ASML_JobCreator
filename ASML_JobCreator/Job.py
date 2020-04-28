@@ -212,22 +212,25 @@ class Job(object):
     
     
     
-    def Layer(self, LayerID="", CombinedWithZeroLayer=False):
+    def Layer(self, LayerID="", ZeroLayer=False, CombineWithZeroLayer=False):
         """
         Return a Layer object for this Job.
-    
-        Layer( LayerID="", CombinedWithZeroLayer=False )
     
         Parameters
         ----------
         LayerID : string
             String identifying this Layer.
+        
+        ZeroLayer : { True | False }, optional
+            Whether this is a "Zero layer", meaning alignment marks only.  You should use `expose_marks()` for this layer.  This option is typically used along with another Layer that has `CombinedWithZeroLayer` enabled.
+        
         CombinedWithZeroLayer : { True | False }, optional
-            Whether this layer should also shoot alignment marks on Layer 0. Defaults to False.
-            NOT IMPLEMENTED YET.
+            Whether this layer should also shoot alignment marks on Layer 0. Only one layer in your job can have this enabled. Defaults to False.
+        parent : Job object
+            The Job object that spawned this instance.
     
         """
-        return Layer( LayerID=LayerID, CombinedWithZeroLayer=CombinedWithZeroLayer, parent=self)
+        return Layer( LayerID=LayerID, ZeroLayer=ZeroLayer, CombineWithZeroLayer=CombineWithZeroLayer, parent=self)
     #end Layer()
     
     
@@ -255,6 +258,43 @@ class Job(object):
     #       Exporting to Text
     ##############################################
     
+    def _organizeLayers(self):
+        '''Reorganize the LayerList to account for any Layers that are set as `zero` layers, or have `combine with zero layer` enabled.'''
+        newLL = []
+        
+        
+        # Check for Zero layers
+        zeros = [L.get_zero_layer() for L in self.LayerList]
+        zeros_i = np.where(zeros)[0]    # index to ZeroLayers
+        if DEBUG(): print("_organizeLayers(): zeros=", zeros, "zeros_i=", zeros_i)
+        if len(zeros_i) > 1:
+            errstr = "More than one Layer designated as `Zero` Layer!  The following Layers have ZeroLayer enabled:\n"
+            errstr += str([  (L.LayerID +"\n") for L in [self.LayerList[i] for i in zeros_i]  ])
+            raise ValueError(errstr)
+        #end if multiple ZeroLayers
+        
+        # add Zero to new Layer List
+        newLL.append( self.LayerList[ zeros_i[0] ] )
+        self.LayerList.pop( zeros_i[0] )
+        
+        # Check for Combo layers
+        combos = [L.get_combine_with_zero_layer() for L in self.LayerList]
+        combos_i = np.where(combos)[0]    # index to ComboLayers
+        if DEBUG(): print("_organizeLayers(): combos=", combos, "combos_i=", combos_i)
+        if len(combos_i) > 1:
+            errstr = "More than one Layer designated as `CombineWithZero` Layer!  The following Layers have CombineWithZeroLayer enabled:\n"
+            errstr += str([  (L.LayerID +"\n") for L in [self.LayerList[i] for i in combos_i]  ])
+            raise ValueError(errstr)
+        #end if multiple combos
+        
+        # add ComboLyr to new Layer List
+        newLL.append( self.LayerList[ combos_i[0] ] )
+        self.LayerList.pop( combos_i[0] )
+        
+        self.LayerList = newLL + self.LayerList
+    #end _organizeLayers
+    
+    
     def export(self, filepath="ASML_Job.txt", overwrite=False):
         """
         Export an ASCII text file of this job, that can be imported by the ASML PAS software.
@@ -269,6 +309,8 @@ class Job(object):
             If asml.WARN() is enabled, will pop a warning before overwriting.
             Will fail with IOError if file exists and `overwrite` is False.
         """
+        self._organizeLayers()  # check for Zero/CombinedWithZero options
+        
         import os.path
         from .exportlib import _genascii 
     

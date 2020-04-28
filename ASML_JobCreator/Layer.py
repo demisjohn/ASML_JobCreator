@@ -50,28 +50,35 @@ from .__globals import *    # global variables/methods to the module.
 class Layer(object):
     """
     Class for holding all Layer Layout options
-    
-    Layer( LayerID="", CombinedWithZeroLayer=False )
-    
+        
     Parameters
     ----------
     LayerID : string
         String identifying this Layer.
+        
+    ZeroLayer : { True | False }, optional
+        Whether this is a "Zero layer", meaning alignment marks only.  You should use `expose_marks()` for this layer.  This option is typically used along with another Layer that has `CombinedWithZeroLayer` enabled.
+        
     CombinedWithZeroLayer : { True | False }, optional
-        Whether this layer should also shoot alignment marks on Layer 0. Defaults to False.
-        NOT IMPLEMENTED YET.
+        Whether this layer should also shoot alignment marks on Layer 0. Only one layer in your job can have this enabled. Defaults to False.
     parent : Job object
         The Job object that spawned this instance.
     
     """
     
-    def __init__(self, LayerID="", CombinedWithZeroLayer=False, parent=None):
+    def __init__(self, LayerID="", ZeroLayer=False, CombineWithZeroLayer=False, parent=None):
         '''Layer object constructor.  See `help(Layer)` for parameters.
         '''
         self.parent = parent    # parent Job object
         self.LayerID = str(LayerID) # To Do: Sanitize LayerID text
-        self.CombinedWithZeroLayer = bool(CombinedWithZeroLayer)
+        self.combined_zerofirst = bool(CombineWithZeroLayer)
+        self.zero = bool(ZeroLayer)
         self.ImageList = []
+        self.MarkList = []
+        self.PreAlignMarksList = None
+        self.GlobalStrategy = None
+        
+        # "Reticle Data" section:
         self.EnergyList=[]
         self.FocusList=[]
         self.FocusTiltList=[]
@@ -113,6 +120,51 @@ class Layer(object):
     ##############################################
     
     
+    def set_combine_with_zero_layer(self):
+        """
+        Enable combination exposure of zero layer and first layer in one exposure session.  
+        
+        This requires that you enabled expose_marks() on the first Layer you defined (automatically numbered as "0"), and the next defined Layer will be automatically numbered as "1", which will be exposed at the same time.
+        """
+        self.combined_zerofirst = True
+    #end 
+    
+    def unset_combine_with_zero_layer(self):
+        """
+        Disable combination exposure of zero layer and first layer in one exposure session.  
+        """
+        self.combined_zerofirst = False
+    #end 
+    
+    def get_combine_with_zero_layer(self):
+        """
+        Return True|False for combination exposure of zero layer and first layer in one exposure session.  
+        """
+        return self.combined_zerofirst
+    #end 
+    
+    
+    
+    def set_zero_layer(self):
+        """
+        Designated this Layer as a Zero layer.
+        """
+        self.zero = True
+    #end
+    
+    def unset_zero_layer(self):
+        """
+        Un-Designated this Layer as a Zero layer.
+        """
+        self.zero = False
+    #end
+    
+    def get_zero_layer(self):
+        """
+        Return True|False whether this Layer is designated as a Zero layer.
+        """
+        return self.zero
+    #end
     
     
     ##############################################
@@ -174,6 +226,37 @@ class Layer(object):
     #end
     
     
+    def _parse_IllumMode(self, mode ):
+        '''
+        Return santized string for Illumination Mode. Case insensitive.
+        
+        Available synonyms:
+        - Default : ["default","d", "def"]
+        - Conventional = ["conventional","c","conv"]
+        - Annular = ["annular","a","ann"]
+        '''
+        s = str(mode).strip().lower()
+        
+        # argument synonym options:
+        DefaultStr = ["default","d", "def"]
+        ConvStr = ["conventional","c","conv"]
+        AnnStr = ["annular","a","ann"]
+        
+        if np.any(  np.isin( DefaultStr , s )  ):
+            out= 'Default'
+        elif np.any(  np.isin( ConvStr , s )  ):
+            out= 'Conventional'
+        elif np.any(  np.isin( AnnStr , s )  ):
+            out= 'Annular'
+        else:
+            errstr = "Passed argument option `%s` is not in the list of valid options,"%(mode) + " which are:\n\t" + \
+                str(DefaultStr) + "\n\t" + \
+                str(ConvStr) + "\n\t" + \
+                str(AnnStr)
+            raise ValueError(errstr)
+        
+        return out
+    #end if
     
     
     def expose_Image(self, Image=None, Energy=20, Focus=0.000, FocusTilt=[0,0], NA=0.570, Sig_o=0.750, Sig_i=None, IlluminationMode="Default"):
@@ -197,10 +280,16 @@ class Layer(object):
         Sig_o, Sig_i : numbers, optional
             Sigma Inner & Outer.  Defaul to Sig_o=0.750, Sig_i=0.5
         IlluminationMode : {"Default", "Conventional", "Annular"}, optional
-            Defaults to "Default", which is whatever the machine default is, usually "Conventional"
+            Defaults to "Default", which is whatever the machine default is, usually "Conventional".  See `help(_get_IllumMode)` for full list of accepted options for this parameter.
     
         """
-        # TO DO: santize args
+        
+        ## Santize args
+        if np.isin( Image, self.ImageList ):
+            raise ValueError(   "Image %s has already been added to this Layer %s."%( Image.__repr__, self.__repr__ )   )
+        IlluminationMode = self._parse_IllumMode(IlluminationMode)
+        
+        ## Set the internal attributes
         self.ImageList.append( Image )
         self.EnergyList.append( Energy )
         self.FocusList.append( Focus )
@@ -234,7 +323,7 @@ class Layer(object):
 
         Parameters
         ----------
-        Marks : List of Mark objects
+        marks : List of Mark objects
             Pass an iterable of Mark objects to expose.
         Energy : number
             Exposure energy in mJ.
@@ -250,9 +339,26 @@ class Layer(object):
             Defaults to "Default", which is whatever the machine default is, usually "Conventional"
 
         """
-        errstr = "This function is not implemented yet."
-        raise NotImplementedError(errstr)
+        for i,m in enumerate(Marks):
+            ## Santize args
+            IlluminationMode = self._parse_IllumMode(IlluminationMode)
+                    
+            ## Only add the Image once:
+            if not np.isin( m.Image, self.ImageList ):
+                self.ImageList.append( m.Image )
+                self.EnergyList.append( Energy )
+                self.FocusList.append( Focus )
+                self.FocusTiltList.append( FocusTilt )
+                self.NAList.append( NA )
+                self.Sig_oList.append( Sig_o )
+                self.Sig_iList.append( Sig_i )
+                self.IlluminationModeList.append( IlluminationMode )
+            #end if(Mark.Image not in ImageList)
+            
+            self.MarkList.append(m)
+        #end for(Marks)
     #end expose_Marks()
+    
     
     def set_PreAlignment(self,  mark1, mark2 ):
         """
@@ -261,24 +367,42 @@ class Layer(object):
         
         Note that the chosen marks must lie in the limited region reachable by th eoptical prealignment camera system, and must be on opposide side of the wafer.
         """
-        errstr = "This function is not implemented yet."
-        raise NotImplementedError(errstr)
+        from .Mark import Mark as _Mark     # Mark class
+        if isinstance(mark1, _Mark) and isinstance(mark2, _Mark):
+            self.PreAlignMarksList = [mark1, mark2]
+        else:
+            errstr = "Expected exactly two Mark objects, instead got %s and %s."%(mark1.__repr__, mark2.__repr__)
+            raise ValueError(errstr)
     #end set_PreAlignment()
+    
+    def unset_PreAlignment(self):
+        """
+        Disable Optical prealignment on this Layer.
+        """
+        self.PreAlignMarksList = None
+    #end
+    
     
     def set_GlobalAlignment(self,  strategy ):
         """
         Enable Global Alignment on this Layer.
         Pass the Alignment `Strategy` Object to be used for global alignment.
         """
-        errstr = "This function is not implemented yet."
-        raise NotImplementedError(errstr)
+        from .Alignment import Strategy as _Strategy    # class
+        if isinstance(strategy, _Strategy):
+            self.GlobalStrategy = strategy
+        else:
+            errstr = "Expected a Strategy object, instead got %s."%(strategy.__repr__)
+            raise ValueError(errstr)
     #end set_GlobalAlignment()
-        
-  
+    
+    def unset_GlobalAlignment(self):
+        """
+        Disable Global Alignment strategy on this Layer.
+        """
+        self.GlobalStrategy = None
+    #end
 #end class(Layer)
-
-
-
 
 
 ################################################

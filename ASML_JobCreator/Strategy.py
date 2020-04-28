@@ -14,7 +14,7 @@ Demis D. John, Univ. of California Santa Barbara; Nanofabrication Facility; 2019
 # Module setup etc.
 
 from .__globals import *    # global variables/methods to the module.
-from .Mark import Mark as __Mark      # Mark class
+from .Mark import Mark as _Mark      # Mark class
 
 
 ####################################################
@@ -39,11 +39,11 @@ class Strategy(object):
         
     """
     
-    def __init__(self, ID, marks=None, parent=None):
+    def __init__(self, StrategyID, marks=None, parent=None):
         '''
         Parameters
         ----------
-        ID : string
+        StrategyID : string
             Name of the strategy
         
         marks : iterable of Mark objects, optional
@@ -53,7 +53,7 @@ class Strategy(object):
             The Alignment object this Strategy belongs to.
         '''
         self.parent = parent    # parent Alignment object
-        self.StrategyID = self.set_ID(ID)
+        self.set_ID(StrategyID)
         
         self.MarkList = []
         self.MarkPrefList = []
@@ -86,10 +86,12 @@ class Strategy(object):
     ##############################################
     #       Setters/Getters
     ##############################################
+    
     def set_ID(self, ID):
         '''Set the Strategy ID as string.'''
         self.StrategyID = str(ID)
     #end
+    
     
     def get_ID(self):
         '''Return Strategy ID as string.'''
@@ -105,11 +107,11 @@ class Strategy(object):
     ##############################################
     #       General Functions
     ##############################################
-    def add_mark ( self, marks, preference="preferred" ) :
+    def add_mark ( self, *marks, preference="preferred" ) :
         '''        
         Parameters
         ----------
-        marks : an iterable of Mark objects, or single Mark object
+        marks : a single Mark object
             Pass the Mark objects to add to this Alignment Strategy. Accepts each Mark as a single Mark object, or an iterable containing Mark objects.
             Eg. both of the following are acceptable:
                 add_mark( NorthEast_PMMark )
@@ -121,6 +123,7 @@ class Strategy(object):
             Synonyms for "backup" include "b", case-insensitive
         '''
         
+        ### Internal funcs ###
         def get_markpref( s ):
             '''Analyze string argument `s` and Return 'p' for preferred mark, 'b' for backup mark'''
             # argument synonym options:
@@ -140,29 +143,34 @@ class Strategy(object):
             #end if
         #end get_markpref()
         
-        if isinstance( marks, __Mark):
-            self.MarkList.append( marks )
-            MarkPrefList.append( get_markpref(preference)  )
-        else:
-            try:
-                for m in marks:
-                    if isinstance( m, __Mark ):
-                        self.MarkList.append( m )
-                    else:
-                        errstr = "Expected Mark object, instead got `%s` %s." %( str(m), str(type(m)) )
-                        raise ValueError(errstr)
-                    MarkPrefList.append( get_markpref(preference)  )
-                #end for(marks)
-            except IndexError:
-                errstr = "Expected an iterable or single Mark object, instead got `%s%` of type '%s'." %(  str(m), str(type(m))  )
-                raise IndexError(errstr)
-        #end if(isMark)
-        
+        ## Add the Marks
+        for i,m in enumerate(marks):
+            if isinstance(m, _Mark):
+                if not np.isin( m, self.parent.MarkList ):
+                    raise ValueError(   "Strategy.add_mark(): Mark %s not found in parent Job %s. Can't add to Strategy."%(m.__repr__, self.parent.__repr__)   )
+                #end isin(Mark)
+                
+                if np.isin( m, self.MarkList ):
+                    raise ValueError(   "Strategy.add_mark(): Mark %s is already in this Strategy, can not add again."%(m.__repr__)   )
+                    
+                self.MarkList.append( m )
+                self.MarkPrefList.append( get_markpref(preference)  )
+            else:
+                raise ValueError( "Expected `Mark` object, instead got: " + str(type(ii)) + " at argument #%i"%(i) )
+        #end for(marks)
     #end (add_mark)
     
     
+    def set_required_marks(self, num):
+        '''Set the minimum number of marks required to pass during Mark measurement.'''
+        self.required_marks = num
+    #end set_required_marks()
     
-    
+    def get_required_marks(self, num):
+        '''Return the number of required marks to pass during Mark measurement.'''
+        return self.required_marks
+    #end get_required_marks()
+
     
   
 #end class(Trace)

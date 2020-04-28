@@ -14,7 +14,7 @@ Demis D. John, Univ. of California Santa Barbara; Nanofabrication Facility; 2019
 # Module setup etc.
 
 from .__globals import *        # global variables/methods to the module.
-from .Mark import Mark as MarkClass # Alignment Marks class
+from .Mark import Mark as _Mark # Alignment Marks class
 from .Strategy import Strategy  # Alignment Strategy class
 
 ####################################################
@@ -30,9 +30,9 @@ class Alignment(object):
     
     Attributes
     ----------
-    MarksList : List of Mark objects added to this Job/Alignment.
+    MarkList : List of Mark objects added to this Job/Alignment.
     StrategyList : List of Strategy objects added to this Job/Alignment.
-    Job : The parent Job object, that this Alignment belongs to.
+    parent : The parent Job object, that this Alignment belongs to.
         
     """
     
@@ -57,6 +57,12 @@ class Alignment(object):
             s += " - - - - - - -"
         return s
     #end __str__
+    
+    
+    def __len__(self):
+        '''Returns number of Marks defined. Use this to determine whether Alignment is used at all in this Job.'''
+        return len(self.MarkList)
+    #end __len__
     
     
     def copy(self):
@@ -90,14 +96,14 @@ class Alignment(object):
         Returns the new Mark object, for later use in the Job.Alignment etc.
         
         ''' 
-        return MarkClass(MarkID, MarkType, waferXY=waferXY, parent=self)
+        return _Mark(MarkID, MarkType, waferXY=waferXY, parent=self)
     #end Mark()
         
     
     
     def add_marks(self, *marks):
         """
-        Add Mark objects to this Alignment object.
+        Add Mark objects to the Job associated with this Alignment object.
     
         Parameters
         ----------
@@ -106,7 +112,7 @@ class Alignment(object):
         """
         
         for i,ii in enumerate(marks):
-            if isinstance(ii, MarkClass):
+            if isinstance(ii, _Mark):
                 self.MarkList.append( ii )
                 ii.parent = self
             else:
@@ -117,36 +123,30 @@ class Alignment(object):
     
     def Strategy(self, ID, marks=None):
         '''
-        Define an alignment mark, either by cell_index/cell_shift OR wafer_coord, not both.
-        Returns a Mark object, calls Mark constructor.
-        '''
-        if not DEBUG():
-            errstr = "This function is not fully implemented yet."
-            raise NotImplementedError(errstr)
-        #end if(DEBUG)
+        Parameters
+        ----------
+        StrategyID : string
+            Name of the strategy
         
+        marks : iterable of Mark objects, optional
+            Iterable containing Mark objects to add to this strategy. Can instead add later with `add_mark()`.
+        '''
         m = Strategy(ID, marks, parent=self)
-        #self.Job.add_marks ?  Make sure marks are in the Alignment?
         return m
     #end Mark()
     
+    
     def add_Strategy(self, *strat):
         """
-        Add Strategy objects to this Job.
+        Add Strategy objects to this Alignment.
     
         Parameters
         ----------
         *strat : Strategy objects
-            Can pass Strategy objects each as it's own argument, or an array-like/iterable containing the Layer objects.  Order of the Layers will determine the order in the ASML job - first argument/item will be Strategy #1.
+            Pass Strategy objects each as it's own argument. To pass an array-like/iterable containing Strategy objects, use start-deferencing.
         """
-        if len(strat) == 1 and np.iterable( strat[0] ):
-            StrategyList = strat[0]
-        else:
-            StrategyList = strat
-        #end if(images)
-        
-        for i,ii in enumerate(StrategyList):
-            if isinstance(ii, strat):
+        for i,ii in enumerate(strat):
+            if isinstance(ii, Strategy):
                 self.StrategyList.append( ii )
             else:
                 raise ValueError( "Expected `Strategy` object, instead got: " + str(type(ii)) + " at argument #%i"%(i) )
