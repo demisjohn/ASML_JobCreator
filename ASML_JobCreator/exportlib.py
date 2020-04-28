@@ -26,10 +26,12 @@ def _genascii(JobObj):
     tab = '   '
     col1 = 50       # Num Characters to offset column 1
     
+    
     def indent(startstr='', spc = ' ', indent=col1):
         """Return a string containing enough spaces so that any following text is indented `col1` characters, after `startstr`."""
         return spc * (  indent - len(startstr)  )
     #end indent()
+    
     
     def add(string="", cmd='', val=[0,0], tab=tab, integers=False, quoted=True):
         """Returns input `string` + `cmd` + `val` with the appropriate tab, indent and newlines.
@@ -38,12 +40,16 @@ def _genascii(JobObj):
         ----------
         string : str
             The string that the result should be appended to.
+            
         cmd : str
             The command or variable name to insert into the string, first text on the line.
+            
         val : { str | 2-valued array-like of numbers }
             Value of the above command/variable, second text on the line.
+            
         tab : str, optional
             Text to use as a tab, defaults to 3 spaces '   '.
+            
         integers : { True | False }, optional
             If True, 2-valued iterables will be inserted as quoted integers, eg.
                 "10" "-5"
@@ -51,6 +57,7 @@ def _genascii(JobObj):
                 10.000000 -5.000000
             Which is the case for arbitrary X/Y coordinates. 
             Defaults to False.
+            
         quoted : { True | False }, optional
             Optionally force the removal of quotes for 2-valued integers by setting this to `False`, such as for NUMBER_DIES. Defaults to True.
         """
@@ -88,6 +95,11 @@ def _genascii(JobObj):
         return string + s1 + s2 + "\n"
     #end add()
     
+    
+    align = bool(JobObj.Alignment)  # whether alignment sections are enabled
+    if DEBUG(): print(  "Alignment sections are " + ("enabled." if align else "disabled.")  )
+    
+    
     s = ''
     s += "\n\n"
     s += "START_SECTION GENERAL\n"
@@ -115,6 +127,64 @@ def _genascii(JobObj):
     s += "\n\n\n\n\n"
     
     
+    if align:
+        if DEBUG(): print("Generating Text Sections 'ALIGNMENT_MARK'")
+        for i,m in enumerate( JobObj.Alignment.MarkList ):
+            if DEBUG(): print("Mark %i: `%s`" % (i,m.MarkID) )
+            s += "START_SECTION ALIGNMENT_MARK\n"
+            s = add(s, "MARK_ID", m.MarkID)
+            s = add(s, "IMAGE_ID", m.Image.ImageID)
+            s = add(s, "MARK_EDGE_CLEARANCE", Defaults.AlignmentMark_MARK_EDGE_CLEARANCE)
+            s = add(s, "WAFER_SIDE", Defaults.AlignmentMark_WAFER_SIDE)
+            s = add(s, "MARK_LOCATION", m.waferXY)
+            s += "END_SECTION\n\n"
+        #end for(markslist)
+        
+        s += "\n\n\n\n\n"
+        
+        if DEBUG(): print("Generating Text Sections 'WFR_ALIGN_STRATEGY'")
+        for i,s in enumerate( JobObj.Alignment.StrategyList ):
+            if DEBUG(): print("Strategy %i: `%s`" % (i,s.get_ID()) )
+            s += "START_SECTION WFR_ALIGN_STRATEGY\n"
+            s = add(s, "STRATEGY_ID", s.get_ID() )
+            s = add(s, "WAFER_SIDE", Defaults.AlignmentStrategy_WAFER_ALIGNMENT_METHOD)
+            s = add(s, "NR_OF_MARKS_TO_USE", s.get_required_marks() )
+            s = add(s, "NR_OF_X_MARKS_TO_USE", s.get_required_marks() )
+            s = add(s, "NR_OF_Y_MARKS_TO_USE", s.get_required_marks() )
+            s = add(s, "MIN_MARK_DISTANCE_COARSE", Defaults.AlignmentStrategy_MIN_MARK_DISTANCE_COARSE)
+            s = add(s, "MIN_MARK_DISTANCE", Defaults.AlignmentStrategy_MIN_MARK_DISTANCE)
+            s = add(s, "MAX_80_88_MARK_SHIFT", Defaults.AlignmentStrategy_MAX_80_88_MARK_SHIFT)
+            s = add(s, "MAX_MARK_RESIDUE", Defaults.AlignmentStrategy_MAX_MARK_RESIDUE)
+            s = add(s, "SPM_MARK_SCAN", Defaults.AlignmentStrategy_SPM_MARK_SCAN)
+            s = add(s, "CORR_WAFER_GRID", Defaults.AlignmentStrategy_CORR_WAFER_GRID)
+            s = add(s, "ERR_DETECTION_88_8", Defaults.AlignmentStrategy_ERR_DETECTION_88_8)
+            s = add(s, "GRID_OPTIMISATION_ALGORITHM", Defaults.AlignmentStrategy_GRID_OPTIMISATION_ALGORITHM)
+            s = add(s, "FLYER_REMOVAL_THRESHOLD", Defaults.AlignmentStrategy_FLYER_REMOVAL_THRESHOLD)
+            s = add(s, "ALIGNMENT_MONITORING", Defaults.AlignmentStrategy_ALIGNMENT_MONITORING)
+            s += "END_SECTION\n"
+        #end for(StrategyList)
+        
+        s += "\n\n\n\n\n"
+        
+        if DEBUG(): print("Generating Text Sections 'MARK_ALIGNMENT' (Strategy<--Marks)")
+        for i,s in enumerate( JobObj.Alignment.StrategyList ):
+            if DEBUG(): print("Strategy %i: `%s`" % (i,s.get_ID()) )
+            for ii,m in enumerate( s.MarkList ):
+                if DEBUG(): print("Mark %i: `%s`" % (i,m.MarkID) )
+                s += "START_SECTION MARK_ALIGNMENT\n"
+                s = add(s, "STRATEGY_ID", s.get_ID() )
+                s = add(s, "MARK_ID", m.MarkID )
+                s = add(s, "GLBL_MARK_USAGE", Defaults.AlignmentStrategy_GLBL_MARK_USAGE)
+                s = add(s, "MARK_PREFERENCE", s.MarkPrefList[ii] )
+                s += "END_SECTION\n"
+            #end for(MarkList)
+        #end for(markslist)
+        
+        s += "\n\n\n\n\n"
+        
+    #end if(align)
+    
+    
     if DEBUG(): print("Generating Text Sections 'IMAGE_DEFINITION' & 'IMAGE_DISTRIBUTION'")
     for I in JobObj.ImageList:
         s += "START_SECTION IMAGE_DEFINITION\n"
@@ -140,7 +210,7 @@ def _genascii(JobObj):
         s += "\n\n\n\n\n"
     #end for(ImageList)
     
-    s += "\n\n"
+    s += "\n\n\n\n\n"
     
     
     
@@ -163,7 +233,45 @@ def _genascii(JobObj):
         s += "\n"
     #end for(LayerList)
     
-    s += "\n\n"
+    s += "\n\n\n\n\n"
+    
+    
+    ########################################
+    # Marks + Strategy Selection per Layer #
+    ########################################
+    
+    if DEBUG(): print("Generating Text Sections 'MARKS_SELECTION' (Layer<--Marks)")
+    for i,L in enumerate(JobObj.LayerList):
+        if DEBUG(): print( "Layer #%i, ID='%s'" %(i, str(L.LayerID) ) )
+        for ii,M in enumerate( JobObj.Alignment.MarkList ):
+            s += "START_SECTION MARKS_SELECTION\n"
+            s = add(s, "  LAYER_ID", L.LayerID)
+            s = add(s, "  MARK_ID", M.MarkID)
+            if np.isin( M, L.MarkList ):
+                expose="E"
+            else:
+                expose="N"
+            s = add(s, "  GLBL_MARK_USAGE", expose)
+            s += "END_SECTION\n"
+            s += "\n"
+        #end for(MarkList)
+    #end for(LayerList)
+    
+    s += "\n\n\n\n\n"
+    
+    if DEBUG(): print("Generating Text Sections 'STRATEGY_SELECTION' (Layer<--Strategy)")
+    for i,L in enumerate(JobObj.LayerList):
+        if DEBUG(): print( "Layer #%i, ID='%s'" %(i, str(L.LayerID) ) )
+        if L.GlobalStrategy:
+            s += "START_SECTION STRATEGY_SELECTION\n"
+            s = add(s, "  LAYER_ID", L.LayerID)
+            s = add(s, "  STRATEGY_ID", L.GlobalStrategy.Get_ID() )
+            s = add(s, "  STRATEGY_USAGE", "A") # "Active"
+            s += "END_SECTION\n"
+            s += "\n"
+        #end for(MarkList)
+    #end for(LayerList)
+    
     
     
     ################
@@ -269,7 +377,8 @@ def _genascii(JobObj):
         s += "END_SECTION\n\n"
     # end for(LayerList)
     
-    s += "\n\n\n"
+    s += "\n\n\n\n\n"
+    
     
     ################
     # Reticle Data #
