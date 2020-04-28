@@ -153,6 +153,24 @@ class Job(object):
     #end
     
     
+    def set_CombinedZeroFirst(self):
+        """Enable Combined Zero and First layer exposure. Unset (False) by default."""
+        self.combined_zerofirst = True
+    
+    def unset_CombinedZeroFirst(self):
+        """Disable Combined Zero and First layer exposure. This is the default state."""
+        self.combined_zerofirst = False
+    
+    def get_CombinedZeroFirst(self):
+        """Return True|False whether Combined Zero and First layer is enabled. Returns False if the parameter has not been set."""
+        try: 
+            return self.combined_zerofirst
+        except AttributeError:
+            self.combined_zerofirst = False
+            return self.combined_zerofirst
+        #end try
+    #end getCombinedZeroFirst()
+    
     
     ##############################################
     #       Adding Objects etc.
@@ -202,7 +220,7 @@ class Job(object):
             if isinstance(I, Image):
                 if not np.isin( I, self.ImageList ):
                     self.ImageList.append( I )
-                if  I.parent:
+                if  I.parent and not (I.parent==self):
                     print(   "WARNING: Image objects can only be part of a single Job object.  Setting parent of Image `%s` to Job `%s`." %( I.ImageID, self.__repr__() )   )
                 I.parent = self
             else:
@@ -260,12 +278,12 @@ class Job(object):
     ##############################################
     
     def _organizeLayers(self):
-        '''Reorganize the LayerList to account for any Layers that are set as `zero` layers, or have `combine with zero layer` enabled.'''
+        '''Reorganize the LayerList to account for any Layers that are set as `zero` layers, or have `combine with zero layer` enabled, which should be added to the job first and second, respectively.'''
         newLL = []
         
         
         # Check for Zero layers
-        zeros = [L.get_zero_layer() for L in self.LayerList]
+        zeros = [L.get_ZeroLayer() for L in self.LayerList]
         zeros_i = np.where(zeros)[0]    # index to ZeroLayers
         if DEBUG(): print("_organizeLayers(): zeros=", zeros, "zeros_i=", zeros_i)
         if len(zeros_i) > 1:
@@ -274,9 +292,10 @@ class Job(object):
             raise ValueError(errstr)
         #end if multiple ZeroLayers
         
-        # add Zero to new Layer List
-        newLL.append( self.LayerList[ zeros_i[0] ] )
-        self.LayerList.pop( zeros_i[0] )
+        if zeros_i:
+            # add Zero to new Layer List, delete from old list
+            newLL.append( self.LayerList[ zeros_i[0] ] )
+            self.LayerList.pop( zeros_i[0] )
         
         # Check for Combo layers
         combos = [L.get_CombineWithZeroLayer() for L in self.LayerList]
@@ -288,9 +307,11 @@ class Job(object):
             raise ValueError(errstr)
         #end if multiple combos
         
-        # add ComboLyr to new Layer List
-        newLL.append( self.LayerList[ combos_i[0] ] )
-        self.LayerList.pop( combos_i[0] )
+        if combos_i:
+            # add ComboLyr to new Layer List, delete from old list
+            newLL.append( self.LayerList[ combos_i[0] ] )
+            self.LayerList.pop( combos_i[0] )
+            self.set_CombinedZeroFirst()
         
         self.LayerList = newLL + self.LayerList
     #end _organizeLayers
