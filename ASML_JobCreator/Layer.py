@@ -120,7 +120,7 @@ class Layer(object):
     ##############################################
     
     
-    def set_combine_with_zero_layer(self):
+    def set_CombineWithZeroLayer(self):
         """
         Enable combination exposure of zero layer and first layer in one exposure session.  
         
@@ -129,14 +129,14 @@ class Layer(object):
         self.combined_zerofirst = True
     #end 
     
-    def unset_combine_with_zero_layer(self):
+    def unset_CombineWithZeroLayer(self):
         """
         Disable combination exposure of zero layer and first layer in one exposure session.  
         """
         self.combined_zerofirst = False
     #end 
     
-    def get_combine_with_zero_layer(self):
+    def get_CombineWithZeroLayer(self):
         """
         Return True|False for combination exposure of zero layer and first layer in one exposure session.  
         """
@@ -318,16 +318,14 @@ class Layer(object):
     def expose_Marks(self, Marks=[], Energy=20, Focus=0, FocusTilt=[0,0], NA=0.570, Sig_o=0.750, Sig_i=None, IlluminationMode="Default"):
         """
         Set Layer to expose some Alignment Marks.
-    
-        expose_Image( Image, Energy=20, Focus=0.000, FocusTilt=[0,0], NA=0.570, Sig_o=0.750, Sig_i=0.5, IlluminationMode="Conventional" )
 
         Parameters
         ----------
         marks : List of Mark objects
             Pass an iterable of Mark objects to expose.
-        Energy : number
+        Energy : float
             Exposure energy in mJ.
-        Focus : number
+        Focus : float
             The focus offset in mm.
         FocusTilt : two-valued array-like, optional
             Rx,Ry focus tilt values. Defaults to [0,0]
@@ -339,11 +337,12 @@ class Layer(object):
             Defaults to "Default", which is whatever the machine default is, usually "Conventional"
 
         """
+        ## Santize args
+        IlluminationMode = self._parse_IllumMode(IlluminationMode)
+        
         for i,m in enumerate(Marks):
-            ## Santize args
-            IlluminationMode = self._parse_IllumMode(IlluminationMode)
-                    
             ## Only add the Image once:
+            if DEBUG(): print("Layer.expose_marks(): not IsIn = ", not np.isin( m.Image, self.ImageList )  )
             if not np.isin( m.Image, self.ImageList ):
                 self.ImageList.append( m.Image )
                 self.EnergyList.append( Energy )

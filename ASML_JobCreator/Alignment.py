@@ -111,10 +111,12 @@ class Alignment(object):
             Pass Mark objects, each as it's own argument. To pass an array-like/iterable containing the Mark objects, use star dereferencing.  
         """
         
-        for i,ii in enumerate(marks):
-            if isinstance(ii, _Mark):
-                self.MarkList.append( ii )
-                ii.parent = self
+        for i,m in enumerate(marks):
+            if isinstance(m, _Mark):
+                m.parent = self
+                m.Image.parent = self.parent #add parent Job to Mark's Image
+                self.parent.add_Images(m.Image) # add Mark's Image to the parent job
+                self.MarkList.append( m )
             else:
                 raise ValueError( "Expected `Mark` object, instead got: " + str(type(ii)) + " at argument #%i"%(i) )
         #end for(marks)

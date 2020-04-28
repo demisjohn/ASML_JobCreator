@@ -121,7 +121,6 @@ class Image(object):
     def get_ReticleSize(self):
         '''Return the Image Size scaled to Reticle-scale (using `Job.get_LensReduction()`` ), in millimeters, [x,y].'''
         mag = self.parent.get_LensReduction()
-        if DEBUG(): print("get_ReticleSize(): mag = ", mag)
         return (self.sizeXY[0] * mag , self.sizeXY[1] * mag)
     #end
     

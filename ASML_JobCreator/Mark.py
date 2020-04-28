@@ -132,8 +132,10 @@ class Mark(object):
             self.Image = self.Images.PM
         elif np.any(  np.isin( SPM_X_Strings , s )  ):
             out= 'spm_x'
+            self.Image = self.Images.SPM_X
         elif np.any(  np.isin( SPM_Y_Strings , s )  ):
             out= 'spm_y'
+            self.Image = self.Images.SPM_Y
         else:
             errstr = "Passed argument option `%s` is not in the list of valid options, which are:\n\t" + \
                 str(PMStrings) + "\n\t" + \

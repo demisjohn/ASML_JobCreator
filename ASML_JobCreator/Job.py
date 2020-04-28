@@ -198,14 +198,15 @@ class Job(object):
             Pass Image objects, each as it's own argument. To pass an array-like/iterable containing the Image objects, use star dereferencing.  Order of the Images will determine the order in the ASML job - first argument/item will be Image #1.
         """
         
-        for i,ii in enumerate(images):
-            if isinstance(ii, Image):
-                self.ImageList.append( ii )
-                if  ii.parent:
-                    print(   "WARNING: Image objects can only be part of a single Job object.  Setting parent of Image `%s` to Job `%s`." %( ii.ImageID, self.__repr__() )   )
-                ii.parent = self
+        for i,I in enumerate(images):
+            if isinstance(I, Image):
+                if not np.isin( I, self.ImageList ):
+                    self.ImageList.append( I )
+                if  I.parent:
+                    print(   "WARNING: Image objects can only be part of a single Job object.  Setting parent of Image `%s` to Job `%s`." %( I.ImageID, self.__repr__() )   )
+                I.parent = self
             else:
-                raise ValueError( "Expected `Image` object, instead got: " + str(type(ii)) + " at argument #%i"%(i) )
+                raise ValueError( "Expected `Image` object, instead got: " + str(type(I)) + " at argument #%i"%(i) )
         #end for(ImgList)
     #end add_images()
     
@@ -278,7 +279,7 @@ class Job(object):
         self.LayerList.pop( zeros_i[0] )
         
         # Check for Combo layers
-        combos = [L.get_combine_with_zero_layer() for L in self.LayerList]
+        combos = [L.get_CombineWithZeroLayer() for L in self.LayerList]
         combos_i = np.where(combos)[0]    # index to ComboLayers
         if DEBUG(): print("_organizeLayers(): combos=", combos, "combos_i=", combos_i)
         if len(combos_i) > 1:
