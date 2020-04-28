@@ -276,19 +276,18 @@ def _genascii(JobObj):
     ################
     if DEBUG(): print("Generating Text Section 'RETICLE_DATA'...")
     for i,L in enumerate(JobObj.LayerList):
-        if DEBUG(): print(   " RETICLE_DATA: Layer %i, '%s'" % ( i, L.LayerID )   )
+        if DEBUG(): print(   "  RETICLE_DATA: Layer %i, '%s'" % ( i, L.LayerID )   )
         for ii,I in enumerate(L.ImageList):
-            if DEBUG(): print(   "  RETICLE_DATA: Image %i, '%s'" % ( ii, I.ImageID )   )
+            if DEBUG(): print(   "    RETICLE_DATA: Image %i, '%s'" % ( ii, I.ImageID ), "\t[i=%i/ii=%i]"%(i,ii)   )
             s += "START_SECTION RETICLE_DATA\n"
             s = add(s, "LAYER_ID", L.LayerID)
             s = add(s, "IMAGE_ID", I.ImageID)
             s = add(s, "IMAGE_USAGE", "Y")
             s = add(s, "RETICLE_ID", I.ReticleID)
-            s = add(s, "IMAGE_SIZE", I.get_ReticleSize() )      # <-------------
+            s = add(s, "IMAGE_SIZE", I.get_ReticleSize() )
             s = add(s, "IMAGE_SHIFT", I.get_ReticleShift() )
             s = add(s, "MASK_SIZE", I.get_ReticleSize() )
-            s = add(s, "MASK_SHIFT", I.get_ReticleShift() )     # <-------------
-            if DEBUG(): print("  Layer: %s\t" %(L.LayerID) + "Image %i, '%s': EnergyList=" % ( ii, str(I.ImageID) ) +  str(L.EnergyList), "i=%i"%i  )
+            s = add(s, "MASK_SHIFT", I.get_ReticleShift() )
             s = add(s, "ENERGY_ACTUAL", L.EnergyList[ii] )
             s = add(s, "FOCUS_ACTUAL", L.FocusList[ii] )
             s = add(s, "FOCUS_TILT", L.FocusTiltList[ii] )
