@@ -19,8 +19,6 @@ from .__globals import *    # global variables/methods to the module.
 ####################################################
 
 
-
-
 class Mark(object):
     """
     Class for defining alignment marks.
@@ -117,17 +115,15 @@ class Mark(object):
         ----
         Mark.Image : Image object
             The Image corresponding to this Mark type, allowing for exposure of the Mark.  The Images are pre-defined in the ASML_JobCreator/Images/ folder.
-        '''
-        #Job = self.parent.parent
-        
+        '''        
         s = str(MarkType_str).strip().lower()
         
         # argument synonym options:
-        PMStrings = ["pm","p"]
+        PM_Strings = ["pm","p"]
         SPM_X_Strings = ["spm_x","spmx","spm-x"]
         SPM_Y_Strings = ["spm_y","spmy","spm-y"]
         
-        if np.any(  np.isin( PMStrings , s )  ):
+        if np.any(  np.isin( PM_Strings , s )  ):
             out= 'pm'
             self.Image = self.Images.PM
         elif np.any(  np.isin( SPM_X_Strings , s )  ):
@@ -138,14 +134,16 @@ class Mark(object):
             self.Image = self.Images.SPM_Y
         else:
             errstr = "Passed argument option `%s` is not in the list of valid options, which are:\n\t" + \
-                str(PMStrings) + "\n\t" + \
+                str(PM_Strings) + "\n\t" + \
                 str(SPM_X_Strings) + "\n\t" + \
                 str(SPM_Y_Strings)
             raise ValueError(errstr)
         #end if
         
+        self.Image.set_BaseImageID( self.Image.ImageID )
         self.MarkType = out
     #end set_marktype()
+    
     
     
     def set_backup(self):
@@ -153,26 +151,11 @@ class Mark(object):
         self.isBackup = True
     #end
     
-    
     def unset_backup(self):
         '''Make this mark a "preferred" mark (the default), instead of "backup" mark.'''
-        self.isBackup = True
+        self.isBackup = False
     #end
     
-    
-    
-    
-    
-    ##############################################
-    #       Plotting etc.
-    ##############################################
-    
-    
-    
-    
-    
-    
-  
 #end class(Mark)
 
 
