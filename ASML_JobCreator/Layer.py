@@ -2,33 +2,7 @@
 This file is part of the ASML_JobCreator package for Python 3.x.
 
 Layer.py
-    Contains class Layer, which corresponds to the Layer Layout options.
-    
-    
-	/Layer.py - class "Layer"
-		__init__("LayerID", combinedwithZerolayer=True)
-			- if true, then this layer should be added to file first, as layer #0.  should be no other layers with this option.  Defaults to False
-		.set_strategy(Strat1) - or None
-		.set_Prealignment(Mark1, Mark2) - ignored if combined zero/first.
-				□ also turns on optical prealignment
-		
-		If any layer has "combined zero/first' set:
-			MarksExposure - set layer 0 to expose all marks
-		
-		## Process_data:
-		.set_shift( [x,y] )
-			- less than Cell size / 2
-		.set/unset/get_shifted_measurement_scans()
-		## reticle data:
-		.ExposeImage(Image1, Energy=, Focus=0, Focus_Tilt=[0,0], NA=0.57, Sig_o=0.750, Sig_i=, Illumination="Conventional")
-		.set_GlobalLevelPoints( [x1,y1], [x2,y2], [x3,y3] )
-		
-		(Future-rev:)
-		Layer1.un/set/get_ExposeMarks(Mark1,Mark2,Mark3 etc.) - accepts iterable
-			- will also set "combined marks/image xposure" if marks are added
-		
-
-
+    Contains Layer class, which corresponds to the Layer Layout options.
     
 - - - - - - - - - - - - - - -
 
@@ -70,13 +44,14 @@ class Layer(object):
         '''Layer object constructor.  See `help(Layer)` for parameters.
         '''
         self.parent = parent    # parent Job object
-        self.LayerID = str(LayerID) # To Do: Sanitize LayerID text
+        self.LayerID = str(LayerID).strip().upper() # To Do: Sanitize LayerID text
         self.combined_zerofirst = bool(CombineWithZeroLayer)
         self.zero = bool(ZeroLayer)
         self.ImageList = []
         self.MarkList = []
         self.PreAlignMarksList = None
         self.GlobalStrategy = None
+        self.SMS = False
         
         # "Reticle Data" section:
         self.EnergyList=[]
@@ -170,13 +145,8 @@ class Layer(object):
     
     
     ##############################################
-    #       Process Data
-    ##############################################
-    #
-    # To DO:
-    # .set/unset/get_shifted_measurement_scans()
-    #
-    
+    #       Process Data Setters/Getters
+    ##############################################    
     
     def set_LayerShift(self, xy=[0,0] ):
         '''Set the Layer Shift in millimeters, [x,y].'''
@@ -195,6 +165,7 @@ class Layer(object):
             self.set_LayerShift( Defaults.ProcessData_LAYER_SHIFT)
             return self.LayerShift
     #end
+    
     
     def set_GlobalLevelPoints(self, xy1=[0,0], xy2=[0,0], xy3=[0,0] ):
         '''Set the Global Level/Tilt points in millimeters, [x,y].'''
@@ -227,6 +198,23 @@ class Layer(object):
             return (self.GlobalLevel_Point1, self.GlobalLevel_Point2, self.GlobalLevel_Point3)
     #end
     
+    
+    def set_ShiftedMeasurementScans(self):
+        "Enable Shifted Measurement Scans (SMS) option, to increase Z/Tilt yield of edge die. This is a software option that must be licensed on your tool."
+        self.SMS = True
+    
+    def unset_ShiftedMeasurementScans(self):
+        "Disable Shifted Measurement Scans (SMS) option. This is the default state"
+        self.SMS = False
+    
+    def get_ShiftedMeasurementScans(self):
+        "Return {True|False} for whether Shifted Measurement Scans (SMS) option is enabled/disabled. Defaults to False."
+        return self.SMS
+    
+    
+    ##############################################
+    #       Exposures
+    ##############################################  
     
     def _parse_IllumMode(self, mode ):
         '''
@@ -308,15 +296,6 @@ class Layer(object):
     #       Alignment etc.
     ##############################################
     
-    #########
-    # To do
-    #
-    #set_strategy(Strat1) - or None
-    #.set_Prealignment(Mark1, Mark2) - ignored if combined zero/first.
-    #   also turns on optical prealignment
-    #If any layer has "combined zero/first' set:
-    #       MarksExposure - set layer 0 to expose all marks
-    
     def expose_Marks(self, Marks=[], Energy=20, Focus=0, FocusTilt=[0,0], NA=0.570, Sig_o=0.750, Sig_i=None, IlluminationMode="Default"):
         """
         Set Layer to expose some Alignment Marks.
@@ -366,7 +345,7 @@ class Layer(object):
         Enable Optical Prealignment on this Layer.
         Pass the two Mark objects corresponding to the alignment marks to be used for Optical Prealignment.
         
-        Note that the chosen marks must lie in the limited region reachable by th eoptical prealignment camera system, and must be on opposide side of the wafer.
+        Note that the chosen marks must lie in the limited region reachable by the optical prealignment camera system, and must be on opposide sides of the wafer.
         """
         from .Mark import Mark as _Mark     # Mark class
         if isinstance(mark1, _Mark) and isinstance(mark2, _Mark):
@@ -387,7 +366,7 @@ class Layer(object):
     def set_GlobalAlignment(self,  strategy ):
         """
         Enable Global Alignment on this Layer.
-        Pass the Alignment `Strategy` Object to be used for global alignment.
+        Pass the Alignment.Strategy Object to be used for global alignment.
         """
         from .Alignment import Strategy as _Strategy    # class
         if isinstance(strategy, _Strategy):
