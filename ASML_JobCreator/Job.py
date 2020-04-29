@@ -3,6 +3,7 @@ This file is part of the ASML_JobCreator package.
 
 Job.py
     Contains the `Job` class, master class for defining an ASML Job.
+    Includes access functions for most critical Classes, functions, modules.
     
 - - - - - - - - - - - - - - -
 
@@ -41,7 +42,7 @@ class Job(object):
     - - - - - - - 
     TO DO: 
 	- MyJob.check_cell( [C,R] ) - check if cell is on the wafer
-
+    - MyJob.CellCRtoWaferXY / WaferXYtoCellCR   - convert between cell and wafer coords.
     '''
     
     def __init__(self):
@@ -114,19 +115,19 @@ class Job(object):
     #end
     
     
-    def set_ExposeEdgeDie(self, tf=True):
-        '''Pass either `True`/`False` to Enable/Disable the exposure of die all the way to the wafer edge, by internally setting the "Number of Die Per Cell" to 10x10, and Minimum Number of Die to 1.
-        
-        Parameters
-        ----------
-        tf : {True | False}
-            Expose the edge die? Defaults to True if no arguments passed.
+    def set_ExposeEdgeDie(self):
         '''
-        if tf == True:
-            self.Cell.NumberDiePerCell = [10, 10]
-        else:
-            self.Cell.NumberDiePerCell = [1, 1]
-        #end if(b)
+        Enable the exposure of die all the way to the wafer edge, by internally setting the "Number of Die Per Cell" to 10x10, and Minimum Number of Die to 1.
+        '''
+        self.Cell.NumberDiePerCell = [10, 10]
+        self.Cell.MinNumberDie = 1
+    #end
+    
+    def unset_ExposeEdgeDie(self):
+        '''
+        Disable the exposure of die all the way to the wafer edge, by internally setting the "Number of Die Per Cell" to 1x1, and Minimum Number of Die to 1.
+        '''
+        self.Cell.NumberDiePerCell = [1, 1]
         self.Cell.MinNumberDie = 1
     #end
     
@@ -279,41 +280,43 @@ class Job(object):
     
     def _organizeLayers(self):
         '''Reorganize the LayerList to account for any Layers that are set as `zero` layers, or have `combine with zero layer` enabled, which should be added to the job first and second, respectively.'''
+        oldLL = self.LayerList.copy()   # avoid mutability
         newLL = []
         
-        
         # Check for Zero layers
-        zeros = [L.get_ZeroLayer() for L in self.LayerList]
+        zeros = [L.get_ZeroLayer() for L in oldLL]  # True/False list
         zeros_i = np.where(zeros)[0]    # index to ZeroLayers
         if DEBUG(): print("_organizeLayers(): zeros=", zeros, "zeros_i=", zeros_i)
         if len(zeros_i) > 1:
             errstr = "More than one Layer designated as `Zero` Layer!  The following Layers have ZeroLayer enabled:\n"
-            errstr += str([  (L.LayerID +"\n") for L in [self.LayerList[i] for i in zeros_i]  ])
+            errstr += str([  (L.LayerID +"\n") for L in [oldLL[i] for i in zeros_i]  ])
             raise ValueError(errstr)
         #end if multiple ZeroLayers
         
-        if zeros_i:
+        if len(zeros_i):
             # add Zero to new Layer List, delete from old list
-            newLL.append( self.LayerList[ zeros_i[0] ] )
-            self.LayerList.pop( zeros_i[0] )
+            if DEBUG(): print("Moving Zero layers...")
+            newLL.append( oldLL[ zeros_i[0] ] )
+            oldLL.pop( zeros_i[0] )
         
         # Check for Combo layers
-        combos = [L.get_CombineWithZeroLayer() for L in self.LayerList]
+        combos = [L.get_CombineWithZeroLayer() for L in oldLL]
         combos_i = np.where(combos)[0]    # index to ComboLayers
         if DEBUG(): print("_organizeLayers(): combos=", combos, "combos_i=", combos_i)
         if len(combos_i) > 1:
             errstr = "More than one Layer designated as `CombineWithZero` Layer!  The following Layers have CombineWithZeroLayer enabled:\n"
-            errstr += str([  (L.LayerID +"\n") for L in [self.LayerList[i] for i in combos_i]  ])
+            errstr += str([  (L.LayerID +"\n") for L in [oldLL[i] for i in combos_i]  ])
             raise ValueError(errstr)
-        #end if multiple combos
+        #end if multiple CombosLayers
         
-        if combos_i:
+        if len(combos_i):
             # add ComboLyr to new Layer List, delete from old list
-            newLL.append( self.LayerList[ combos_i[0] ] )
-            self.LayerList.pop( combos_i[0] )
+            if DEBUG(): print("Moving Combo layers...")
+            newLL.append( oldLL[ combos_i[0] ] )
+            oldLL.pop( combos_i[0] )
             self.set_CombinedZeroFirst()
         
-        self.LayerList = newLL + self.LayerList
+        self.LayerList = newLL + oldLL
     #end _organizeLayers
     
     
@@ -332,6 +335,7 @@ class Job(object):
             Will fail with IOError if file exists and `overwrite` is False.
         """
         self._organizeLayers()  # check for Zero/CombinedWithZero options
+        if DEBUG(): print( "Re-organized Layers:", [L.LayerID for L in self.LayerList] )
         
         import os.path
         from .exportlib import _genascii 
