@@ -58,6 +58,7 @@ class Image(object):
         """
         self.parent = parent    # parent Job object
         self.ImageID = str(ImageID)
+        self.BaseImageID = None
         self.ReticleID = str(ReticleID)
         if len(sizeXY) == 2 and np.isscalar(sizeXY[0]) and np.isscalar(sizeXY[1]):
             self.sizeXY = (sizeXY[0], sizeXY[1])
@@ -170,30 +171,20 @@ class Image(object):
         '''Return list of [CellC,CellR], [ShiftX,ShiftY] pairs corresponding to each distribution of this Image.'''
         return list( zip(self.Cells, self.Shifts) )
     
+    
+    def get_BaseImageID(self):
+        '''Return BaseImageID, if it has been set (usually only for Images defined during Alignment.Mark definitions).  Otherwise, return `None`.'''
+        return self.BaseImageID
+    
+    def set_BaseImageID(self, BaseImageID):
+        '''Set BaseImageID - usually only for Images defined during Alignment.Mark definitions.'''
+        self.BaseImageID = str(BaseImageID)
+    
+    def unset_BaseImageID(self):
+        '''Unset the BaseImageID - reverts back to it's default value of `None`.'''
+        self.BaseImageID = None
   
 #end class(Image)
-
-
-
-
-"""
-class ImageDist(object):
-    '''Class for holding Cells and Image-Shifts for Image Distribution.
-    
-    ImageDist( CellCR=[C,R], ShiftXY=[X,Y] )
-    
-    Parameters
-    ----------
-    CellCR : 2-valued array-like of integers
-        Cell coordinates to distribute this Image to. An Image can only be distributed into a Cell once.  To distribute the same reticle image onto a Cell multiple times, define separate Images for each insertion. Eg. [1,3] or [-5,10]
-    ShiftXY : 2-valued array-like of coordinates
-        X/Y coordinates for shifting the image insertion, with respect to the center of the Cell.
-    '''
-    
-    def __init__(self, CellCR=[0,0], ShiftXY=[0,0]):
-        
-ABORT - decided a simple list of Cells & corresponding shifts would be better, much easier to check uniqueness of each Cell.
-"""
 
 
 ################################################
