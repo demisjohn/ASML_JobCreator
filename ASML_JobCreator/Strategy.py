@@ -31,12 +31,14 @@ class Strategy(object):
     ----------
         parent : The parent Alignment object, that this Strategy belongs to. The Job is accessible via `parent.parent`.
         
-        ID : string
+        StrategyID : string
             Name of the strategy
         
         marks : iterable
             Iterable containing Mark objects to add to this strategy.
         
+        parent : Alignment object   
+            The parent Alignment object containing this Strategy.
     """
     
     def __init__(self, StrategyID, marks=None, parent=None):
@@ -62,7 +64,8 @@ class Strategy(object):
                 self.add_mark( m )
         #end if(marks)
         
-        self.parent.add_Strategy(self)
+        if self.parent:
+            self.parent.add_Strategy(self)
     #end __init__
     
     
@@ -183,7 +186,7 @@ class Strategy(object):
         self.required_marks = num
     #end set_required_marks()
     
-    def get_required_marks(self, num):
+    def get_required_marks(self):
         '''Return the number of required marks to pass during Mark measurement.'''
         return self.required_marks
     #end get_required_marks()
