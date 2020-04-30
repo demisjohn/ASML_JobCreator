@@ -38,7 +38,7 @@ class Defaults(object):
         '''Return string to `print` this object.'''
         s = ""
         s += "ASML_JobCreator.Default object:\n"
-        s += str( self.__dict__ )
+        s += str( self.__dict__ )   # lists all the properties/values
         
         return s
     #end __str__
@@ -111,10 +111,28 @@ class Defaults(object):
         self.Image_DISTRIBUTION_ACTION = "I"
         
         
+        ## Alignment Marks
+        self.AlignmentMark_MARK_EDGE_CLEARANCE = "L"
+        self.AlignmentMark_WAFER_SIDE = "A"
+        
+        
+        ## Alignment Strategy
+        self.AlignmentStrategy_WAFER_ALIGNMENT_METHOD = "T"
+        self.AlignmentStrategy_MIN_MARK_DISTANCE_COARSE = 20.000000
+        self.AlignmentStrategy_MIN_MARK_DISTANCE = 40
+        self.AlignmentStrategy_MAX_80_88_MARK_SHIFT = 0.500000
+        self.AlignmentStrategy_MAX_MARK_RESIDUE = 200.000000
+        self.AlignmentStrategy_SPM_MARK_SCAN = "S"
+        self.AlignmentStrategy_CORR_WAFER_GRID = "Default"
+        self.AlignmentStrategy_ERR_DETECTION_88_8 = "M"
+        self.AlignmentStrategy_GRID_OPTIMISATION_ALGORITHM = "N"
+        self.AlignmentStrategy_FLYER_REMOVAL_THRESHOLD = 0.000000
+        self.AlignmentStrategy_ALIGNMENT_MONITORING = "D"
+        self.AlignmentStrategy_GLBL_MARK_USAGE = "A"
+        
         
         ## Layer Defaults
         self.Layer_WAFER_SIDE = "A"
-        
         
         
         ## Process Data > Layer Defaults
@@ -133,7 +151,9 @@ class Defaults(object):
         self.ProcessData_RET_COOL_TIME                                 = 0
         self.ProcessData_RET_COOL_START_ON_LOAD                        = "Y"
         self.ProcessData_RET_COOL_USAGE                                = "W"
+        self.ProcessData_GLBL_RTCL_ALIGNMENT                           = "N"
         self.ProcessData_GLBL_OVERLAY_ENHANCEMENT                      = "N"
+        self.ProcessData_GLBL_SYM_ALIGNMENT                            = "N"
         self.ProcessData_LAYER_SHIFT                                   = [0.000000, 0.000000]
         self.ProcessData_CORR_INTER_FLD_EXPANSION                      = [0.000000, 0.000000]
         self.ProcessData_CORR_INTER_FLD_NONORTHO                       = 0.000000
@@ -165,6 +185,15 @@ class Defaults(object):
         self.ProcessData_FOCUS_MONITORING_SCANNER                      = "D"
         self.ProcessData_DYN_PERF_MONITORING                           = "D"
         self.ProcessData_FORCE_MEANDER_ENABLED                         = "N"
+        
+        self.ProcessData_CORR_WAFER_GRID                               = self.AlignmentStrategy_CORR_WAFER_GRID
+        self.ProcessData_MIN_MARK_DISTANCE_COARSE                      = self.AlignmentStrategy_MIN_MARK_DISTANCE_COARSE
+        self.ProcessData_MIN_MARK_DISTANCE                             = self.AlignmentStrategy_MIN_MARK_DISTANCE
+        self.ProcessData_MAX_80_88_SHIFT                               = self.AlignmentStrategy_MAX_80_88_MARK_SHIFT
+        self.ProcessData_MAX_MARK_RESIDUE                              = self.AlignmentStrategy_MAX_MARK_RESIDUE
+        self.ProcessData_SPM_MARK_SCAN                                 = self.AlignmentStrategy_SPM_MARK_SCAN
+        self.ProcessData_ERR_DETECTION_88_8                            = self.AlignmentStrategy_ERR_DETECTION_88_8
+        self.ProcessData_ALIGNMENT_METHOD                              = self.AlignmentStrategy_WAFER_ALIGNMENT_METHOD
         
         
         

@@ -33,7 +33,7 @@ def _genascii(JobObj):
     #end indent()
     
     
-    def add(string="", cmd='', val=[0,0], tab=tab, integers=False, quoted=True):
+    def add(string="", cmd='', val=[0,0], tab=tab, integers=False, doublestr=False, quoted=True):
         """Returns input `string` + `cmd` + `val` with the appropriate tab, indent and newlines.
         
         Parameters
@@ -46,7 +46,7 @@ def _genascii(JobObj):
             
         val : { str | 2-valued array-like of numbers }
             Value of the above command/variable, second text on the line.
-            
+        
         tab : str, optional
             Text to use as a tab, defaults to 3 spaces '   '.
             
@@ -57,6 +57,10 @@ def _genascii(JobObj):
                 10.000000 -5.000000
             Which is the case for arbitrary X/Y coordinates. 
             Defaults to False.
+        
+        doublestr : { True | False }, optional
+            If True, inserts a two-valued iterable as two quoted strings.
+            For ` OPT_PREALIGN_MARKS = "Mark1" "Mark2" `
             
         quoted : { True | False }, optional
             Optionally force the removal of quotes for 2-valued integers by setting this to `False`, such as for NUMBER_DIES. Defaults to True.
@@ -65,13 +69,15 @@ def _genascii(JobObj):
         if isinstance(val, str):
             s2 = indent(s1) + '"' + val + '"'
         elif np.size(val) == 2:
-            if not integers:
-                s2 = indent(s1) + "%0.6f %0.6f" % tuple(val) # X/Y coords
-            else:
+            if doublestr:
+                s2 = indent(s1) + '"%s" "%s"' % tuple(val) # two strings, Opt.Prealign Marks
+            elif integers:
                 if quoted:
                     s2 = indent(s1) + '"%i" "%i"' % tuple(val)  # Cell Index, quoted
                 else:
                     s2 = indent(s1) + '%i %i' % tuple(val)  # NUMBER_DIES, unquoted
+            else:
+                s2 = indent(s1) + "%0.6f %0.6f" % tuple(val) # X/Y coords
             #end if(cells)
         elif np.size(val) == 3:
             if not integers:
@@ -120,6 +126,8 @@ def _genascii(JobObj):
     s = add(s, "PLACEMENT_MODE", Defaults.PLACEMENT_MODE)
     s = add(s, "MATRIX_SHIFT", JobObj.Cell.get_MatrixShift())
     s = add(s, "PREALIGN_METHOD", Defaults.PREALIGN_METHOD)
+    if JobObj.get_CombinedZeroFirst():
+        s = add(s, "COMBINE_ZERO_FIRST", "Y")
     s = add(s, "WAFER_ROTATION", Defaults.WAFER_ROTATION)
     s = add(s, "COMBINE_ZERO_FIRST", Defaults.COMBINE_ZERO_FIRST)
     s = add(s, "MATCHING_SET_ID", Defaults.MATCHING_SET_ID)
@@ -129,30 +137,30 @@ def _genascii(JobObj):
     
     if align:
         if DEBUG(): print("Generating Text Sections 'ALIGNMENT_MARK'")
-        for i,m in enumerate( JobObj.Alignment.MarkList ):
-            if DEBUG(): print("Mark %i: `%s`" % (i,m.MarkID) )
+        for i,M in enumerate( JobObj.Alignment.MarkList ):
+            if DEBUG(): print("Mark %i: `%s`" % (i,M.MarkID) )
             s += "START_SECTION ALIGNMENT_MARK\n"
-            s = add(s, "MARK_ID", m.MarkID)
-            s = add(s, "IMAGE_ID", m.Image.ImageID)
+            s = add(s, "MARK_ID", M.MarkID)
+            s = add(s, "IMAGE_ID", M.Image.ImageID)
             s = add(s, "MARK_EDGE_CLEARANCE", Defaults.AlignmentMark_MARK_EDGE_CLEARANCE)
             s = add(s, "WAFER_SIDE", Defaults.AlignmentMark_WAFER_SIDE)
-            s = add(s, "MARK_LOCATION", m.waferXY)
+            s = add(s, "MARK_LOCATION", M.waferXY)
             s += "END_SECTION\n\n"
         #end for(markslist)
         
         s += "\n\n\n\n\n"
         
         if DEBUG(): print("Generating Text Sections 'WFR_ALIGN_STRATEGY'")
-        for i,s in enumerate( JobObj.Alignment.StrategyList ):
-            if DEBUG(): print("Strategy %i: `%s`" % (i,s.get_ID()) )
+        for i,S in enumerate( JobObj.Alignment.StrategyList ):
+            if DEBUG(): print("Strategy %i: `%s`" % (i,S.get_ID()) )
             s += "START_SECTION WFR_ALIGN_STRATEGY\n"
-            s = add(s, "STRATEGY_ID", s.get_ID() )
+            s = add(s, "STRATEGY_ID", S.get_ID() )
             s = add(s, "WAFER_SIDE", Defaults.AlignmentStrategy_WAFER_ALIGNMENT_METHOD)
-            s = add(s, "NR_OF_MARKS_TO_USE", s.get_required_marks() )
-            s = add(s, "NR_OF_X_MARKS_TO_USE", s.get_required_marks() )
-            s = add(s, "NR_OF_Y_MARKS_TO_USE", s.get_required_marks() )
+            s = add(s, "NR_OF_MARKS_TO_USE", S.get_required_marks(), integers=True)
+            s = add(s, "NR_OF_X_MARKS_TO_USE", S.get_required_marks(), integers=True)
+            s = add(s, "NR_OF_Y_MARKS_TO_USE", S.get_required_marks(), integers=True)
             s = add(s, "MIN_MARK_DISTANCE_COARSE", Defaults.AlignmentStrategy_MIN_MARK_DISTANCE_COARSE)
-            s = add(s, "MIN_MARK_DISTANCE", Defaults.AlignmentStrategy_MIN_MARK_DISTANCE)
+            s = add(s, "MIN_MARK_DISTANCE", Defaults.AlignmentStrategy_MIN_MARK_DISTANCE)   # `integers` needed?
             s = add(s, "MAX_80_88_MARK_SHIFT", Defaults.AlignmentStrategy_MAX_80_88_MARK_SHIFT)
             s = add(s, "MAX_MARK_RESIDUE", Defaults.AlignmentStrategy_MAX_MARK_RESIDUE)
             s = add(s, "SPM_MARK_SCAN", Defaults.AlignmentStrategy_SPM_MARK_SCAN)
@@ -167,21 +175,20 @@ def _genascii(JobObj):
         s += "\n\n\n\n\n"
         
         if DEBUG(): print("Generating Text Sections 'MARK_ALIGNMENT' (Strategy<--Marks)")
-        for i,s in enumerate( JobObj.Alignment.StrategyList ):
-            if DEBUG(): print("Strategy %i: `%s`" % (i,s.get_ID()) )
-            for ii,m in enumerate( s.MarkList ):
-                if DEBUG(): print("Mark %i: `%s`" % (i,m.MarkID) )
+        for i,S in enumerate( JobObj.Alignment.StrategyList ):
+            if DEBUG(): print("Strategy %i: `%s`" % (i,S.get_ID()) )
+            for ii,M in enumerate( S.MarkList ):
+                if DEBUG(): print("Mark %i: `%s`" % (i,M.MarkID) )
                 s += "START_SECTION MARK_ALIGNMENT\n"
-                s = add(s, "STRATEGY_ID", s.get_ID() )
-                s = add(s, "MARK_ID", m.MarkID )
+                s = add(s, "STRATEGY_ID", S.get_ID() )
+                s = add(s, "MARK_ID", M.MarkID )
                 s = add(s, "GLBL_MARK_USAGE", Defaults.AlignmentStrategy_GLBL_MARK_USAGE)
-                s = add(s, "MARK_PREFERENCE", s.MarkPrefList[ii] )
-                s += "END_SECTION\n"
+                s = add(s, "MARK_PREFERENCE", S.MarkPrefList[ii] )
+                s += "END_SECTION\n\n"
             #end for(MarkList)
+            s += "\n\n"
         #end for(markslist)
-        
         s += "\n\n\n\n\n"
-        
     #end if(align)
     
     
@@ -194,10 +201,18 @@ def _genascii(JobObj):
         s = add(s, "IMAGE_SHIFT", I.get_ReticleShift() )
         s = add(s, "MASK_SIZE", I.get_ReticleSize() )
         s = add(s, "MASK_SHIFT", I.get_ReticleShift() )
+        if I.get_BaseImageID():
+            s = add(s, "BASE_IMAGE_ID", I.get_BaseImageID() )   # only for Al.Marks
         s = add(s, "VARIANT_ID", Defaults.Image_VARIANT_ID)
         s += "END_SECTION\n"
-        s += "\n\n\n"
+        s += "\n"
+    #end for(ImageList)
+    
+    s += "\n\n\n\n\n"
+    
+    for I in JobObj.ImageList:
         for D in I.get_distribution():
+            s += "\n"
             s += "START_SECTION IMAGE_DISTRIBUTION\n"
             s = add(s, "IMAGE_ID", I.ImageID)
             s = add(s, "CELL_SELECTION", D[0], integers=True)
@@ -205,9 +220,8 @@ def _genascii(JobObj):
             s = add(s, "OPTIMIZE_ROUTE", Defaults.Image_OPTIMIZE_ROUTE)
             s = add(s, "IMAGE_CELL_SHIFT", D[1])
             s += "END_SECTION\n"
-            s += "\n"
+            s += "\n\n"
         #end for(dist)
-        s += "\n\n\n\n\n"
     #end for(ImageList)
     
     s += "\n\n\n\n\n"
@@ -222,7 +236,7 @@ def _genascii(JobObj):
         if L.LayerID.isalnum():
             LyrIDstr = L.LayerID
         else:
-            warnstr = 'Layer # %i: Layer ID string "%s" is invalid, setting ID string to layer number.' % (i, str(L.LayerID))
+            warnstr = 'Layer # %i: Layer ID string "%s" is invalid, setting ID to layer number.' % (i, str(L.LayerID))
             if WARN(): print(warnstr)
             LyrIDstr = str(i)
             L.LayerID = LyrIDstr
@@ -233,7 +247,7 @@ def _genascii(JobObj):
         s += "\n"
     #end for(LayerList)
     
-    s += "\n\n\n\n\n"
+    s += "\n\n\n\n"
     
     
     ########################################
@@ -243,15 +257,16 @@ def _genascii(JobObj):
     if DEBUG(): print("Generating Text Sections 'MARKS_SELECTION' (Layer<--Marks)")
     for i,L in enumerate(JobObj.LayerList):
         if DEBUG(): print( "Layer #%i, ID='%s'" %(i, str(L.LayerID) ) )
+        s += "\n"
         for ii,M in enumerate( JobObj.Alignment.MarkList ):
             s += "START_SECTION MARKS_SELECTION\n"
-            s = add(s, "  LAYER_ID", L.LayerID)
-            s = add(s, "  MARK_ID", M.MarkID)
+            s = add(s, "LAYER_ID", L.LayerID)
+            s = add(s, "MARK_ID", M.MarkID)
             if np.isin( M, L.MarkList ):
                 expose="E"
             else:
                 expose="N"
-            s = add(s, "  GLBL_MARK_USAGE", expose)
+            s = add(s, "GLBL_MARK_USAGE", expose)
             s += "END_SECTION\n"
             s += "\n"
         #end for(MarkList)
@@ -261,17 +276,18 @@ def _genascii(JobObj):
     
     if DEBUG(): print("Generating Text Sections 'STRATEGY_SELECTION' (Layer<--Strategy)")
     for i,L in enumerate(JobObj.LayerList):
-        if DEBUG(): print( "Layer #%i, ID='%s'" %(i, str(L.LayerID) ) )
         if L.GlobalStrategy:
+            if DEBUG(): print(   "Layer #%i, ID='%s': Strategy = `%s`" %(i, str(L.LayerID) , L.GlobalStrategy.get_ID() )   )
             s += "START_SECTION STRATEGY_SELECTION\n"
-            s = add(s, "  LAYER_ID", L.LayerID)
-            s = add(s, "  STRATEGY_ID", L.GlobalStrategy.Get_ID() )
-            s = add(s, "  STRATEGY_USAGE", "A") # "Active"
+            s = add(s, "LAYER_ID", L.LayerID)
+            s = add(s, "STRATEGY_ID", L.GlobalStrategy.get_ID() )
+            s = add(s, "STRATEGY_USAGE", "A") # "Active"
             s += "END_SECTION\n"
             s += "\n"
         #end for(MarkList)
     #end for(LayerList)
     
+    s += "\n\n\n\n\n"
     
     
     ################
@@ -279,18 +295,25 @@ def _genascii(JobObj):
     ################
     if DEBUG(): print("Generating Text Section 'PROCESS_DATA'...")
     for i,L in enumerate(JobObj.LayerList):
+        if DEBUG(): print(   "Layer #%i, ID='%s'" %(i, str(L.LayerID) )   )
         s += "START_SECTION PROCESS_DATA\n"
         s = add(s, "LAYER_ID", L.LayerID)
         s = add(s, "LENS_REDUCTION", JobObj.get_LensReduction(), integers=True)
         s = add(s, "CALIBRATION", Defaults.ProcessData_CALIBRATION)
         
-        s = add(s, "OPTICAL_PREALIGNMENT", Defaults.ProcessData_OPTICAL_PREALIGNMENT)
-        """
-        if alignment:
-            OPTICAL_PREALIGNMENT                          "Y"  (see above)
-           OPT_PREALIGN_MARKS                            "S" "N"
-           GLBL_WFR_ALIGNMENT                            "N"
-        """
+        if align:
+            if L.PreAlignMarksList:
+                s = add(s, "OPTICAL_PREALIGNMENT", "Y")
+                pmarks = [M.MarkID for M in L.PreAlignMarksList]
+                s = add(s, "OPT_PREALIGN_MARKS", pmarks, doublestr=True)
+            else:
+                s = add(s, "OPTICAL_PREALIGNMENT", Defaults.ProcessData_OPTICAL_PREALIGNMENT)
+        
+            if L.GlobalStrategy:
+                s = add(s, "GLBL_WFR_ALIGNMENT", "Y")
+            else:
+                s = add(s, "GLBL_WFR_ALIGNMENT", "N")
+        #end if(align)
         
         s = add(s, "COO_REDUCTION", Defaults.ProcessData_COO_REDUCTION)
         s = add(s, "MIN_NUMBER_PULSES_IN_SLIT", Defaults.ProcessData_MIN_NUMBER_PULSES_IN_SLIT)
@@ -303,23 +326,31 @@ def _genascii(JobObj):
         s = add(s, "RET_COOL_TIME", Defaults.ProcessData_RET_COOL_TIME, integers=True)
         s = add(s, "RET_COOL_START_ON_LOAD", Defaults.ProcessData_RET_COOL_START_ON_LOAD)
         s = add(s, "RET_COOL_USAGE", Defaults.ProcessData_RET_COOL_USAGE)
-        s = add(s, "GLBL_OVERLAY_ENHANCEMENT", Defaults.ProcessData_GLBL_OVERLAY_ENHANCEMENT)
         
-        ### layer shift:
+        if align: 
+            s = add(s, "GLBL_RTCL_ALIGNMENT", Defaults.ProcessData_GLBL_RTCL_ALIGNMENT)
+        s = add(s, "GLBL_OVERLAY_ENHANCEMENT", Defaults.ProcessData_GLBL_OVERLAY_ENHANCEMENT)
+        if align: 
+            s = add(s, "GLBL_SYM_ALIGNMENT", Defaults.ProcessData_GLBL_SYM_ALIGNMENT)
+        
         s = add(s, "LAYER_SHIFT", L.get_LayerShift() )
         
-        """
-        IF alignment:
-            CORR_WAFER_GRID                               "Default"
-            NR_OF_MARKS_TO_USE                            2
-            MIN_MARK_DISTANCE_COARSE                      20.000000
-            MIN_MARK_DISTANCE                             40
-            MAX_80_88_SHIFT                               0.500000
-            MAX_MARK_RESIDUE                              200.000000
-            SPM_MARK_SCAN                                 "S"
-            ERR_DETECTION_88_8                            "M"
-        """
+        if L.get_CombineWithZeroLayer():
+            s = add(s, "NR_OF_MARKS_TO_USE", 0, integers=True)
+        else:
+            if L.GlobalStrategy:    
+                s = add(s, "NR_OF_MARKS_TO_USE", L.GlobalStrategy.get_required_marks(), integers=True)
+        #end if(ZeroLayer)
         
+        if align and ( not L.get_ZeroLayer() ):
+            s = add(s, "CORR_WAFER_GRID", Defaults.ProcessData_CORR_WAFER_GRID) # Usually above `NR_OF_Marks_TO_USE`
+            s = add(s, "MIN_MARK_DISTANCE_COARSE", Defaults.ProcessData_MIN_MARK_DISTANCE_COARSE)
+            s = add(s, "MIN_MARK_DISTANCE", Defaults.ProcessData_MIN_MARK_DISTANCE)
+            s = add(s, "MAX_80_88_SHIFT", Defaults.ProcessData_MAX_80_88_SHIFT)
+            s = add(s, "MAX_MARK_RESIDUE", Defaults.ProcessData_MAX_MARK_RESIDUE)
+            s = add(s, "SPM_MARK_SCAN", Defaults.ProcessData_SPM_MARK_SCAN)
+            s = add(s, "ERR_DETECTION_88_8", Defaults.ProcessData_ERR_DETECTION_88_8)
+        #end if(align)
         
         s = add(s, "CORR_INTER_FLD_EXPANSION", Defaults.ProcessData_CORR_INTER_FLD_EXPANSION)
         s = add(s, "CORR_INTER_FLD_NONORTHO", Defaults.ProcessData_CORR_INTER_FLD_NONORTHO)
@@ -337,21 +368,19 @@ def _genascii(JobObj):
         s = add(s, "CORR_80_88_MARK_SHIFT", Defaults.ProcessData_CORR_80_88_MARK_SHIFT)
         s = add(s, "CORR_LENS_HEATING", Defaults.ProcessData_CORR_LENS_HEATING)
         
-        """
+        """ Appears that we can omit these without issue
             NUMERICAL_APERTURE                            0.570000
             SIGMA_OUTER                                   0.750000
         """            
         
         s = add(s, "RTCL_CHECK_SURFACES", Defaults.ProcessData_RTCL_CHECK_SURFACES)
         
-        ## 3 ints
+        ## 3 ints:
         s = add(s, "RTCL_CHECK_LIMITS_UPPER", Defaults.ProcessData_RTCL_CHECK_LIMITS_UPPER, integers=True)
         s = add(s, "RTCL_CHECK_LIMITS_LOWER", Defaults.ProcessData_RTCL_CHECK_LIMITS_LOWER, integers=True)
         
-        """
-        IF alignment:
-               ALIGNMENT_METHOD                              "T"
-        """
+        if align and ( not L.get_ZeroLayer() ):
+            s = add(s, "ALIGNMENT_METHOD", Defaults.ProcessData_ALIGNMENT_METHOD)
         
         s = add(s, "CLOSE_GREEN_LASER_SHUTTER", Defaults.ProcessData_CLOSE_GREEN_LASER_SHUTTER)
         s = add(s, "REALIGNMENT_METHOD", Defaults.ProcessData_REALIGNMENT_METHOD)
@@ -362,13 +391,11 @@ def _genascii(JobObj):
         s = add(s, "SHARE_LEVEL_INFO", Defaults.ProcessData_SHARE_LEVEL_INFO)
         s = add(s, "FOCUS_EDGE_CLEARANCE", Defaults.ProcessData_FOCUS_EDGE_CLEARANCE)
         
-        """
-        IF alignment:
-               INLINE_Q_ABOVE_P_CALIBRATION                  "M"
-        else: .... """
-        s = add(s, "INLINE_Q_ABOVE_P_CALIBRATION", Defaults.ProcessData_INLINE_Q_ABOVE_P_CALIBRATION)
+        if align and ( not L.get_ZeroLayer() ):
+            s = add(s, "INLINE_Q_ABOVE_P_CALIBRATION", "M")
+        else:
+            s = add(s, "INLINE_Q_ABOVE_P_CALIBRATION", Defaults.ProcessData_INLINE_Q_ABOVE_P_CALIBRATION)
         
-        ## SMS?
         s = add(s, "SHIFTED_MEASUREMENT_SCANS", Defaults.ProcessData_SHIFTED_MEASUREMENT_SCANS)
         s = add(s, "FOCUS_MONITORING", Defaults.ProcessData_FOCUS_MONITORING)
         s = add(s, "FOCUS_MONITORING_SCANNER", Defaults.ProcessData_FOCUS_MONITORING_SCANNER)
