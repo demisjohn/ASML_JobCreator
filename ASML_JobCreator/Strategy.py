@@ -152,9 +152,9 @@ class Strategy(object):
             
             s = str(s).strip().lower()
             if np.any(  np.isin( PStrings , s )  ):
-                return 'p'
+                return 'P'
             elif np.any(  np.isin( BStrings , s )  ):
-                return 'b'
+                return 'B'
             else:
                 errstr = "Passed argument option `%s` is not in the list of valid options, which are:\n\t" + \
                     str(PStrings) + "\n\t" + \

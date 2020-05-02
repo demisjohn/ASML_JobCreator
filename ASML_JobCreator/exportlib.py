@@ -128,8 +128,9 @@ def _genascii(JobObj):
     s = add(s, "PREALIGN_METHOD", Defaults.PREALIGN_METHOD)
     if JobObj.get_CombinedZeroFirst():
         s = add(s, "COMBINE_ZERO_FIRST", "Y")
+    else:
+        s = add(s, "COMBINE_ZERO_FIRST", Defaults.COMBINE_ZERO_FIRST)
     s = add(s, "WAFER_ROTATION", Defaults.WAFER_ROTATION)
-    s = add(s, "COMBINE_ZERO_FIRST", Defaults.COMBINE_ZERO_FIRST)
     s = add(s, "MATCHING_SET_ID", Defaults.MATCHING_SET_ID)
     s += "END_SECTION\n"
     s += "\n\n\n\n\n"
@@ -155,12 +156,12 @@ def _genascii(JobObj):
             if DEBUG(): print("Strategy %i: `%s`" % (i,S.get_ID()) )
             s += "START_SECTION WFR_ALIGN_STRATEGY\n"
             s = add(s, "STRATEGY_ID", S.get_ID() )
-            s = add(s, "WAFER_SIDE", Defaults.AlignmentStrategy_WAFER_ALIGNMENT_METHOD)
+            s = add(s, "WAFER_ALIGNMENT_METHOD", Defaults.AlignmentStrategy_WAFER_ALIGNMENT_METHOD)
             s = add(s, "NR_OF_MARKS_TO_USE", S.get_required_marks(), integers=True)
             s = add(s, "NR_OF_X_MARKS_TO_USE", S.get_required_marks(), integers=True)
             s = add(s, "NR_OF_Y_MARKS_TO_USE", S.get_required_marks(), integers=True)
             s = add(s, "MIN_MARK_DISTANCE_COARSE", Defaults.AlignmentStrategy_MIN_MARK_DISTANCE_COARSE)
-            s = add(s, "MIN_MARK_DISTANCE", Defaults.AlignmentStrategy_MIN_MARK_DISTANCE)   # `integers` needed?
+            s = add(s, "MIN_MARK_DISTANCE", Defaults.AlignmentStrategy_MIN_MARK_DISTANCE, integers=True)
             s = add(s, "MAX_80_88_MARK_SHIFT", Defaults.AlignmentStrategy_MAX_80_88_MARK_SHIFT)
             s = add(s, "MAX_MARK_RESIDUE", Defaults.AlignmentStrategy_MAX_MARK_RESIDUE)
             s = add(s, "SPM_MARK_SCAN", Defaults.AlignmentStrategy_SPM_MARK_SCAN)
@@ -345,7 +346,7 @@ def _genascii(JobObj):
         if align and ( not L.get_ZeroLayer() ):
             s = add(s, "CORR_WAFER_GRID", Defaults.ProcessData_CORR_WAFER_GRID) # Usually above `NR_OF_Marks_TO_USE`
             s = add(s, "MIN_MARK_DISTANCE_COARSE", Defaults.ProcessData_MIN_MARK_DISTANCE_COARSE)
-            s = add(s, "MIN_MARK_DISTANCE", Defaults.ProcessData_MIN_MARK_DISTANCE)
+            s = add(s, "MIN_MARK_DISTANCE", Defaults.ProcessData_MIN_MARK_DISTANCE, integers=True)
             s = add(s, "MAX_80_88_SHIFT", Defaults.ProcessData_MAX_80_88_SHIFT)
             s = add(s, "MAX_MARK_RESIDUE", Defaults.ProcessData_MAX_MARK_RESIDUE)
             s = add(s, "SPM_MARK_SCAN", Defaults.ProcessData_SPM_MARK_SCAN)
