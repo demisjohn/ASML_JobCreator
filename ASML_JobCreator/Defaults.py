@@ -63,24 +63,27 @@ class Defaults(object):
     
     def LoadDefaultValues(self):
         
-        ##  Defaults for user-editable settings:
+        ## Defaults for plotting options:
+        self.Plotting_Alpha = 0.7       # alpha transparency value
+        self.Plotting_LineWidth = 1.0
+        self.Plotting_WaferColor = 'snow'
+        self.Plotting_WaferEdgeColor = 'lightgrey'
+        self.Plotting_BGHatch = '.........'
+        self.Plotting_GridColor = 'lightgrey'
+        self.Plotting_GridStyle = ":"
+        self.Plotting_ReticleTableColor = self.Plotting_WaferColor
+        self.Plotting_LensColor = self.Plotting_WaferEdgeColor
+        self.Plotting_BGOutlineColor = 'darkgrey'   # unused
+        self.Plotting_BGOutlineStyle = "-"
+        self.Plotting_BGOutlineWidth = 1.0
+
+        
         self.comment_line1 = "Created with python ASML_JobCreator"
         self.comment_line2 = "Univ. of California Santa Barbara"
         self.comment_line3 = "UCSB Nanofab, Demis D. John"
         
         
-        ## Defaults Hard-Coded here:
-        self.MACHINE_TYPE = "PAS5500/300"
-        self.RETICLE_SIZE = 6        # inches
-        self.WFR_DIAMETER = 100.0       # mm
-        self.WFR_FLAT_LENGTH = 32.5     # mm, used for MPL plotting only, custom param
-        self.WFR_NOTCH = "N"
-        self.COVER_MODE = "W"
-        self.PLACEMENT_MODE = "O"
-        self.PREALIGN_METHOD = "STANDARD"
-        self.WAFER_ROTATION = 0.0
-        self.MATCHING_SET_ID = "DEFAULT"
-    
+        
         ## Cell Structure:
         self.ROUND_EDGE_CLEARANCE = 5.0
         self.FLAT_EDGE_CLEARANCE = 5.0
@@ -102,7 +105,10 @@ class Defaults(object):
         self.PREALIGN_METHOD = "STANDARD"
         self.WAFER_ROTATION = 0.0
         self.MATCHING_SET_ID = "DEFAULT"
-        
+        # For plotting only:
+        self.RETICLE_TABLE_WINDOW = [22, 27]    # mm
+        self.LENS_DIAMETER = 31.00              # mm
+        self.WFR_FLAT_LENGTH = 32.5             # mm
         
         
         ## Image Defaults

@@ -53,9 +53,12 @@ class Plot(object):
         # Arc angles:
         F = self.parent.defaults.WFR_FLAT_LENGTH    # wafer flat length, mm
         D = self.parent.defaults.WFR_DIAMETER   # wafer diameter, mm
-        A = np.rad2deg(  np.arcsin( (F/2) / (D/2) )  )  # arc angle corresponding to 1/2 of wafer flat
+        if Defaults.WFR_NOTCH.upper() == "N":
+            A = np.rad2deg(  np.arcsin( (F/2) / (D/2) )  )  # arc angle corresponding to 1/2 of wafer flat
+        else:
+            A = 2
         # matplotlib.patches.Arc(xy, width, height, angle=0.0, theta1=0.0, theta2=360.0) :
-        wf = mplp.Arc( (0,0) , D, D, angle=-90, theta1=A, theta2=-A , color='darkgrey', hatch='....')
+        wf = mplp.Arc( (0,0) , D, D, angle=-90, theta1=A, theta2=-A , color=Defaults.Plotting_WaferEdgeColor, hatch=Defaults.Plotting_BGHatch)
         ax.add_patch( wf )
         
         
@@ -63,8 +66,11 @@ class Plot(object):
         # Arc angles:
         Fc = F - self.parent.Cell.get_FlatEdgeClearance()
         Dc = D - 2*self.parent.Cell.get_RoundEdgeClearance()
-        Ac = np.rad2deg(  np.arcsin( (Fc/2) / (Dc/2) )  )
-        clearance = mplp.Arc( (0,0) , Dc, Dc, angle=-90, theta1=Ac, theta2=(-Ac) , color='lightgrey', hatch='....')
+        if Defaults.WFR_NOTCH.upper() == "N":
+            Ac = np.rad2deg(  np.arcsin( (Fc/2) / (Dc/2) )  ) # arc angle corresponding to 1/2 of wafer flat
+        else:
+            Ac = 2
+        clearance = mplp.Arc( (0,0) , Dc, Dc, angle=-90, theta1=Ac, theta2=(-Ac) , color=Defaults.Plotting_WaferColor, hatch=Defaults.Plotting_BGHatch)
         ax.add_patch( clearance )
         
         
@@ -121,7 +127,7 @@ class Plot(object):
             tick.label1.set_horizontalalignment('center')
         #end for(ytick)
         
-        ax.grid(True, which='minor')
+        ax.grid(True, which='minor', color=Defaults.Plotting_GridColor, linestyle=Defaults.Plotting_GridStyle)
         ax.grid(False, which='major')
         
         
@@ -139,7 +145,7 @@ class Plot(object):
                 if DEBUG(): print("X,Y=", X,Y)
                 Icen = np.array(  [ () , () ]  )
                 # matplotlib.patches.Rectangle( (x,y), width, height):
-                R = mplp.Rectangle( (X,Y),  Iwidth, Iheight, color=cmap(i), label=Img.ImageID )
+                R = mplp.Rectangle( (X,Y),  Iwidth, Iheight, color=cmap(i), label=Img.ImageID, alpha=Defaults.Plotting_Alpha, linewidth=Defaults.Plotting_LineWidth )
                 ax.add_patch(   R   )
                 if ii==0: LegendEntries.append( R ) # add once only
             #end for(ImgDistr)
@@ -147,7 +153,7 @@ class Plot(object):
         
         # Shrink current axis by 20% for legend to fit
         box = ax.get_position()
-        print("box=", box.x0, box.y0)   
+        if DEBUG(): print("ax:box=", box.x0, box.y0)   
         ax.set_position([box.x0 * WaferPlotBox[0], box.y0 * WaferPlotBox[1], box.width * WaferPlotBox[2], box.height * WaferPlotBox[3]])
         ax.axis('scaled')  # proportional axes
 
@@ -169,6 +175,44 @@ class Plot(object):
         -------
         fig, ax : Matplotlib Figure and Axis objects containing the schematic. Use these handles to manipulate the plot after generation. Matplotlib Patches are used to draw the shapes.
         """
-        pass
+        # RETICLE_TABLE_SIZE, LENS_DIAMETER 
+        import matplotlib.pyplot as plt
+        import matplotlib.patches as mplp   # for plotting shapes
+        import numpy as np
+        
+        fig, ax = plt.subplots(nrows=1, ncols=1)
+        
+        
+        ## Plot the Lens outline:
+        Lens = mplp.Circle( (0,0), Defaults.LENS_DIAMETER/2.0, label="Lens Diameter", 
+        facecolor=Defaults.Plotting_LensColor, 
+        linewidth=Defaults.Plotting_BGOutlineWidth,
+        edgecolor=Defaults.Plotting_BGOutlineColor, 
+        linestyle=Defaults.Plotting_BGOutlineStyle,
+        alpha = Defaults.Plotting_Alpha  )
+        ax.add_patch(   Lens   )
+        
+        
+        ## Plot the Reticle Table outline:
+        RT = mplp.Rectangle( (-Defaults.RETICLE_TABLE_WINDOW[0]/2.0, -Defaults.RETICLE_TABLE_WINDOW[1]/2.0), Defaults.RETICLE_TABLE_WINDOW[0], Defaults.RETICLE_TABLE_WINDOW[1], label="Reticle Table Window", 
+        facecolor=Defaults.Plotting_ReticleTableColor, 
+        linewidth=Defaults.Plotting_BGOutlineWidth,
+        edgecolor=Defaults.Plotting_BGOutlineColor, 
+        linestyle=Defaults.Plotting_BGOutlineStyle,
+        alpha = Defaults.Plotting_Alpha )
+        ax.add_patch(   RT   )
+        
+        
+        # Shrink current axis by 20% for legend to fit
+        box = ax.get_position()
+        if DEBUG(): print("ax:box=", box.x0, box.y0)   
+        ax.set_position([box.x0 * WaferPlotBox[0], box.y0 * WaferPlotBox[1], box.width * WaferPlotBox[2], box.height * WaferPlotBox[3]])
+        ax.axis('scaled')  # proportional axes
+
+        # Put a legend to the right of the current axis
+        #ax.legend(handles=LegendEntries, title="Images", fontsize="small", loc='upper left', bbox_to_anchor=(1.01, 1), borderaxespad=0.)
+        
+        fig.show()
+        return fig, ax
     #end plot_wafer()
 #end class(Plot)
