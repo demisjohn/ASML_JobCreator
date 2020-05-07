@@ -133,6 +133,30 @@ class Image(object):
     
     
     
+    def get_ImageID(self):
+        '''Return ImageID, if it has been set.  Otherwise, return `None`.'''
+        return self.ImageID
+    
+    def set_ImageID(self, ImageID):
+        '''Set ImageID, as string.'''
+        self.ImageID = str(ImageID)
+    
+    
+    
+    def get_BaseImageID(self):
+        '''Return BaseImageID, if it has been set (usually only for Images defined during Alignment.Mark definitions).  Otherwise, return `None`.'''
+        return self.BaseImageID
+    
+    def set_BaseImageID(self, BaseImageID):
+        '''Set BaseImageID - usually only for Images defined during Alignment.Mark definitions.'''
+        self.BaseImageID = str(BaseImageID)
+    
+    def unset_BaseImageID(self):
+        '''Unset the BaseImageID - reverts back to it's default value of `None`.'''
+        self.BaseImageID = None
+    
+    
+    
     
     ##############################################
     #       Other methods
@@ -171,18 +195,6 @@ class Image(object):
         '''Return list of [CellC,CellR], [ShiftX,ShiftY] pairs corresponding to each distribution of this Image.'''
         return list( zip(self.Cells, self.Shifts) )
     
-    
-    def get_BaseImageID(self):
-        '''Return BaseImageID, if it has been set (usually only for Images defined during Alignment.Mark definitions).  Otherwise, return `None`.'''
-        return self.BaseImageID
-    
-    def set_BaseImageID(self, BaseImageID):
-        '''Set BaseImageID - usually only for Images defined during Alignment.Mark definitions.'''
-        self.BaseImageID = str(BaseImageID)
-    
-    def unset_BaseImageID(self):
-        '''Unset the BaseImageID - reverts back to it's default value of `None`.'''
-        self.BaseImageID = None
   
 #end class(Image)
 
