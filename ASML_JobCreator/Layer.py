@@ -212,6 +212,19 @@ class Layer(object):
         return self.SMS
     
     
+    def get_LayerID(self):
+        '''Return LayerID, if it has been set.  Otherwise, return `None`.'''
+        return self.LayerID
+    
+    def set_LayerID(self, LayerID):
+        '''Set LayerID as string.'''
+        self.LayerID = str(LayerID)
+    
+    def unset_LayerID(self):
+        '''Revert the LayerID back to default of "", allowing automatic choice during job creation.'''
+        self.LayerID = ""
+    
+    
     ##############################################
     #       Exposures
     ##############################################  
@@ -296,7 +309,7 @@ class Layer(object):
     #       Alignment etc.
     ##############################################
     
-    def expose_Marks(self, Marks=[], Energy=20, Focus=0, FocusTilt=[0,0], NA=0.570, Sig_o=0.750, Sig_i=None, IlluminationMode="Default"):
+    def expose_Marks(self, marks=[], Energy=20, Focus=0, FocusTilt=[0,0], NA=0.570, Sig_o=0.750, Sig_i=None, IlluminationMode="Default"):
         """
         Set Layer to expose some Alignment Marks.
 
@@ -306,8 +319,8 @@ class Layer(object):
             Pass an iterable of Mark objects to expose.
         Energy : float
             Exposure energy in mJ.
-        Focus : float
-            The focus offset in mm.
+        Focus : float, optional
+            The focus offset in mm. Defaults to 0mm.
         FocusTilt : two-valued array-like, optional
             Rx,Ry focus tilt values. Defaults to [0,0]
         NA : number, optional
@@ -315,13 +328,13 @@ class Layer(object):
         Sig_o, Sig_i : numbers, optional
             Sigma Inner & Outer.  Defaul to Sig_o=0.750, Sig_i=0.5
         IlluminationMode : {"Default", "Conventional", "Annular"}, optional
-            Defaults to "Default", which is whatever the machine default is, usually "Conventional"
+            Defaults to "Default", which is whatever the machine default is, usually "Conventional".
 
         """
         ## Santize args
         IlluminationMode = self._parse_IllumMode(IlluminationMode)
         
-        for i,m in enumerate(Marks):
+        for i,m in enumerate(marks):
             ## Only add the Image once:
             if DEBUG(): print("Layer.expose_marks(): not IsIn = ", not np.isin( m.Image, self.ImageList )  )
             if not np.isin( m.Image, self.ImageList ):
@@ -340,14 +353,21 @@ class Layer(object):
     #end expose_Marks()
     
     
-    def set_PreAlignment(self,  mark1, mark2 ):
+    def set_PreAlignment(self,  marks=[] ):
         """
         Enable Optical Prealignment on this Layer.
-        Pass the two Mark objects corresponding to the alignment marks to be used for Optical Prealignment.
+        Pass a list/iterable containing the two Mark objects corresponding to the alignment marks to be used for Optical Prealignment.
         
         Note that the chosen marks must lie in the limited region reachable by the optical prealignment camera system, and must be on opposide sides of the wafer.
         """
         from .Mark import Mark as _Mark     # Mark class
+        
+        try:
+            mark1, mark2 = marks[0], marks[1]
+        except IndexError:
+            errstr = "Expected exactly two Mark objects, instead got: %s"%( marks )
+            raise IndexError(errstr)
+        
         if isinstance(mark1, _Mark) and isinstance(mark2, _Mark):
             self.PreAlignMarksList = [mark1, mark2]
         else:
