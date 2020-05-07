@@ -188,7 +188,11 @@ class Strategy(object):
     
     def get_required_marks(self):
         '''Return the number of required marks to pass during Mark measurement.'''
-        return self.required_marks
+        try:
+            return self.required_marks
+        except AttributeError:
+            self.required_marks = len(self.MarkList)
+            return self.required_marks
     #end get_required_marks()
 
     
