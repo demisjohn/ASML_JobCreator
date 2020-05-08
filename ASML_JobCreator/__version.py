@@ -11,9 +11,9 @@ version.py
 Demis D. John, Univ. of California Santa Barbara; Nanofabrication Facility; 2019
 
 """
-version = '1.1.1'   # version number.  x.x.A for minor updates, before pushing to x.A version.  A.x.x is for major changes that are significantly not backwards compatible.
+version = '1.2.0'   # version number.  x.x.A for minor updates, before pushing to x.A version.  A.x.x is for major changes that are significantly not backwards compatible.
 
-versiondate = "2020-04-17"   # date this version number was updated
+versiondate = "2020-05-08"   # date this version number was updated
 
 author = "Demis D. John, UCSB Nanofab"
 
