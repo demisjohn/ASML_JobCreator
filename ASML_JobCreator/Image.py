@@ -59,7 +59,7 @@ class Image(object):
         self.parent = parent    # parent Job object
         self.ImageID = str(ImageID)
         self.BaseImageID = None
-        self.ReticleID = str(ReticleID)
+        self.set_ReticleID( ReticleID )
         if len(sizeXY) == 2 and np.isscalar(sizeXY[0]) and np.isscalar(sizeXY[1]):
             self.sizeXY = (sizeXY[0], sizeXY[1])
         else:
@@ -155,6 +155,19 @@ class Image(object):
         '''Unset the BaseImageID - reverts back to it's default value of `None`.'''
         self.BaseImageID = None
     
+    
+    
+    def get_ReticleID(self):
+        '''Return ReticleID, as string.'''
+        return self.ReticleID
+    
+    def set_ReticleID(self, ReticleID):
+        '''Set ReticleID, as string.'''
+        self.ReticleID = str(ReticleID)
+        if self.ReticleID == "":
+            errstr = "Invalid ReticleID: `%s`" % self.ReticleID
+            raise ValueError( errstr )
+    #end set_ReticleID()
     
     
     

@@ -79,6 +79,7 @@ print(MyJob)
 
 # Plot the wafer layout and distributed Images:
 MyJob.Plot.plot_wafer()
+MyJob.Plot.plot_reticles()
 
 ## Export the text file:
 MyJob.export('TestJob_NoAlign.txt')

@@ -166,53 +166,145 @@ class Plot(object):
     
     
     
-    def plot_reticle(self):
+    def plot_reticles(self, scale=False):
         """
         Plot the Reticle layout(s).  If multiple Reticle ID's are detected, multiple reticles will be plotted.
         Note that some plotting options, such as font size and axis positioning, are set in __globals.py
         
+        Parameters
+        ----------
+        scale : True | False, optional
+            If True, plot at Reticle scale (eg. 4x or 5x, as set in `Defaults.py :: LENS_REDUCTION`).  Defaults to False, which plots at 1x wafer-scale.
+        
         Returns
         -------
-        fig, ax : Matplotlib Figure and Axis objects containing the schematic. Use these handles to manipulate the plot after generation. Matplotlib Patches are used to draw the shapes.
+        fig, ax : Lists of Matplotlib Figure and Axis objects containing the schematic. Use these handles to manipulate the plot after generation. Matplotlib Patches are used to draw the shapes.
+        Each always returns a list, of length corresponding to the number of unique ReticleID's defined in the Job.
         """
+        #if not DEBUG(): raise NotImplementedError("This function is incomplete!")
+        
+        if scale:
+            Mag = Defaults.ProcessData_LENS_REDUCTION
+        else:
+            Mag = 1.0
+        
         # RETICLE_TABLE_SIZE, LENS_DIAMETER 
         import matplotlib.pyplot as plt
         import matplotlib.patches as mplp   # for plotting shapes
         import numpy as np
         
-        fig, ax = plt.subplots(nrows=1, ncols=1)
+        # TODO: 
+        #   - figure out number of ReticleID's, one axis per
+        #   - loop thru images on each reticle       
+        
+        Rets,Imgs = self._get_ReticlesPerImage()
+        figs, axs = [],[]
+        
+        for r,RetStr in enumerate(Rets):
+            fig, ax = plt.subplots(nrows=1, ncols=1)
+            figs.append(fig)
+            axs.append(ax)
+            
+            ## Plot the Lens outline:
+            Lens = mplp.Circle( (0,0), Defaults.LENS_DIAMETER/2.0 * Mag, label="Lens Diameter", 
+            facecolor=Defaults.Plotting_LensColor, 
+            linewidth=Defaults.Plotting_BGOutlineWidth,
+            edgecolor=Defaults.Plotting_BGOutlineColor, 
+            linestyle=Defaults.Plotting_BGOutlineStyle,
+            alpha = Defaults.Plotting_Alpha  )
+            ax.add_patch(   Lens   )
         
         
-        ## Plot the Lens outline:
-        Lens = mplp.Circle( (0,0), Defaults.LENS_DIAMETER/2.0, label="Lens Diameter", 
-        facecolor=Defaults.Plotting_LensColor, 
-        linewidth=Defaults.Plotting_BGOutlineWidth,
-        edgecolor=Defaults.Plotting_BGOutlineColor, 
-        linestyle=Defaults.Plotting_BGOutlineStyle,
-        alpha = Defaults.Plotting_Alpha  )
-        ax.add_patch(   Lens   )
+            ## Plot the Reticle Table outline:
+            RT = mplp.Rectangle( (-Defaults.RETICLE_TABLE_WINDOW[0]/2.0 * Mag, -Defaults.RETICLE_TABLE_WINDOW[1]/2.0 * Mag), Defaults.RETICLE_TABLE_WINDOW[0] * Mag, Defaults.RETICLE_TABLE_WINDOW[1] * Mag,
+            label="Reticle Table Window", 
+            facecolor=Defaults.Plotting_ReticleTableColor, 
+            linewidth=Defaults.Plotting_BGOutlineWidth,
+            edgecolor=Defaults.Plotting_BGOutlineColor, 
+            linestyle=Defaults.Plotting_BGOutlineStyle,
+            alpha = Defaults.Plotting_Alpha )
+            ax.add_patch(   RT   )
         
+            ax.set_xlabel("%ix Scale, mm" % (Mag), fontsize=PlotLabelFontSize)
+            ax.set_ylabel("mm", fontsize=PlotLabelFontSize)
+            ax.set_title("ReticleID: " + RetStr)
+            ax.grid(True, which='major', color=Defaults.Plotting_GridColor, linestyle=Defaults.Plotting_GridStyle)
         
-        ## Plot the Reticle Table outline:
-        RT = mplp.Rectangle( (-Defaults.RETICLE_TABLE_WINDOW[0]/2.0, -Defaults.RETICLE_TABLE_WINDOW[1]/2.0), Defaults.RETICLE_TABLE_WINDOW[0], Defaults.RETICLE_TABLE_WINDOW[1], label="Reticle Table Window", 
-        facecolor=Defaults.Plotting_ReticleTableColor, 
-        linewidth=Defaults.Plotting_BGOutlineWidth,
-        edgecolor=Defaults.Plotting_BGOutlineColor, 
-        linestyle=Defaults.Plotting_BGOutlineStyle,
-        alpha = Defaults.Plotting_Alpha )
-        ax.add_patch(   RT   )
-        
-        
-        # Shrink current axis by 20% for legend to fit
-        box = ax.get_position()
-        if DEBUG(): print("ax:box=", box.x0, box.y0)   
-        ax.set_position([box.x0 * WaferPlotBox[0], box.y0 * WaferPlotBox[1], box.width * WaferPlotBox[2], box.height * WaferPlotBox[3]])
-        ax.axis('scaled')  # proportional axes
+            
+            # Plot the defined images:
+            cmap = plt.get_cmap("tab20")    # cycling colors
+            LegendEntries = []
+            for i, Img in enumerate(Imgs[r]):
+                #if DEBUG(): print("_get_ReticlesPerImage(): Imgs:\n", Imgs, "\nImg #%i\n"%i, Img)
+                Iwidth = Img.sizeXY[0] * Mag
+                Iheight = Img.sizeXY[1] * Mag
+                X = Img.shiftXY[0] * Mag - Iwidth/2
+                Y = Img.shiftXY[1] * Mag - Iheight/2
+                
+                R = mplp.Rectangle( (X,Y),  Iwidth, Iheight, color=cmap(i), label=Img.ImageID, alpha=1.0, linewidth=Defaults.Plotting_LineWidth )
+                ax.add_patch(   R   )
+                LegendEntries.append( R ) # add once only
+            #end for(Imagelist)
+            
+            
+            # Shrink current axis by 20% for legend to fit
+            box = ax.get_position()
+            ax.set_position([box.x0 * WaferPlotBox[0], box.y0 * WaferPlotBox[1], box.width * WaferPlotBox[2], box.height * WaferPlotBox[3]])
+            ax.axis('scaled')  # proportional axes
 
-        # Put a legend to the right of the current axis
-        #ax.legend(handles=LegendEntries, title="Images", fontsize="small", loc='upper left', bbox_to_anchor=(1.01, 1), borderaxespad=0.)
+            # Put a legend to the right of the current axis
+            ax.legend(handles=LegendEntries, title="Images", fontsize="small", loc='upper left', bbox_to_anchor=(1.01, 1), borderaxespad=0.)
         
-        fig.show()
-        return fig, ax
+            fig.show()
+        #end for (RetStr)
+        
+        return figs, axs
     #end plot_wafer()
+    
+    plot_reticle = plot_reticles    # alias for convenience
+    
+    
+    
+    def _get_ReticlesPerImage(self):
+        '''Analyze ReticleID's in each Image, and figure out how many reticles and which images are on it.
+        
+        Returns
+        -------
+        Reticles : list of strings
+            Unique ReticleID's in this job
+        Images : list of lists
+            Each list corresponds to the Reticle ID.
+        
+        Examples
+        --------
+        >>> One = Image(ImageID="One", ReticleID="Ret1", ....)
+        >>> Two = Image(ImageID="Two", ReticleID="Ret1", ....)
+        >>> Three = Image(ImageID="Three", ReticleID="RetTwo", ....)
+        >>> Reticles, Images = _get_ReticlesPerImage( [One, Two, Three] )
+        returns:
+        : Reticles = ["Ret1", "RetTwo"]
+        : Images = [ [One,Two], [Three] ]
+        '''
+        Rets = []
+        Imgs = []
+        
+        for i,I in enumerate(self.parent.ImageList):
+            Imgs.append( [] )
+            Rstr = I.get_ReticleID()
+            Ri = np.where(   np.isin( Rets, Rstr )  )[0]
+            if DEBUG(): print("_get_ReticlesPerImage(): #%i\n"%i, "\tI.ImageID = %s\n" % I.get_ImageID(), "\tI.ReticleID = %s\n" % I.get_ReticleID(), "\tI.Rets = %s, Rstr = %s\n" % (Rets, Rstr), "\tRi = %s\n" % Ri)
+            if len(Ri)==0:
+                # Unlisted ReticleID
+                Rets.append( Rstr )
+                Imgs[i].append( I )
+            else:
+                Imgs[Ri[0]].append( I )
+            #end if(Ri)
+           
+        #end for(ImageList)
+        
+        if DEBUG(): print("_get_ReticlesPerImage(): Rets, Imgs = \n", Rets, "\n", Imgs )
+        return Rets, Imgs
+    #end _get_ReticlesPerImage()
+        
 #end class(Plot)
