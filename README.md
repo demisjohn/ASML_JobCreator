@@ -65,8 +65,12 @@ see `help( MyJob.Image )` for full description of arguments.
     # MA6 Contact Alignment Mark:
     MA6 = MyJob.Image( "UCSB_MA6", "UCSB-OPC1", sizeXY=[2.00, 2.00], shiftXY=[-4.00, -5.00] )
 
+#### Image Library: Easily store pre-defined Images
+Predefined Images can be stored as simple text files in the `/Images/` subfolder inside the module folder. Alignment Marks are already implemented using this Image library, see the files in the `/Image/` subfolder for examples.
 
 ### Image Distribution: Define wafer location of the above Images
+A major benefit of python scripting: use nested `for` loops to place images across the wafer. Especially relevant to stitching images on varying pitches.
+
 Arguments for distributing an Image on the wafer: 
 
 &nbsp;&nbsp;&nbsp;&nbsp;`MyImage.distribute( cellCR=[Col,Row], shiftXY=[X_Shift, Y_shift] )`
@@ -97,12 +101,23 @@ Make a new layer, and choose which Images get exposed on it:
     print(MyJob)    # Print all info about this Job, including Images, Layers etc.
 
 ### Alignment
-Alignment between layers is not yet implemented. Currently the jobs will align to the wafer-flat before exposure. Check back for updates!
+`Example02` shows example of exposing and aligning to Alignment marks. Mark Images are predefined in the Image Library folder.
 
-### Export the text file:
+### Export the text file
     MyJob.export( 'TestJob_NoAlign.txt' )
     
 The resulting text file can then be imported into the ASML PAS software as a binary job file, with the `pas_import_recipe` command-line tool.
+
+### Plotting
+Verify your wafer layouts or reticle layouts using the Plot commands:
+
+`MyJob.Plot.plot_wafer()`:
+
+<img src="https://user-images.githubusercontent.com/5370181/81465117-5f5b1b80-917c-11ea-91b3-b5b2c863384d.png" alt="plot_wafer()" width="450"/>
+    
+`MyJob.Plot.plot_reticles()`:
+
+<img src="https://user-images.githubusercontent.com/5370181/81465151-a21cf380-917c-11ea-8b6d-415208376d75.png" alt="plot_reticles()" width="450"/>
 
 ## Defaults
 
