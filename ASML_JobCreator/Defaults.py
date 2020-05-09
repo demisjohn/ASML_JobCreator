@@ -71,6 +71,13 @@ class Defaults(object):
         self.Plotting_BGHatch = '.........'
         self.Plotting_GridColor = 'lightgrey'
         self.Plotting_GridStyle = ":"
+        
+        self.Plotting_ImageColorMap = "tab20"
+        self.Plotting_MarkColorMap = "Dark2"
+        self.Plotting_MarkFace = "black"
+        self.Plotting_MarkLineWidth = 2.0
+        self.Plotting_MarkAlpha = 1.0
+        
         self.Plotting_ReticleTableColor = self.Plotting_WaferColor
         self.Plotting_LensColor = self.Plotting_WaferEdgeColor
         self.Plotting_BGOutlineColor = 'darkgrey'   # unused
@@ -80,9 +87,9 @@ class Defaults(object):
         
         
         ## Cell Structure:
-        self.ROUND_EDGE_CLEARANCE = 5.0
-        self.FLAT_EDGE_CLEARANCE = 5.0
-        self.EDGE_EXCLUSION = 3.0
+        self.ROUND_EDGE_CLEARANCE = 2.0
+        self.FLAT_EDGE_CLEARANCE = 2.0
+        self.EDGE_EXCLUSION = 2.0
         self.NUMBER_DIES = [1, 1]       # number of Die per Cell
         self.MIN_NUMBER_DIES = 1
         self.CELL_SIZE = [10, 10]    #mm
