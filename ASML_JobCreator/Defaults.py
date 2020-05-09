@@ -78,11 +78,6 @@ class Defaults(object):
         self.Plotting_BGOutlineWidth = 1.0
 
         
-        self.comment_line1 = "Created with python ASML_JobCreator"
-        self.comment_line2 = "Univ. of California Santa Barbara"
-        self.comment_line3 = "UCSB Nanofab, Demis D. John"
-        
-        
         
         ## Cell Structure:
         self.ROUND_EDGE_CLEARANCE = 5.0
@@ -109,6 +104,11 @@ class Defaults(object):
         self.RETICLE_TABLE_WINDOW = [22, 27]    # mm
         self.LENS_DIAMETER = 31.00              # mm
         self.WFR_FLAT_LENGTH = 32.5             # mm
+        
+        self.comment_line1 = "Created with python ASML_JobCreator"
+        self.comment_line2 = "Univ. of California Santa Barbara"
+        self.comment_line3 = "UCSB Nanofab, Demis D. John"
+        
         
         
         ## Image Defaults
