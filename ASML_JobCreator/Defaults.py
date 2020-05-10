@@ -81,7 +81,7 @@ class Defaults(object):
         self.Plotting_ReticleTableColor = self.Plotting_WaferColor
         self.Plotting_LensColor = self.Plotting_WaferEdgeColor
         self.Plotting_BGOutlineColor = 'darkgrey'   # unused
-        self.Plotting_BGOutlineStyle = "-"
+        self.Plotting_BGOutlineStyle = ":"
         self.Plotting_BGOutlineWidth = 1.0
 
         

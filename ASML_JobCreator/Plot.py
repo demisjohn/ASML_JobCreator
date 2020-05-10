@@ -249,6 +249,7 @@ class Plot(object):
             fig, ax = plt.subplots(nrows=1, ncols=1)
             figs.append(fig)
             axs.append(ax)
+            LegendEntries = []
             
             if showlens:
                 ## Plot the Lens outline:
@@ -259,6 +260,7 @@ class Plot(object):
                 linestyle=Defaults.Plotting_BGOutlineStyle,
                 alpha = Defaults.Plotting_Alpha  )
                 ax.add_patch(   Lens   )
+                LegendEntries.append( Lens )
             #end if(showlens)
         
             if showwindow:
@@ -271,6 +273,7 @@ class Plot(object):
                 linestyle=Defaults.Plotting_BGOutlineStyle,
                 alpha = Defaults.Plotting_Alpha )
                 ax.add_patch(   RT   )
+                LegendEntries.append( RT )
             #end if(showwindow)
         
             ax.set_xlabel("%ix Scale, mm" % (Mag), fontsize=PlotLabelFontSize)
@@ -281,7 +284,6 @@ class Plot(object):
             
             # Plot the defined images:
             cmap = plt.get_cmap(Defaults.Plotting_ImageColorMap)    # cycling colors
-            LegendEntries = []
             for i, Img in enumerate(Imgs[r]):
                 #if DEBUG(): print("_get_ReticlesPerImage(): Imgs:\n", Imgs, "\nImg #%i\n"%i, Img)
                 Iwidth = Img.sizeXY[0] * Mag
