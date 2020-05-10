@@ -5,17 +5,17 @@ Class heirarchy is set up similarly to the ASML *Job Definition* GUI.
 
 # Installation
 
-You must have a Python interpreter installed in order to use this module.  It is designed for use with Python 3.x, although 2.x may work (untested). 
-
-Common easy-to-install Scientific Python IDE's include [Anaconda Python](https://www.anaconda.com) > Spyder, or Jupyter Notebooks, or the command-line Python interpreter that is built-in to many modern operating sytems.
-
-Download the latest ASML_JobCreator package from [GitHub/ASML_JobCreator/Releases](https://github.com/demisjohn/ASML_JobCreator/releases), and extract into a directory of your choice.  
+- You must have a Python interpreter installed in order to use this module.  It is designed for use with Python 3.x, although 2.x may work (untested). 
+   - Common easy-to-install Scientific Python IDE's include [Anaconda Python](https://www.anaconda.com) > Spyder, or Jupyter Notebooks, or the command-line Python interpreter that is built-in to many modern operating sytems.
+   
+- **Download the latest _ASML_JobCreator_ package** at [GitHub > ASML_JobCreator > Releases](https://github.com/demisjohn/ASML_JobCreator/releases)
+   - Extract the ZIP into a directory of your choice, and open/run an Example file with the Python IDE
 
 # Usage
 
 Example usage, to export a text file for import into ASML PAS stepper system via `pas_recipe_import`.
 
-Edit the *Example* file to your needs and execute the script with your Python interpreter.
+Edit the appropriate *Example* file to your needs and execute the script with your Python interpreter.
 
 The text file produced can be copied to your ASML PAS system.  On the system, execute the converter `pas_recipe_import` (with appropriate arguments) to generate the binary file that can be loaded into the PAS "*Job Definition*" GUI for further editing or the "*Task Streaming Queue*" for usage.
 
@@ -37,6 +37,7 @@ All coordinates and sizes are specified at **1x wafer-scale** (not reticle 4x/5x
 
 ## Examples of Syntax
 
+    import ASML_JobCreator as asml
     MyJob = asml.Job()  # Create our Job object.
 
 All info will be added to this `Job` object.  Commands like `help(MyJob)` or `dir(MyJob)` will show you available options and arguments.
@@ -66,10 +67,10 @@ see `help( MyJob.Image )` for full description of arguments.
     MA6 = MyJob.Image( "UCSB_MA6", "UCSB-OPC1", sizeXY=[2.00, 2.00], shiftXY=[-4.00, -5.00] )
 
 #### Image Library: Easily store pre-defined Images
-Predefined Images can be stored as simple text files in the `/Images/` subfolder inside the module folder. Alignment Marks are already implemented using this Image library, see the files in the `/Image/` subfolder for examples.
+Predefined Images can be stored as simple text files in the [`/Images/` subfolder inside the module folder](https://github.com/demisjohn/ASML_JobCreator/tree/master/ASML_JobCreator/Images). Alignment Marks are already implemented using this Image library, see the files in the `/Image/` subfolder for examples.
 
 ### Image Distribution: Define wafer location of the above Images
-A major benefit of python scripting: use nested `for` loops to place images across the wafer. Especially relevant to stitching images on varying pitches.
+A major benefit of python scripting: using nested `for` loops to place images across the wafer. Especially relevant to stitching images on varying pitches.
 
 Arguments for distributing an Image on the wafer: 
 
@@ -101,7 +102,7 @@ Make a new layer, and choose which Images get exposed on it:
     print(MyJob)    # Print all info about this Job, including Images, Layers etc.
 
 ### Alignment
-`Example02` shows example of exposing and aligning to Alignment marks. Mark Images are predefined in the Image Library folder.
+[`Example02`](https://github.com/demisjohn/ASML_JobCreator/blob/master/Example%2002%20-%20Alignment%20and%20ImagesLib.py) shows an example of exposing and aligning to Alignment marks. Mark Images are predefined in the Image Library folder.
 
 ### Export the text file
     MyJob.export( 'TestJob_NoAlign.txt' )
