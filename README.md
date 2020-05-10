@@ -122,7 +122,15 @@ Verify your wafer layouts or reticle layouts using the Plot commands:
 
 ## Defaults
 
-Default values for most options are specified in the file `ASML_JobCreator/Defaults.py`.  For the UCSB Nanofab PAS 5500/300, this includes settings such as 100mm wafer with flat, 6-inch reticle size, default alignment methods and edge exclusion zones etc. Some of these have `set`/`get` methods for manipulating them.
+Default values for most options are specified in the file `ASML_JobCreator/Defaults.py`.  For the UCSB Nanofab PAS 5500/300, this includes settings such as:
+
+- 100mm wafer with flat
+- 6-inch reticle size
+- 4x lens reduction (reticle magnification)
+- default alignment methods 
+- default edge exclusion zones etc. 
+
+Some of these have `set`/`get` methods for manipulating them, others must be edited in this file.
 
 # Author(s)
 
