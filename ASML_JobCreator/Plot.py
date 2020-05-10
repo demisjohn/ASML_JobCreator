@@ -255,12 +255,11 @@ class Plot(object):
                 ## Plot the Lens outline:
                 Lens = mplp.Circle( (0,0), Defaults.LENS_DIAMETER/2.0 * Mag, label="Lens Diameter", 
                 facecolor=Defaults.Plotting_LensColor, 
-                linewidth=Defaults.Plotting_BGOutlineWidth,
-                edgecolor=Defaults.Plotting_BGOutlineColor, 
-                linestyle=Defaults.Plotting_BGOutlineStyle,
-                alpha = Defaults.Plotting_Alpha  )
+                linewidth=Defaults.Plotting_ReticleBGOutlineWidth,
+                edgecolor=Defaults.Plotting_ReticleBGOutlineColor, 
+                linestyle=Defaults.Plotting_ReticleBGOutlineStyle,
+                alpha = Defaults.Plotting_ReticleLensAlpha  )
                 ax.add_patch(   Lens   )
-                LegendEntries.append( Lens )
             #end if(showlens)
         
             if showwindow:
@@ -268,12 +267,11 @@ class Plot(object):
                 RT = mplp.Rectangle( (-Defaults.RETICLE_TABLE_WINDOW[0]/2.0 * Mag, -Defaults.RETICLE_TABLE_WINDOW[1]/2.0 * Mag), Defaults.RETICLE_TABLE_WINDOW[0] * Mag, Defaults.RETICLE_TABLE_WINDOW[1] * Mag,
                 label="Reticle Table Window", 
                 facecolor=Defaults.Plotting_ReticleTableColor, 
-                linewidth=Defaults.Plotting_BGOutlineWidth,
-                edgecolor=Defaults.Plotting_BGOutlineColor, 
-                linestyle=Defaults.Plotting_BGOutlineStyle,
-                alpha = Defaults.Plotting_Alpha )
+                linewidth=Defaults.Plotting_ReticleBGOutlineWidth,
+                edgecolor=Defaults.Plotting_ReticleBGOutlineColor, 
+                linestyle=Defaults.Plotting_ReticleBGOutlineStyle,
+                alpha = Defaults.Plotting_ReticleTableAlpha )
                 ax.add_patch(   RT   )
-                LegendEntries.append( RT )
             #end if(showwindow)
         
             ax.set_xlabel("%ix Scale, mm" % (Mag), fontsize=PlotLabelFontSize)
@@ -303,6 +301,10 @@ class Plot(object):
             ax.axis('scaled')  # proportional axes
 
             # Put a legend to the right of the current axis
+            if showlens:
+                LegendEntries.append( Lens )
+            if showwindow:
+                LegendEntries.append( RT )
             ax.legend(handles=LegendEntries, title="Images", fontsize="small", loc='upper left', bbox_to_anchor=(1.01, 1), borderaxespad=0.)
         
             fig.show()

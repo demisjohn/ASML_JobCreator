@@ -78,11 +78,13 @@ class Defaults(object):
         self.Plotting_MarkLineWidth = 2.0
         self.Plotting_MarkAlpha = 1.0
         
-        self.Plotting_ReticleTableColor = self.Plotting_WaferColor
-        self.Plotting_LensColor = self.Plotting_WaferEdgeColor
-        self.Plotting_BGOutlineColor = 'darkgrey'   # unused
-        self.Plotting_BGOutlineStyle = ":"
-        self.Plotting_BGOutlineWidth = 1.0
+        self.Plotting_ReticleTableColor = self.Plotting_WaferEdgeColor
+        self.Plotting_LensColor = "None"
+        self.Plotting_ReticleBGOutlineColor = 'darkgrey'   # unused
+        self.Plotting_ReticleBGOutlineStyle = ":"
+        self.Plotting_ReticleBGOutlineWidth = 1.5
+        self.Plotting_ReticleLensAlpha = 0.6
+        self.Plotting_ReticleTableAlpha = 0.3
 
         
         
