@@ -44,17 +44,24 @@ class Alignment(object):
     #end __init__
     
     
-    def __str__(self):
-        '''Return string to `print` this object.'''
+    def __str__(self, tab=0):
+        '''Return string to `print` this object. Apply an indent using the `tab` argument, a string prepended to each line.'''
         s = ""
-        s += "ASML_JobCreator.Alignment object:\n"
-        for m in self.MarkList:
-            s += str(m)
-            s += " - - - - - - -\n"
-        s+= "----------------\n"
-        for a in self.StrategyList:
-            s += str(a)
-            s += " - - - - - - -\n"
+        s += " "*tab + "ASML_JobCreator.Alignment object:\n"
+        if bool( len(self.MarkList) ):
+            for M in self.MarkList:
+                s += " "*tab + M.__str__(tab=2+tab)
+                s += " "*tab + "    - - - - - - -\n"
+            s += " "*tab + "----------------\n"
+        else:
+            s += " "*tab + "  No Marks Defined\n"
+        
+        if bool( len(self.StrategyList) ):
+            for S in self.StrategyList:
+                s += " "*tab + S.__str__(tab=2+tab)
+                s += " "*tab + "    - - - - - - -\n"
+        else:
+            s += " "*tab + "  No Strategies Defined\n"
         return s
     #end __str__
     

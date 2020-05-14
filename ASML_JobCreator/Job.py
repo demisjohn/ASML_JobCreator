@@ -57,23 +57,22 @@ class Job(object):
     #end __init__
     
     
-    def __str__(self):
-        '''Return string to `print` this object.'''
+    def __str__(self, tab=0):
+        '''Return string to `print` this object. Indent the text with the `tab` argument, which will indent by the specified number of spaces (defaults to 0).'''
         s = ""
-        s += "ASML_JobCreator.Job object:\n"
-        s += "======= Cell =======\n"
-        s += str(self.Cell)
-        s += "====== Images ======\n"
-        for i,ii in enumerate(self.ImageList):
-            if i>0:    s += " - - - - - - - - -\n"
-            s += str(ii)
-        s += "====== Layers ======\n"
-        for i,ii in enumerate(self.LayerList):
-            if i>0:    s += " - - - - - - - - -\n"
-            s += str(ii)
-        s += "===== Alignment ====\n"
-        s += str(self.Alignment)
-        
+        s += " "*tab + "ASML_JobCreator.Job object:\n"
+        s += " "*tab + "======= Cell =======\n"
+        s += " "*tab + self.Cell.__str__(tab=1+tab)
+        s += " "*tab + "====== Images ======\n"
+        for i,I in enumerate(self.ImageList):
+            if i>0:    s += " "*tab + " - - - - - - - - -\n"
+            s += " "*tab + I.__str__(tab=1+tab)
+        s += " "*tab + "====== Layers ======\n"
+        for i,L in enumerate(self.LayerList):
+            if i>0:    s += " "*tab + " - - - - - - - - -\n"
+            s += " "*tab + L.__str__(tab=1+tab)
+        s += " "*tab + "===== Alignment ====\n"
+        s += " "*tab + self.Alignment.__str__(tab=1+tab)
         return s
     #end __str__
     

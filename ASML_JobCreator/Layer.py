@@ -67,19 +67,52 @@ class Layer(object):
     #end __init__
     
     
-    def __str__(self):
-        '''Return string to `print` this object.'''
+    def __str__(self, tab=0):
+        '''Return string to `print` this object. Indent the text with the `tab` argument, which will indent by the specified number of spaces (defaults to 0).'''
         s = ""
-        s += "ASML_JobCreator.Layer object:\n"
-        s += "  Layer ID = '%s'\n" % self.LayerID
-        s += "  Zero Layer = %s\n" % (  str(self.get_ZeroLayer())  )
-        s += "  CombineWithZero Layer = %s\n" % (  str(self.get_CombineWithZeroLayer())  )
-        s += "  Exposed Images:\n"
-        for i in range( len(self.ImageList) ):
-            s += "  %i: '%s'\n" % (i, self.ImageList[i].ImageID)
-            s += "    Energy = %f mJ/cm^2\n" % self.EnergyList[i]
-            s += "    Focus Offset = %0.3f um\n" % self.FocusList[i]
-            s += "    NA = %0.3f\n" % self.NAList[i]
+        s += " "*tab + "ASML_JobCreator.Layer object:\n"
+        s += " "*tab + "  Layer ID = '%s'\n" % self.LayerID
+        s += " "*tab + "  Zero Layer = %s\n" % (  str(self.get_ZeroLayer())  )
+        s += " "*tab + "  CombineWithZero Layer = %s\n" % (  str(self.get_CombineWithZeroLayer())  )
+        s += " "*tab + "  Exposed Images:\n"
+
+        if bool( len(self.ImageList) ):
+            for i in range( len(self.ImageList) ):
+                s += " "*tab + "  %i: '%s'\n" % (i, self.ImageList[i].ImageID)
+                s += " "*tab + "    Energy = %f mJ/cm^2\n" % self.EnergyList[i]
+                s += " "*tab + "    Focus Offset = %0.3f um\n" % self.FocusList[i]
+                s += " "*tab + "    Illuminationmode = `%s`\n" % self.IlluminationModeList[i]
+                s += " "*tab + "    NA = %0.3f\n" % self.NAList[i]
+                s += " "*tab + "    Sig_o = %0.3f\n" % self.Sig_oList[i]
+                if self.Sig_iList[i]: s += " "*tab + "    Sig_i = %0.3f\n" % self.Sig_iList[i]
+            #end for(ImageList)
+        else:
+            s += " "*tab + "    No Images exposed\n"
+        #end if(Imagelist)
+        
+        s += " "*tab + "  Alignment Options:\n"
+        if bool(  len(self.MarkList)  ):
+            s += " "*tab + "  Exposed Alignment Marks:\n"
+            for i in range( len(self.MarkList) ):
+                s += " "*tab + self.MarkList[i].__str__(tab=2+tab)
+                s += " "*tab + "    - - - - - -\n"
+        else:
+            s += " "*tab + "    No Marks exposed\n"
+        #end if(MarkList)
+        
+        if bool(  self.PreAlignMarksList  ):
+            s += " "*tab + "    Prealignment to Marks `%s` and `%s`\n" % (  self.PreAlignMarksList[0].get_MarkID(), self.PreAlignMarksList[1].get_MarkID()  )
+        else:
+            s += " "*tab + "    Prealignment disabled\n"
+        
+        if self.GlobalStrategy:
+            s += " "*tab + "    Global Alignment Strategy: `%s`\n" % self.GlobalStrategy.get_ID()
+        else:
+            s += " "*tab + "    Global Alignment disabled\n"
+        
+        if self.SMS:
+            s += " "*tab + "  Shifted Measurement Scans (SMS) Enabled\n"
+
         return s
     #end __str__
     

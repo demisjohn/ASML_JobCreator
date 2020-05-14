@@ -81,25 +81,26 @@ class Image(object):
     #end __init__
     
     
-    def __str__(self):
-        '''Return string to `print` this object.'''
+    def __str__(self, tab=0):
+        '''Return string to `print` this object. Apply an indent using the `tab` argument, a string prepended to each line.'''
         s = ""
-        s += "ASML_JobCreator.Image object:\n"
-        s += " Image ID = '" + str(self.ImageID) + "'\n"
-        s += " Reticle ID = '" + str(self.ReticleID) + "'\n"
-        s += " --- Image Distribution ---\n" 
+        s += " "*tab + "ASML_JobCreator.Image object:\n"
+        s += " "*tab + " Image ID = '" + str(self.ImageID) + "'\n"
+        s += " "*tab + " Reticle ID = '" + str(self.ReticleID) + "'\n"
+        s += " "*tab + " --- Image Distribution ---\n" 
         if len( self.get_distribution() ) > 0:
-            s += "    [CellCol,CellRow] , [ShiftX,ShiftY]\n"
+            s += " "*tab + "    [CellCol,CellRow] , [ShiftX,ShiftY]\n"
         else:
-            s += "    Image Not Distributed\n"
+            s += " "*tab + "    Image Not Distributed\n"
         
+        # truncate the print if list is too long:
         ellipsis = False
         for i,ii in enumerate( self.get_distribution() ):
             if len( self.get_distribution() ) < 20 or i<10 or i>(  len( self.get_distribution() ) - 10  ):
-                s += "    %000i: ["%(i) + str(ii[0]) + " , " + str(ii[1]) + "]\n"
+                s += " "*tab + "    %000i: ["%(i) + str(ii[0]) + " , " + str(ii[1]) + "]\n"
             else:
                 if ellipsis==False: 
-                    s+="    ...\n"
+                    s += " "*tab + "    ...\n"
                     ellipsis=True
                 #end if(ellipse)
             #end if(10>i>len-10)
@@ -140,6 +141,10 @@ class Image(object):
     def set_ImageID(self, ImageID):
         '''Set ImageID, as string.'''
         self.ImageID = str(ImageID)
+    
+    # aliases
+    get_ID = get_ImageID
+    set_ID = set_ImageID
     
     
     

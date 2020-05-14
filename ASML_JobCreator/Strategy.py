@@ -69,24 +69,24 @@ class Strategy(object):
     #end __init__
     
     
-    def __str__(self):
-        '''Return string to `print` this object.'''
+    def __str__(self, tab=0):
+        '''Return string to `print` this object. Apply an indent using the `tab` argument, a string prepended to each line.'''
         s = ""
-        s += "ASML_JobCreator.Strategy object:\n"
-        s += " Strategy ID = '" + str( self.get_ID() ) + "'\n"
-        s += " --- Marks in this Strategy ---\n" 
+        s += " "*tab + "ASML_JobCreator.Strategy object:\n"
+        s += " "*tab + " Strategy ID = '" + str( self.get_ID() ) + "'\n"
+        s += " "*tab + " --- Marks in this Strategy ---\n" 
         if len( self.MarkList ) > 0:
-            s += "    MarkID, MarkType\t:\t[waferX,waferY]\n"
+            s += " "*tab + "    MarkID, MarkType\t:\t[waferX,waferY]\n"
         else:
-            s += "    No Marks Added\n"
+            s += " "*tab + "    No Marks Added\n"
         
         ellipsis = False    # whether to print "..."
         for i,m in enumerate( self.MarkList ):
             if len( self.MarkList ) < 20 or i<10 or i>(  len( self.MarkList ) - 10  ):
-                s += "    %s,\t%s\t:\t[" % ( m.MarkID, m.get_marktype() ) + str(m.waferXY[0]) + " , " + str(m.waferXY[1]) + "]\n"
+                s += " "*tab + "    %s,\t%s\t:\t[" % ( m.MarkID, m.get_marktype() ) + str(m.waferXY[0]) + " , " + str(m.waferXY[1]) + "]\n"
             else:
                 if ellipsis==False: 
-                    s+="    ...\n"
+                    s+=" "*tab + "    ...\n"
                     ellipsis=True
                 #end if(ellipse)
             #end if(10>i>len-10)

@@ -37,15 +37,15 @@ class Cell(object):
     #end __init__
     
     
-    def __str__(self):
-        '''Return string to `print` this object.'''
+    def __str__(self, tab=0):
+        '''Return string to `print` this object. Indent the text with the `tab` argument, which will indent by the specified number of spaces (defaults to 0).'''
         s = ""
-        s += "ASML_JobCreator.Cell object:\n"
-        s += " Cell Size = " + str( self.get_CellSize() ) + " mm\n"
-        s += " Cell Matrix Shift = " + str( self.get_MatrixShift() ) + " mm\n"
-        s += " Die Per Cell = %s; Minimum for exposure = %i die\n" %( str( self.get_NumberDiePerCell() ), self.get_MinNumberDie() )
-        s += " Edge Exclusion = %0.6f mm\n" % self.get_EdgeExclusion()
-        s += " Round/Flat Clearance = %0.6f mm / %0.6f mm\n" % ( self.get_RoundEdgeClearance() , self.get_FlatEdgeClearance() )
+        s += " "*tab + "ASML_JobCreator.Cell object:\n"
+        s += " "*tab + " Cell Size = " + str( self.get_CellSize() ) + " mm\n"
+        s += " "*tab + " Cell Matrix Shift = " + str( self.get_MatrixShift() ) + " mm\n"
+        s += " "*tab + " Die Per Cell = %s; Minimum for exposure = %i die\n" %( str( self.get_NumberDiePerCell() ), self.get_MinNumberDie() )
+        s += " "*tab + " Edge Exclusion = %0.6f mm\n" % self.get_EdgeExclusion()
+        s += " "*tab + " Round/Flat Clearance = %0.6f mm / %0.6f mm\n" % ( self.get_RoundEdgeClearance() , self.get_FlatEdgeClearance() )
         return s
     #end __str__
     

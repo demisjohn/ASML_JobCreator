@@ -59,7 +59,7 @@ class Mark(object):
         self.Images = Images    
             
         self.parent = parent    # parent Alignment object
-        self.MarkID = str(MarkID)
+        self.set_MarkID(MarkID)
         self.set_marktype(MarkType)     # also sets self.Image
         
         self.waferXY = [0,0]
@@ -72,13 +72,13 @@ class Mark(object):
     #end __init__
     
     
-    def __str__(self):
-        '''Return string to `print` this object.'''
+    def __str__(self, tab=0):
+        '''Return string to `print` this object. Indent the text with the `tab` argument, which will indent by the specified number of spaces (defaults to 0).'''
         s = ""
-        s += "ASML_JobCreator.Mark object:\n"
-        s += "  MarkID = '%s'\n" % self.MarkID
-        s += "  MarkType = '%s'\n" % self.MarkType
-        s += "  Wafer Location = (%0.6f, %0.6f) mm\n" %(self.waferXY[0], self.waferXY[1])
+        s += " "*tab + "ASML_JobCreator.Mark object:\n"
+        s += " "*tab + "  MarkID = '%s'\n" % self.MarkID
+        s += " "*tab + "  MarkType = '%s'\n" % self.MarkType
+        s += " "*tab + "  Wafer Location = (%0.6f, %0.6f) mm\n" %(self.waferXY[0], self.waferXY[1])
         return s
     #end __str__
     
@@ -155,6 +155,20 @@ class Mark(object):
         '''Make this mark a "preferred" mark (the default), instead of "backup" mark.'''
         self.isBackup = False
     #end
+    
+    
+    
+    def get_MarkID(self):
+        '''Return MarkID, as string.'''
+        return self.MarkID
+    
+    def set_MarkID(self, MarkID):
+        '''Set MarkID, as string.'''
+        self.MarkID = str(MarkID)
+    
+    # aliases
+    get_ID = get_MarkID
+    set_ID = set_MarkID
     
 #end class(Mark)
 
