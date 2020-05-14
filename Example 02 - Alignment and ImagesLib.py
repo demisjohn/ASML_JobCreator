@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 """
 ASML_JobCreator - Example 02
-    Example usage, to export a text file for import into ASML PAS system.
+    Alignment and advanced options.
     Multi-layer job, multiple images per layer, with marks exposure and subsequent alignment to those marks.
     Also shows usage of predefined Images from files in ASML_JobCreator/Images/ directory.
 
 @author: Demis D. John
 Univ. of California Santa Barbara
 UCSB Nanofabrication Facility: http://www.nanotech.ucsb.edu
-2020-04-25
+2020-05-14
 
 
 All units are in millimeters.  
@@ -124,6 +124,7 @@ print(MyJob)
 
 
 ## Export the text file:
+asml.unset_WARN()   # Turn off warning messages about defaults
 #   overwrite the file. A warning will be printed while doing so.
 MyJob.export('Example02.txt', overwrite=True) 
 
