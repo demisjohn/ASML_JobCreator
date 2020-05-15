@@ -1,7 +1,7 @@
 """
 This file is part of the ASML_JobCreator package for Python 3.x.
 
-	/Images/PM.py - The "Primary Mark" alignment mark Image on an ASML reticle.
+	/Images/PM.py - The Y-direction "Scribe-Line" alignment mark Image on an ASML reticle.
 	
 	The Image Object's name must match the name of the file, or you will get an ImportError when importing ASML_JobCreator!  Make sure to use only valid characters, eg. no minus-signs or other punctuation, only underscores.  Also it is case-sensitive!
 
