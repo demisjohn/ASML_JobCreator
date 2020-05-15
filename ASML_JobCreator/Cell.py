@@ -186,8 +186,11 @@ class Cell(object):
     #       Utility Functions
     ##############################################
     
-    def Cell2Wafer(self, CellCR, ShiftXY=[0.0, 0.0]):
-        '''Return the WaferXY coordinate pair corresponding to the CellCR [Col,Row] and ShiftXY ( [X,Y] offsets from Cell center).
+    def Cell2Wafer(self, CellCR=[0,0], ShiftXY=[0.0, 0.0]):
+        '''
+        Cell2Wafer(CellCR=[0,0], ShiftXY=[0.0, 0.0])
+        
+        Return the WaferXY coordinate pair corresponding to the CellCR [Col,Row] and ShiftXY ( [X,Y] offsets from Cell center).
         
         Parameters
         ----------
@@ -195,14 +198,40 @@ class Cell(object):
             Col,Row integers given in a 2-valued list, array, tuple etc.  Eg. [0,0] or [1,-2]
         ShiftXY : 2-valued iterable of floats
             X,Y shift from center of Cell, in a 2-valued list, array, tuple etc.
+        
+        Returns
+        -------
+        WaferXY : 2-valued list
+            Wafer-coordinates as [X,Y]
         '''
-        pass
+        X = self.get_MatrixShift()[0] + CellCR[0]*self.get_CellSize()[0] + ShiftXY[0]
+        Y = self.get_MatrixShift()[1] + CellCR[1]*self.get_CellSize()[1] + ShiftXY[1]
+        return [X,Y]
     #end Cell2Wafer()
     
     
     def Wafer2Cell(self, WaferXY=[0.0, 0.0]):
-        '''Return the CellCR pair [Col,Row] and ShiftXY ( [X,Y] offset from Cell Center) corresponding to the given WaferXY coordinate pair.'''
-        pass
+        '''
+        Return the CellCR pair [Col,Row] and ShiftXY ( [X,Y] offset from Cell Center) corresponding to the given WaferXY coordinate pair.
+        
+        Parameters
+        ----------
+        WaferXY : 2-valued list
+            Wafer-coordinates as [X,Y]
+        
+        Returns
+        -------
+        CellCR : 2-valued iterable of integers
+            Col,Row integers given in a 2-valued list, array, tuple etc.  Eg. [0,0] or [1,-2]
+        ShiftXY : 2-valued iterable of floats
+            X,Y shift from center of Cell, in a 2-valued list, array, tuple etc.
+        '''
+        from math import floor  # round down
+        C = floor(  (WaferXY[0] - self.get_MatrixShift()[0]) / self.get_CellSize()[0] )
+        R = floor(  (WaferXY[1] - self.get_MatrixShift()[1]) / self.get_CellSize()[1] )
+        X = WaferXY[0] - C*self.get_CellSize()[0] - self.get_MatrixShift()[0]
+        Y = WaferXY[1] - R*self.get_CellSize()[1] - self.get_MatrixShift()[1]
+        return [C,R], [X,Y]
     #end Wafer2Cell()
     
     
