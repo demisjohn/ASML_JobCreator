@@ -86,7 +86,7 @@ class Plot(object):
         ## Plot the Cell grid:
         def gen_grid(inc, maxval, shift=0):
             """Generate a 1-D grid around zero, up to +/- `maxval`, with `inc` between points.
-            Returns 2 arrays:
+            Returns 3 ndarrays:
                 major : values at each grid point
                 minor : values at minor grid, halfway between majors
                 index : count at each grid point, with 0 in the middle.
@@ -97,10 +97,6 @@ class Plot(object):
             major = np.concatenate( (-1*np.flipud(major)[0:-1] , major) )  +  shift
             minor = np.concatenate( (major - inc/2, [major[-1] + inc/2]) )
             index = np.concatenate( (-1*np.flipud(index)[0:-1] , index) )
-            
-            # shift grid by half-die, which is ASML default layout (with a die in wafer center)
-            #major = major - inc/2
-            
             if DEBUG(): print("gen_grid():", major, minor, index)
             return major, minor, index
         #end gen_grid()
@@ -110,8 +106,25 @@ class Plot(object):
         CellShiftX = self.parent.Cell.get_MatrixShift()[0]
         CellShiftY = self.parent.Cell.get_MatrixShift()[1]
         
-        gridx, mgridx, Ix = gen_grid(CellSizeX, D/2, shift= CellShiftX)
-        gridy, mgridy, Iy = gen_grid(CellSizeY, D/2, shift= CellShiftY)
+        # find max/min extents of distributed images:
+        MaxX = MaxY = D/2
+        for i, Img in enumerate(self.parent.ImageList):
+            for ii, Id in enumerate( Img.get_distribution() ):
+                CellCR = Id[0]
+                #ShiftXY = Id[1]
+                if np.abs(CellCR[0])*CellSizeX > MaxX: 
+                    MaxX = np.abs(CellCR[0]) * CellSizeX
+                if np.abs(CellCR[1])*CellSizeY > MaxY: 
+                    MaxY = np.abs(CellCR[1]) * CellSizeY
+            #end for(ImgDistr)
+        #end for(ImageList)
+        MaxX = MaxX + CellSizeX
+        MaxY = MaxY + CellSizeY
+        
+        if DEBUG(): print("gen_grid(): MaxX, MaxY = ",MaxX, MaxY)
+        
+        gridx, mgridx, Ix = gen_grid(CellSizeX, MaxX, shift= CellShiftX)
+        gridy, mgridy, Iy = gen_grid(CellSizeY, MaxY, shift= CellShiftY)
         
         
         # Plot grid, using Major grid for enumeration labels but no gridlines or ticks, and minor grid for gridlines and tick marks but no text-labels
@@ -189,7 +202,7 @@ class Plot(object):
                 X = gridx[ list(Ix).index(CellCR[0]) ] + ShiftXY[0] - Iwidth/2
                 Y = gridy[ list(Iy).index(CellCR[1]) ] + ShiftXY[1] - Iheight/2
                 if DEBUG(): print("X,Y=", X,Y)
-                Icen = np.array(  [ () , () ]  )
+                #DELETE? Icen = np.array(  [ () , () ]  )
                 # matplotlib.patches.Rectangle( (x,y), width, height):
                 R = mplp.Rectangle( (X,Y),  Iwidth, Iheight, color=cmap(i), label=Img.ImageID, alpha=Defaults.Plotting_Alpha, linewidth=Defaults.Plotting_LineWidth )
                 ax.add_patch(   R   )
