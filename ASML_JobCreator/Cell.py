@@ -34,6 +34,9 @@ class Cell(object):
     def __init__(self, parent=None):
         '''Creates empty object.'''
         self.parent = parent    # parent Job object
+        self.RoundEdgeClearance = Defaults.ROUND_EDGE_CLEARANCE
+        self.FlatEdgeClearance = Defaults.FLAT_EDGE_CLEARANCE
+        self.EdgeExclusion = Defaults.EDGE_EXCLUSION
     #end __init__
     
     
@@ -142,33 +145,65 @@ class Cell(object):
             return self.MinNumberDie
     #end
     
-
-    # - - - - - - - - - - - - - - - - - - - - - 
-    # not user editable (yet):    
+    
+    def set_RoundEdgeClearance(self, mm):
+        '''Set Round Edge Clearance in mm.'''
+        self.RoundEdgeClearance = float(mm)
+    #end
+    
     def get_RoundEdgeClearance(self):
         '''Return Round Edge Clearance in mm.'''
-        return Defaults.ROUND_EDGE_CLEARANCE
+        return self.RoundEdgeClearance
+    #end
+    
+    
+    def set_FlatEdgeClearance(self, mm):
+        '''Return Flat Edge Clearance in mm.'''
+        self.FlatEdgeClearance = float(mm)
     #end
     
     def get_FlatEdgeClearance(self):
         '''Return Flat Edge Clearance in mm.'''
-        return Defaults.FLAT_EDGE_CLEARANCE
+        return self.FlatEdgeClearance
+    #end
+    
+    
+    
+    def set_EdgeExclusion(self, mm):
+        '''Set Edge Exclusion in mm.'''
+        self.EdgeExclusion = float(mm)
     #end
     
     def get_EdgeExclusion(self):
         '''Return Edge Exclusion in mm.'''
-        return Defaults.EDGE_EXCLUSION
+        return self.EdgeExclusion
     #end
     
     
     
     
     ##############################################
-    #       Plotting etc.
+    #       Utility Functions
     ##############################################
     
+    def Cell2Wafer(self, CellCR, ShiftXY=[0.0, 0.0]):
+        '''Return the WaferXY coordinate pair corresponding to the CellCR [Col,Row] and ShiftXY ( [X,Y] offsets from Cell center).
+        
+        Parameters
+        ----------
+        CellCR : 2-valued iterable of integers
+            Col,Row integers given in a 2-valued list, array, tuple etc.  Eg. [0,0] or [1,-2]
+        ShiftXY : 2-valued iterable of floats
+            X,Y shift from center of Cell, in a 2-valued list, array, tuple etc.
+        '''
+        pass
+    #end Cell2Wafer()
     
     
+    def Wafer2Cell(self, WaferXY=[0.0, 0.0]):
+        '''Return the CellCR pair [Col,Row] and ShiftXY ( [X,Y] offset from Cell Center) corresponding to the given WaferXY coordinate pair.'''
+        pass
+    #end Wafer2Cell()
     
     
     
