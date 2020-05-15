@@ -201,8 +201,9 @@ class Job(object):
             return Image(  ImageID=ImageID, ReticleID=ReticleID, sizeXY=sizeXY, shiftXY=shiftXY, parent=self)
         elif isinstance( ImageID, Image ):
             '''Was passed an Image object, probably from the /Images/ library.'''
-            self.add_Images( ImageID )
-            return ImageID
+            I = ImageID.copy()
+            self.add_Images( I )
+            return I
     #end Image()
     
     
@@ -219,9 +220,10 @@ class Job(object):
         for i,I in enumerate(images):
             if isinstance(I, Image):
                 if not np.isin( I, self.ImageList ):
+                    if DEBUG(): print("Adding Image %s to ImageList" % I.__repr__()  )
                     self.ImageList.append( I )
-                if  I.parent and not (I.parent==self):
-                    print(   "WARNING: Image objects can only be part of a single Job object.  Setting parent of Image `%s` to Job `%s`." %( I.ImageID, self.__repr__() )   )
+                if I.parent and not (I.parent==self):
+                    if WARN(): print(   "WARNING: Image objects can only be part of a single Job object.  Setting parent of Image `%s` to Job `%s`." %( I.ImageID, self.__repr__() )   )
                 I.parent = self
             else:
                 raise ValueError( "Expected `Image` object, instead got: " + str(type(I)) + " at argument #%i"%(i) )
