@@ -135,11 +135,11 @@ class Image(object):
     
     
     def get_ImageID(self):
-        '''Return ImageID, if it has been set.  Otherwise, return `None`.'''
+        '''Return ImageID, if it has been set.  Otherwise, return `None`. Also aliased to `set_ID()`.'''
         return self.ImageID
     
     def set_ImageID(self, ImageID):
-        '''Set ImageID, as string.'''
+        '''Set ImageID, as string. Also aliased to `set_ID()`.'''
         self.ImageID = str(ImageID)
     
     # aliases
@@ -198,13 +198,15 @@ class Image(object):
         if len(cellCR) != 2:
             raise ValueError( "Expected x,y pair of numbers for cellCR, instead got: " + str(cellCR) )
         elif ( cellCR[0] != int(cellCR[0]) ) or ( cellCR[1] != int(cellCR[1]) ):
-            raise ValueError( "Expected x,y to be integers, instead got: " + str(cellCR) )
+            ErrStr = "Expected x,y to be integers, instead got: " + str(cellCR)
+            raise ValueError( ErrStr )
         else:
             self.Cells.append(   ( cellCR[0], cellCR[1] )   )
         #end if(cellCR)
         
         if len(shiftXY) != 2:
-            raise ValueError( "Expected x,y pair of numbers for cellCR, instead got: " + str(cellCR) )
+            ErrStr = "Expected x,y pair of numbers for shiftXY, instead got: " + str(shiftXY)
+            raise ValueError( ErrStr )
         else:
             self.Shifts.append(   ( shiftXY[0], shiftXY[1] )   )
     #end Distribute()
