@@ -74,10 +74,8 @@ for r in [-1,0,1]:
 # Distribute DicingX in rows across wafer, on top and bottom of cells:
 for r in [-2,+1]:
     for c in range(-8,+9):
-        for shiftX in [-2,0,+2]:
-            DicingLine_X.distribute( [c,r], shiftXY=[shiftX,+2.5] ) # top of cell
-            DicingLine_X.distribute( [c,r], shiftXY=[shiftX,+2.5] ) # bottom of cell
-        #end for(shiftx)
+        DicingLine_X.distribute( [c,r], shiftXY=[0,+2.5] ) # top of cell
+        DicingLine_X.distribute( [c,r], shiftXY=[0,+2.5] ) # bottom of cell
     #end for(c)
 #end for(r)
 
