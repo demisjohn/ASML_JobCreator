@@ -118,7 +118,7 @@ class Job(object):
         '''
         Enable the exposure of die all the way to the wafer edge, by internally setting the "Number of Die Per Cell" to 10x10, and Minimum Number of Die to 1.
         '''
-        self.Cell.NumberDiePerCell = [10, 10]
+        self.Cell.NumberDiePerCell = [50, 50]
         self.Cell.MinNumberDie = 1
     #end
     
@@ -361,6 +361,49 @@ class Job(object):
         if DEBUG(): print("Job.export(): ASCII Text file written succesfully.")
     #end export()
     
+    ##############################################
+    #       Utility Functions
+    ##############################################
+    
+    def Wafer2Cell(self, WaferXY=[0.0, 0.0]):
+        '''
+        Return the CellCR pair [Col,Row] and ShiftXY ( [X,Y] offset from Cell Center) corresponding to the given WaferXY coordinate pair.
+        
+        Parameters
+        ----------
+        WaferXY : 2-valued list
+            Wafer-coordinates as [X,Y]
+        
+        Returns
+        -------
+        CellCR : 2-valued iterable of integers
+            Col,Row integers given in a 2-valued list, array, tuple etc.  Eg. [0,0] or [1,-2]
+        ShiftXY : 2-valued iterable of floats
+            X,Y shift from center of Cell, in a 2-valued list, array, tuple etc.
+        '''
+        return self.Cell.Wafer2Cell(WaferXY=WaferXY)
+    
+    
+    def Cell2Wafer(self, CellCR=[0,0], ShiftXY=[0.0, 0.0]):
+        '''
+        Cell2Wafer(CellCR=[0,0], ShiftXY=[0.0, 0.0])
+        
+        Return the WaferXY coordinate pair corresponding to the CellCR [Col,Row] and ShiftXY ( [X,Y] offsets from Cell center).
+        
+        Parameters
+        ----------
+        CellCR : 2-valued iterable of integers
+            Col,Row integers given in a 2-valued list, array, tuple etc.  Eg. [0,0] or [1,-2]
+        ShiftXY : 2-valued iterable of floats
+            X,Y shift from center of Cell, in a 2-valued list, array, tuple etc.
+        
+        Returns
+        -------
+        WaferXY : 2-valued list
+            Wafer-coordinates as [X,Y]
+        '''
+        return self.Cell.Cell2Wafer(CellCR=CellCR, ShiftXY=ShiftXY)
+    #end Cell2Wafer()
     
 #end class(Job)
 

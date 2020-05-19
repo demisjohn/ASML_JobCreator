@@ -204,9 +204,15 @@ class Cell(object):
         WaferXY : 2-valued list
             Wafer-coordinates as [X,Y]
         '''
+        ErrStr = "This function is not verified to work properly. Use `set_DEBUG()` to enable."
+        if not DEBUG():
+            raise NotImplementedError(ErrStr)
+        else:
+            if WARN(): print(ErrStr)
+        
         X = self.get_MatrixShift()[0] + CellCR[0]*self.get_CellSize()[0] + ShiftXY[0]
         Y = self.get_MatrixShift()[1] + CellCR[1]*self.get_CellSize()[1] + ShiftXY[1]
-        return [X,Y]
+        return [round(X,6), round(Y,6)]
     #end Cell2Wafer()
     
     
@@ -226,12 +232,36 @@ class Cell(object):
         ShiftXY : 2-valued iterable of floats
             X,Y shift from center of Cell, in a 2-valued list, array, tuple etc.
         '''
+        ErrStr = "This function is not verified to work properly. Use `set_DEBUG()` to enable."
+        if not DEBUG():
+            raise NotImplementedError(ErrStr)
+        else:
+            if WARN(): print(ErrStr)
+        
         from math import floor  # round down
-        C = floor(  (WaferXY[0] - self.get_MatrixShift()[0]) / self.get_CellSize()[0] )
-        R = floor(  (WaferXY[1] - self.get_MatrixShift()[1]) / self.get_CellSize()[1] )
-        X = WaferXY[0] - C*self.get_CellSize()[0] - self.get_MatrixShift()[0]
-        Y = WaferXY[1] - R*self.get_CellSize()[1] - self.get_MatrixShift()[1]
-        return [C,R], [X,Y]
+        
+        A = [0,0]
+        CR = [0,0]
+        XY = [0,0]
+        
+        A[0] = (WaferXY[0] - self.get_MatrixShift()[0]) 
+        A[1] = (WaferXY[1] - self.get_MatrixShift()[1]) 
+        
+        if DEBUG(): print("Ax,Ay = ", A[0] , A[1])
+        if DEBUG(): print("raw C,R = ", A[0] / self.get_CellSize()[0], A[1] / self.get_CellSize()[1]  )
+        
+        CR[0] = floor(  A[0] / self.get_CellSize()[0] )
+        CR[1] = floor(  A[1] / self.get_CellSize()[1] )
+        
+        if DEBUG(): print("mod X,Y = ", 
+            A[0] % self.get_CellSize()[0], 
+            A[1] % self.get_CellSize()[1]
+            )
+        
+        XY[0] = WaferXY[0] - CR[0]*self.get_CellSize()[0] + self.get_MatrixShift()[0] - self.get_CellSize()[0]/2
+        XY[1] = WaferXY[1] - CR[1]*self.get_CellSize()[1] + self.get_MatrixShift()[1] - self.get_CellSize()[1]/2
+        
+        return [CR[0],CR[1]], [round(XY[0],6), round(XY[1],6)]
     #end Wafer2Cell()
     
     
