@@ -65,7 +65,7 @@ class Plot(object):
             
         if showwafer:
             # matplotlib.patches.Arc(xy, width, height, angle=0.0, theta1=0.0, theta2=360.0) :
-            wf = mplp.Arc( (0,0) , D, D, angle=-90, theta1=A, theta2=-A , color=Defaults.Plotting_WaferEdgeColor, hatch=Defaults.Plotting_BGHatch)
+            wf = mplp.Arc( (0,0) , D, D, angle=-90, theta1=A, theta2=-A , color=Defaults.Plotting_WaferEdgeColor, hatch=Defaults.Plotting_BGHatch, label="Edge Clearance")
             ax.add_patch( wf )
         
         
@@ -79,7 +79,7 @@ class Plot(object):
             Ac = 2
         
         if showwafer:
-            clearance = mplp.Arc( (0,0) , Dc, Dc, angle=-90, theta1=Ac, theta2=(-Ac) , color=Defaults.Plotting_WaferColor, hatch=Defaults.Plotting_BGHatch)
+            clearance = mplp.Arc( (0,0) , Dc, Dc, angle=-90, theta1=Ac, theta2=(-Ac) , color=Defaults.Plotting_WaferColor, hatch=Defaults.Plotting_BGHatch, label="Wafer")
             ax.add_patch( clearance )
         
         
@@ -154,8 +154,28 @@ class Plot(object):
             ax.grid(False, which='major')
         #end if(showwafer)
         
+                
+        # Plot the distributed images:
+        cmap = plt.get_cmap(Defaults.Plotting_ImageColorMap)    # cycling colors
+        for i, Img in enumerate(self.parent.ImageList):
+            Iwidth = Img.sizeXY[0]
+            Iheight = Img.sizeXY[1]
+            for ii, Id in enumerate( Img.get_distribution() ):
+                CellCR = Id[0]
+                ShiftXY = Id[1]
+                X = gridx[ list(Ix).index(CellCR[0]) ] + ShiftXY[0] - Iwidth/2
+                Y = gridy[ list(Iy).index(CellCR[1]) ] + ShiftXY[1] - Iheight/2
+                if DEBUG(): print("X,Y=", X,Y)
+                #DELETE? Icen = np.array(  [ () , () ]  )
+                # matplotlib.patches.Rectangle( (x,y), width, height):
+                R = mplp.Rectangle( (X,Y),  Iwidth, Iheight, color=cmap(i), label=Img.ImageID, alpha=Defaults.Plotting_Alpha, linewidth=Defaults.Plotting_LineWidth )
+                ax.add_patch(   R   )
+                if ii==0: LegendEntries.append( R ) # add once only
+            #end for(ImgDistr)
+        #end for(Imagelist)
         
-        # Plot alignment marks
+        
+                # Plot alignment marks
         if self.parent.Alignment:
             cmap = plt.get_cmap(Defaults.Plotting_MarkColorMap)    # cycling colors
             c=-1 # colormap index
@@ -191,26 +211,6 @@ class Plot(object):
         #end if(Alignment)
         
         
-        # Plot the distributed images:
-        cmap = plt.get_cmap(Defaults.Plotting_ImageColorMap)    # cycling colors
-        for i, Img in enumerate(self.parent.ImageList):
-            Iwidth = Img.sizeXY[0]
-            Iheight = Img.sizeXY[1]
-            for ii, Id in enumerate( Img.get_distribution() ):
-                CellCR = Id[0]
-                ShiftXY = Id[1]
-                X = gridx[ list(Ix).index(CellCR[0]) ] + ShiftXY[0] - Iwidth/2
-                Y = gridy[ list(Iy).index(CellCR[1]) ] + ShiftXY[1] - Iheight/2
-                if DEBUG(): print("X,Y=", X,Y)
-                #DELETE? Icen = np.array(  [ () , () ]  )
-                # matplotlib.patches.Rectangle( (x,y), width, height):
-                R = mplp.Rectangle( (X,Y),  Iwidth, Iheight, color=cmap(i), label=Img.ImageID, alpha=Defaults.Plotting_Alpha, linewidth=Defaults.Plotting_LineWidth )
-                ax.add_patch(   R   )
-                if ii==0: LegendEntries.append( R ) # add once only
-            #end for(ImgDistr)
-        #end for(Imagelist)
-        
-        
         # Shrink current axis by 20% for legend to fit
         box = ax.get_position()
         if DEBUG(): print("ax:box=", box.x0, box.y0)   
@@ -218,6 +218,8 @@ class Plot(object):
         ax.axis('scaled')  # proportional axes
 
         # Put a legend to the right of the current axis
+        if showwafer:
+            LegendEntries.extend( [clearance, wf] )
         ax.legend(handles=LegendEntries, title="Images", fontsize="small", loc='upper left', bbox_to_anchor=(1.01, 1), borderaxespad=0.)
         
         fig.show()
