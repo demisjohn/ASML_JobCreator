@@ -45,9 +45,9 @@ class Image(object):
     To Do
     -----
     Distribute(cell=[C,R], shift=[x,y])
-        § shift is optional, defualts to [0,0]
-        § warn if shift >= cell size / 2
-        § (future) logic if Cell is outside wafer diam?  
+        - make shift optional, default to [0,0]
+        - warn if shift >= cell size / 2
+        - (future) logic if Cell is outside wafer diam?  
     """
     
     def __init__(self, ImageID="", ReticleID="", sizeXY=[10,10], shiftXY=[0,0], parent=None):
@@ -57,7 +57,7 @@ class Image(object):
         See `help(Image)` for description of arguments.
         """
         self.parent = parent    # parent Job object
-        self.ImageID = str(ImageID)
+        self.set_ImageID(ImageID)
         self.BaseImageID = None
         self.set_ReticleID( ReticleID )
         if len(sizeXY) == 2 and np.isscalar(sizeXY[0]) and np.isscalar(sizeXY[1]):
@@ -140,7 +140,7 @@ class Image(object):
     
     def set_ImageID(self, ImageID):
         '''Set ImageID, as string. Also aliased to `set_ID()`.'''
-        self.ImageID = str(ImageID)
+        self.ImageID = str(ImageID).strip().upper()
     
     # aliases
     get_ID = get_ImageID
@@ -209,11 +209,16 @@ class Image(object):
             raise ValueError( ErrStr )
         else:
             self.Shifts.append(   ( shiftXY[0], shiftXY[1] )   )
+        if DEBUG(): print( "Image `%s`: "%self.get_ImageID() + "Distributed at Cells " + str(self.Cells[-1]) + " w/ Shift " + str(self.Shifts[-1]) )
     #end Distribute()
     
     def get_distribution(self):
         '''Return list of [CellC,CellR], [ShiftX,ShiftY] pairs corresponding to each distribution of this Image.'''
-        return list( zip(self.Cells, self.Shifts) )
+        out = list( zip(self.Cells, self.Shifts) )
+        if len(out) >= Defaults.ImageDistribution_MaxDistPerImage :
+            ErrStr = "Too many distributions, software limited to %i distributions per Image." %(Defaults.ImageDistribution_MaxDistPerImage)
+            raise ValueError( ErrStr )
+        return out
     
   
 #end class(Image)

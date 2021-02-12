@@ -85,7 +85,8 @@ class Defaults(object):
         self.Plotting_ReticleBGOutlineWidth = 1.5
         self.Plotting_ReticleLensAlpha = 0.6
         self.Plotting_ReticleTableAlpha = 0.3
-
+        
+        
         
         
         ## Cell Structure:
@@ -109,6 +110,7 @@ class Defaults(object):
         self.PREALIGN_METHOD = "STANDARD"
         self.WAFER_ROTATION = 0.0
         self.MATCHING_SET_ID = "DEFAULT"
+        self.ProcessData_LENS_REDUCTION = 4.0    # Magnification; DUV: 4.0 // I-Line: 5.0
         # For plotting only:
         self.RETICLE_TABLE_WINDOW = [22, 27]    # mm
         self.LENS_DIAMETER = 31.00              # mm
@@ -117,6 +119,15 @@ class Defaults(object):
         self.comment_line1 = "Created with python ASML_JobCreator"
         self.comment_line2 = "Univ. of California Santa Barbara"
         self.comment_line3 = "UCSB Nanofab, Demis D. John"
+        
+        
+        
+        ## Software Limits (PAS5500/300):
+        self.ImageDistribution_MaxDistPerImage = 999
+        self.Image_MinImageSize = [0.0001,0.0001]   # mm <-- not checked currently
+        self.Image_MaxImageSize = [26.0,33.0]   # mm <-- not checked currently
+        self.Cell_MinCellSize = 1.020 # mm
+        # self.Cell_MaxCellSize = 100.0 # mm <-- not checked currently
         
         
         
@@ -152,7 +163,6 @@ class Defaults(object):
         
         ## Process Data > Layer Defaults
         self.COMBINE_ZERO_FIRST                                        = "N"
-        self.ProcessData_LENS_REDUCTION                                = 4.0    # DUV: 4.0 // I-Line: 5.0
         self.ProcessData_CALIBRATION                                   = "N"
         self.ProcessData_OPTICAL_PREALIGNMENT                          = "N"
         self.ProcessData_COO_REDUCTION                                 = "D"

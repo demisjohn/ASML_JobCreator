@@ -67,6 +67,8 @@ class Cell(object):
     def set_CellSize(self, xy=[10,10] ):
         '''Set the Cell Size in millimeters, [x,y].'''
         if len(xy)==2: 
+            if (xy[0] < Defaults.Cell_MinCellSize) or (xy[1] < Defaults.Cell_MinCellSize):
+                raise ValueError( "Cell size is too small, limit is " + str(Defaults.Cell_MinCellSize) + ", attempted to set to [%f,%f]mm." %( xy[0], xy[1] )  )
             self.CellSize = (xy[0], xy[1])
         else:
             raise ValueError("Expected x,y pair of numbers, instead got: " + str(xy))
