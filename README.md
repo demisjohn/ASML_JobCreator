@@ -132,6 +132,14 @@ Default values for most options are specified in the file `ASML_JobCreator/Defau
 
 Some of these have `set`/`get` methods for manipulating them, others must be edited in this file.
 
+You should be able to change these defaults to match your own system, using an exported text file from your system to populate the values.
+
+## Drawbacks
+
+This module is intended for users who already have experience programming their Jobs on the ASML PAS Job Definition GUI or a similar method.
+
+The ASML Graphical Interface has many checks and tests built into the software to indicate if an invalid parameter has been entered.  This python script does not replicate the vast majority of those checks.  In practice, for very simple jobs this doesn't cause any problems.  However, for complex jobs (eg. stitching), this means that generating a new Job for the first time requires importing the job into the ASML to determine conversion errors, modifying the script and re-importing until errors have been removed.  Loading the converted job into the ASML Job Definition GUI is a good way to run the software checks.
+
 # Author(s)
 
 [Demis D. John](https://wiki.nanotech.ucsb.edu/wiki/index.php/Demis_D._John), Scientist at the [UCSB Nanofabrication Facility](http://www.nanotech.ucsb.edu), [Univ. of California Santa Barbara](http://www.ucsb.edu)

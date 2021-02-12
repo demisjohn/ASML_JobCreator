@@ -50,7 +50,7 @@ Res = MyJob.Image("UCSB_Res", "UCSB-OPC1", sizeXY=[3, 3], shiftXY=[4,5])
 
 ## To expose on Layer 2:
 #   use a pre-defined image from file, in the sub-folder ASML_JobCreator/Images/SPM_X.py
-#   `dir( asml.Image )` will show you a list, or look inside the sub-folder
+#   `dir( asml.Images )` will show you a list, or look inside the sub-folder
 #   X-scribe-line alignment mark, used as dicing alignment guides
 DicingLine_X = MyJob.Image( asml.Images.SPM_X )  
 # In order to use alignment mark images for other purposes, must give a custom Image ID, otherwise it thinks it's an SPM-X alignment mark:
@@ -109,9 +109,9 @@ Lyr1.expose_Image( Res, Energy=21, Focus=-0.10 )
 
 # Layer 2 - Aligns to ZeroLayer
 Lyr2 = MyJob.Layer( LayerID="Lyr2" )
-Lyr2.expose_Image( DicingLine_X, Energy=21, Focus=-0.10 )
 Lyr2.set_PreAlignment( marks=[E, W] ) # choose 2 marks
 Lyr2.set_GlobalAlignment( strategy=ALL )  # choose a global strategy
+Lyr2.expose_Image( DicingLine_X, Energy=21, Focus=-0.10 )
 
 
 
