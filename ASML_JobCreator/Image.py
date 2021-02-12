@@ -194,6 +194,10 @@ class Image(object):
             X/Y coordinates for shifting the image insertion, with respect to the center of the Cell (aka. "Image-to-Cell Shift"). Defaults to [0,0]
             (future) logic if Cell is outside wafer diam?  
             warns if shift >= cell size / 2
+        
+        Exceptions
+        -------
+        ValueError is raised if an Image is distributed too many times on a wafer, as defined by PAS software limit. See Defaults.py : `Defaults.ImageDistribution_MaxDistPerImage`.
         """
         if len(cellCR) != 2:
             raise ValueError( "Expected x,y pair of numbers for cellCR, instead got: " + str(cellCR) )
@@ -201,6 +205,9 @@ class Image(object):
             ErrStr = "Expected x,y to be integers, instead got: " + str(cellCR)
             raise ValueError( ErrStr )
         else:
+            if len(self.Cells) >= Defaults.ImageDistribution_MaxDistPerImage:
+                ErrStr = "Image `%s`: "%(self.get_ID()) + "Too many distributions, software limited to %i distributions per Image." %(Defaults.ImageDistribution_MaxDistPerImage)
+                raise ValueError( ErrStr )
             self.Cells.append(   ( cellCR[0], cellCR[1] )   )
         #end if(cellCR)
         
@@ -216,7 +223,7 @@ class Image(object):
         '''Return list of [CellC,CellR], [ShiftX,ShiftY] pairs corresponding to each distribution of this Image.'''
         out = list( zip(self.Cells, self.Shifts) )
         if len(out) >= Defaults.ImageDistribution_MaxDistPerImage :
-            ErrStr = "Too many distributions, software limited to %i distributions per Image." %(Defaults.ImageDistribution_MaxDistPerImage)
+            ErrStr = "Image `%s`: "%(self.get_ID()) + "Too many distributions, software limited to %i distributions per Image." %(Defaults.ImageDistribution_MaxDistPerImage)
             raise ValueError( ErrStr )
         return out
     
