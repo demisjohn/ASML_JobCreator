@@ -193,7 +193,7 @@ class Image(object):
         ShiftXY : 2-valued array-like of coordinates, optional
             X/Y coordinates for shifting the image insertion, with respect to the center of the Cell (aka. "Image-to-Cell Shift"). Defaults to [0,0]
             (future) logic if Cell is outside wafer diam?  
-            warns if shift >= cell size / 2
+            Should Warn if shift >= cell size / 2
         
         Exceptions
         -------
@@ -223,8 +223,8 @@ class Image(object):
         '''Return list of [CellC,CellR], [ShiftX,ShiftY] pairs corresponding to each distribution of this Image.'''
         out = list( zip(self.Cells, self.Shifts) )
         if len(out) >= Defaults.ImageDistribution_MaxDistPerImage :
-            ErrStr = "Image `%s`: "%(self.get_ID()) + "Too many distributions, software limited to %i distributions per Image." %(Defaults.ImageDistribution_MaxDistPerImage)
-            raise ValueError( ErrStr )
+            ErrStr = "Image `%s`: "%(self.get_ID()) + "[Warning] Too many distributions, software limited to %i distributions per Image." %(Defaults.ImageDistribution_MaxDistPerImage)
+            if WARN(): print( ErrStr )
         return out
     
   

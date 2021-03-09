@@ -79,7 +79,7 @@ class Cell(object):
         try:
             return self.CellSize
         except AttributeError:
-            if WARN(): print("Using default values for `CellSize`.")
+            if WARN(): print("Cell: Using default values for `CellSize`.")
             self.set_CellSize( Defaults.CELL_SIZE)
             return self.CellSize
     #end
@@ -98,7 +98,7 @@ class Cell(object):
         try:
             return self.MatrixShift
         except AttributeError:
-            if WARN(): print("Using default values for `MatrixShift`.")
+            if WARN(): print("Cell: Using default values for `MatrixShift`.")
             self.set_MatrixShift( Defaults.MATRIX_SHIFT )
             return self.MatrixShift
     #end
@@ -121,7 +121,7 @@ class Cell(object):
         try:
             return self.NumberDiePerCell
         except AttributeError:
-            if WARN(): print("Using default values for `NumberDiePerCell`.")
+            if WARN(): print("Cell: Using default values for `NumberDiePerCell`.")
             self.NumberDiePerCell =  Defaults.NUMBER_DIES
             return self.NumberDiePerCell
     #end
@@ -142,7 +142,7 @@ class Cell(object):
         try:
             return self.MinNumberDie
         except AttributeError:
-            if WARN(): print("Using default values for `MinNumberDie`.")
+            if WARN(): print("Cell: Using default values for `MinNumberDie`.")
             self.MinNumberDie =  Defaults.MIN_NUMBER_DIES
             return self.MinNumberDie
     #end
@@ -206,7 +206,7 @@ class Cell(object):
         WaferXY : 2-valued list
             Wafer-coordinates as [X,Y]
         '''
-        ErrStr = "This function is not verified to work properly. Use `set_DEBUG()` to enable."
+        ErrStr = "Cell: This function is not verified to work properly. Use `set_DEBUG()` to enable."
         if not DEBUG():
             raise NotImplementedError(ErrStr)
         else:
@@ -234,7 +234,7 @@ class Cell(object):
         ShiftXY : 2-valued iterable of floats
             X,Y shift from center of Cell, in a 2-valued list, array, tuple etc.
         '''
-        ErrStr = "This function is not verified to work properly. Use `set_DEBUG()` to enable."
+        ErrStr = "Cell: This function is not verified to work properly. Use `set_DEBUG()` to enable."
         if not DEBUG():
             raise NotImplementedError(ErrStr)
         else:

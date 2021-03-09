@@ -257,6 +257,9 @@ class Layer(object):
         '''Revert the LayerID back to default of "", allowing automatic choice during job creation.'''
         self.LayerID = ""
     
+    # aliases
+    get_ID = get_LayerID
+    set_ID = set_LayerID
     
     ##############################################
     #       Exposures
@@ -322,7 +325,7 @@ class Layer(object):
         
         ## Santize args
         if np.isin( Image, self.ImageList ):
-            raise ValueError(   "Image %s has already been added to this Layer %s."%( Image.__repr__(), self.__repr__() )   )
+            raise ValueError(   "Image `%s` has already been added to this Layer `%s`."%( Image.get_ID(), self.get_ID() )   )
         IlluminationMode = self._parse_IllumMode(IlluminationMode)
         
         ## Set the internal attributes
