@@ -65,7 +65,7 @@ for r in [-1,0,1]:
 
 
 ## Layer Definition & Reticle Data - 
-# Add Zero layer - possibly unnecessary for no alignment.
+# Add Zero layer - Required even if no alignments.
 ZeroLyr = MyJob.Layer() # Empty Layer with default values
 
 # Choose Images to expose on this Layer:
