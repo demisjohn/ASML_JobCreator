@@ -1,7 +1,7 @@
 # ASML_JobCreator
 Python module to generate text job files for an [ASML PAS 5500/300 Stepper Lithography system](https://www.nanotech.ucsb.edu/wiki/index.php/Stepper_3_(ASML_DUV)), at the [UCSB Nanofabrication Facility](https://www.nanotech.ucsb.edu). Requires the relevant ASML Software options ("*Job Creator*") on the machine to convert the text output file into machine-usable files.
 
-Class heirarchy is set up similarly to the ASML *Job Definition* GUI.
+Class heirarchy is set up similarly to the ASML *Job Definition* GUI.  The `Defaults.py` file, described below, may allow for usage on other ASML systems.
 
 # Installation
 
@@ -120,9 +120,11 @@ Verify your wafer layouts or reticle layouts using the Plot commands:
 
 <img src="https://user-images.githubusercontent.com/5370181/81465151-a21cf380-917c-11ea-8b6d-415208376d75.png" alt="plot_reticles()" width="450"/>
 
-## Defaults
+## Default/System-Specific Settings
 
-Default values for most options are specified in the file `ASML_JobCreator/Defaults.py`.  For the UCSB Nanofab PAS 5500/300, this includes settings such as:
+Default values for most options are specified in the file `ASML_JobCreator/Defaults.py`.  
+You should be able to change these defaults to match your own system, using an exported text file from your system to populate the values.
+For the UCSB Nanofab PAS 5500/300, defaults include settings such as:
 
 - 100mm wafer with flat
 - 6-inch reticle size
@@ -130,9 +132,8 @@ Default values for most options are specified in the file `ASML_JobCreator/Defau
 - default alignment methods 
 - default edge exclusion zones etc. 
 
-Some of these have `set`/`get` methods for manipulating them, others must be edited in this file.
+Some of these have `set`/`get` methods for manipulating them, others must be edited in the `Defaults.py` file.
 
-You should be able to change these defaults to match your own system, using an exported text file from your system to populate the values.
 
 ## Drawbacks
 
