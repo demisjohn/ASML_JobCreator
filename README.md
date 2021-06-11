@@ -4,6 +4,7 @@ Python module to generate text job files for an [ASML PAS 5500/300 Stepper Litho
 Class heirarchy is set up similarly to the ASML *Job Definition* GUI.  The `Defaults.py` file, described below, may allow for usage on other ASML systems.
 
 # Installation
+- You must have access to an ASML tool that has the software option `JobCreator` (aka. JDJC or JC) installed, in order to convert the output of these scripts into binary job files.
 
 - You must have a Python interpreter installed in order to use this module.  It is designed for use with Python 3.x, although 2.x may work (untested). 
    - Common easy-to-install Scientific Python IDE's include [Anaconda Python](https://www.anaconda.com) > Spyder, or Jupyter Notebooks, or the command-line Python interpreter that is built-in to many modern operating sytems.
