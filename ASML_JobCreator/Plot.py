@@ -160,18 +160,20 @@ class Plot(object):
         for i, Img in enumerate(self.parent.ImageList):
             Iwidth = Img.sizeXY[0]
             Iheight = Img.sizeXY[1]
-            for ii, Id in enumerate( Img.get_distribution() ):
-                CellCR = Id[0]
-                ShiftXY = Id[1]
-                X = gridx[ list(Ix).index(CellCR[0]) ] + ShiftXY[0] - Iwidth/2
-                Y = gridy[ list(Iy).index(CellCR[1]) ] + ShiftXY[1] - Iheight/2
-                if DEBUG(): print("X,Y=", X,Y)
-                #DELETE? Icen = np.array(  [ () , () ]  )
-                # matplotlib.patches.Rectangle( (x,y), width, height):
-                R = mplp.Rectangle( (X,Y),  Iwidth, Iheight, color=cmap(i), label=Img.ImageID, alpha=Defaults.Plotting_Alpha, linewidth=Defaults.Plotting_LineWidth )
-                ax.add_patch(   R   )
-                if ii==0: LegendEntries.append( R ) # add once only
-            #end for(ImgDistr)
+            if Img.Layers:
+                for ii, Id in enumerate( Img.get_distribution() ):
+                    CellCR = Id[0]
+                    ShiftXY = Id[1]
+                    X = gridx[ list(Ix).index(CellCR[0]) ] + ShiftXY[0] - Iwidth/2
+                    Y = gridy[ list(Iy).index(CellCR[1]) ] + ShiftXY[1] - Iheight/2
+                    if DEBUG(): print("X,Y=", X,Y)
+                    #DELETE? Icen = np.array(  [ () , () ]  )
+                    # matplotlib.patches.Rectangle( (x,y), width, height):
+                    R = mplp.Rectangle( (X,Y),  Iwidth, Iheight, color=cmap(i), label=Img.ImageID, alpha=Defaults.Plotting_Alpha, linewidth=Defaults.Plotting_LineWidth )
+                    ax.add_patch(   R   )
+                    if ii==0: LegendEntries.append( R ) # add once only
+                #end for(ImgDistr)
+            #end if(Img.Layers)
         #end for(Imagelist)
         
         

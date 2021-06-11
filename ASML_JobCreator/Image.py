@@ -2,7 +2,7 @@
 This file is part of the ASML_JobCreator package for Python 3.x.
 
 Image.py
-    defines the class Image.
+    defines the class Image, which is a physical pattern on the reticle and also gets distributed on the wafer.
     
 - - - - - - - - - - - - - - -
 
@@ -74,6 +74,7 @@ class Image(object):
         
         self.Cells = []
         self.Shifts = []
+        self.Layers = []
         
         # add this Image to the parent Job, if the Job is defined. `Images` image library objects don't have a `parent` set.
         if self.parent:
@@ -87,6 +88,12 @@ class Image(object):
         s += " "*tab + "ASML_JobCreator.Image object:\n"
         s += " "*tab + " Image ID = '" + str(self.ImageID) + "'\n"
         s += " "*tab + " Reticle ID = '" + str(self.ReticleID) + "'\n"
+        s += " "*tab + " Image Shift = " + str(self.sizeXY) + "\n"
+        s += " "*tab + " Image Size = " + str(self.shiftXY) + "\n"
+        if self.Layers:
+            s += " "*tab + " Exposed on Layers: " + str([x.get_ID() for x in self.Layers]) + "\n"
+        else:
+            s += " "*tab + " Image is not Exposed on any Layers"
         s += " "*tab + " --- Image Distribution ---\n" 
         if len( self.get_distribution() ) > 0:
             s += " "*tab + "    [CellCol,CellRow] , [ShiftX,ShiftY]\n"

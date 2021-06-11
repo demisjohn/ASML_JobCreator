@@ -338,6 +338,7 @@ class Layer(object):
         self.Sig_iList.append( Sig_i )
         self.IlluminationModeList.append( IlluminationMode )
         
+        Image.Layers.append( self )
     #end
     
     
