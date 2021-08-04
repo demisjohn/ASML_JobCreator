@@ -82,7 +82,7 @@ MyJob.Plot.plot_wafer()
 MyJob.Plot.plot_reticles()
 
 ## Export the text file:
-MyJob.export('TestJob_NoAlign.txt')
+MyJob.export('Ex01_TestJob_NoAlign.txt')
 
 
 print('done.')
