@@ -40,6 +40,8 @@ MyJob.set_comment("Demo Job", "Exported from ", "Python ASML_JobCreator")
 MyJob.Cell.set_CellSize( [4.00, 4.00] )    # cell size [X,Y] in millimeters
 MyJob.Cell.set_MatrixShift( [2.00, 2.00] ) # shift by half a cell
 
+MyJob.set_ExposeEdgeDie()  # allow exposure of die that partially fall off the wafer. See `help(MyJob.set_ExposeEdgeDie)` for more info.
+
 
 ## Image Definition:
 #   MyJob.Image( <ImageID>, <ReticleID_Barcode>, sizeXY=coords, shiftXY=coords)
