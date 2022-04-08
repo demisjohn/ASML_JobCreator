@@ -116,7 +116,7 @@ class Job(object):
     
     def set_ExposeEdgeDie(self):
         '''
-        Enable the exposure of die all the way to the wafer edge, by internally setting the "Number of Die Per Cell" to 10x10, and Minimum Number of Die to 1.
+        Enable the exposure of die all the way to the wafer edge, by internally setting the "Number of Die Per Cell" to 50x50, and Minimum Number of Die to 1. See also `unset_ExposeEdgeDie()`. Variables being set are: `MyJob.Cell.NumberDiePerCell = [50,50]`, and `MyJob.Cell.NumberDiePerCell = 1`.
         '''
         self.Cell.NumberDiePerCell = [50, 50]
         self.Cell.MinNumberDie = 1
