@@ -267,6 +267,74 @@ class Cell(object):
     #end Wafer2Cell()
     
     
+    def get_ValidCells( self ):
+        '''Return on-wafer Cells, for use in Image.distribute().
+    
+        Uses CellSize, MatrixShift, and RoundEdgeClearance.
+        Does NOT (yet) account for: FlatEdgeClearance (wafer flat exclusion), nor ExposeEdgeDie (shoot die that are partially on-wafer)
+        Not yet able to be passed directly to Image.distribute(get_valid_cells()).  Currently must iterate through valid_cells and pass each [col,row] to Image.distribute().
+        
+        Parameters
+        ----------
+        none
+    
+        Returns
+        -------
+        valid_cells: a List of valid cell indices (indices are two-valued Lists of [col,row]).
+    
+        Contributed by Miguel Daal 2022, Ben Mazin group, U.California Santa Barbara, Physics Dept.'''
+    
+        #from numpy import floor, array, linalg.norm
+        import numpy as np
+    
+        #find whole die
+        cell_x, cell_y = self.CellSize
+        matrix_shift_x, matrix_shift_y = self.get_MatrixShift()
+        wafer_diameter = self.parent.get_WaferDiameter() - 2*self.get_RoundEdgeClearance()
+        wafer_flat_clearance = self.get_FlatEdgeClearance()
+    
+        max_num_cell_x = np.floor(wafer_diameter/cell_x)   
+        max_num_cell_y = np.floor(wafer_diameter/cell_y)
+    
+        def get_cell_vertices(index_i, index_j):
+                '''
+                Given the  cell center point (center_x, center_y) and the matrix shift (matrix_shift_x, matrix_shift_y)
+                return the four vertices of the cell as a list of numpy arrays in order: [UL, UR, LL, LR] (meaning "Upper/Lower + Left/Right").
+                '''
+                UL = np.array([cell_x/2,cell_y/2]) + np.array([index_i*cell_x, index_j*cell_y]) + np.array([matrix_shift_x, matrix_shift_y])
+                UR = np.array([-cell_x/2, cell_y/2]) + np.array([index_i*cell_x, index_j*cell_y]) + np.array([matrix_shift_x, matrix_shift_y])
+                LL = np.array([-cell_x/2, -cell_y/2]) + np.array([index_i*cell_x, index_j*cell_y]) + np.array([matrix_shift_x, matrix_shift_y])
+                LR= np.array([cell_x/2, -cell_y/2]) + np.array([index_i*cell_x, index_j*cell_y]) + np.array([matrix_shift_x, matrix_shift_y])
+                return [UL, UR, LL, LR]
+        #end get_cell_vertices()
+    
+        valid_cells = []
+        cell_index_i = 0
+        cell_index_j = 0
+        cell_count_i = 0
+        cell_count_j = 0
+        sign_i = -1
+        sign_j = -1
+    
+        while cell_index_i < max_num_cell_x+1:
+            while cell_index_j < max_num_cell_y+1:
+                vertices = get_cell_vertices(cell_index_i, cell_index_j)
+                if not np.any(np.linalg.norm(vertices, axis = 1) > wafer_diameter/2):
+                    valid_cells.append([cell_index_i, cell_index_j])
+                
+                cell_count_j += 1
+                sign_j *= -1
+                cell_index_j = cell_index_j + cell_count_j * sign_j
+            cell_count_i += 1
+            sign_i *= -1
+            cell_index_i = cell_index_i + cell_count_i * sign_i
+            cell_index_j = 0
+            cell_count_j = 0
+            sign_j = -1
+        #end while(cell_index)
+    
+        return  valid_cells 
+    #end get_valid_cells()
     
   
 #end class(Cell)

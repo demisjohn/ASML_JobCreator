@@ -148,7 +148,7 @@ class Job(object):
             return self.LensReduction
         except AttributeError:
             self.LensReduction = Defaults.ProcessData_LENS_REDUCTION
-            if WARN(): print(   "Using default values for Job `LensReduction` : %s" % (self.LensReduction)   )
+            if WARN(): print(   "Using default value for `LensReduction` : %s" % (self.LensReduction)   )
             return self.LensReduction
     #end
     
@@ -403,6 +403,28 @@ class Job(object):
             Wafer-coordinates as [X,Y]
         '''
         return self.Cell.Cell2Wafer(CellCR=CellCR, ShiftXY=ShiftXY)
+    #end Cell2Wafer()
+    
+    
+    def get_ValidCells(self):
+        '''
+        Return on-wafer Cells, for use in Image.distribute().  
+        (Documentation copied from Job.Cell.get_ValidCells(), inside the Cell class/module.)
+    
+        Uses CellSize, MatrixShift, and RoundEdgeClearance.
+        Does NOT (yet) account for: FlatEdgeClearance (wafer flat exclusion), nor ExposeEdgeDie (shoot die that are partially on-wafer)
+        Not yet able to be passed directly to Image.distribute(get_valid_cells()).  Currently must iterate through valid_cells and pass each [col,row] to Image.distribute().
+        
+        Parameters
+        ----------
+        none
+    
+        Returns
+        -------
+        valid_cells: a List of valid cell indices (indices are two-valued Lists of [col,row]).
+    
+        Contributed by Miguel Daal 2022, Ben Mazin group, U.California Santa Barbara, Physics Dept.'''
+        return self.Cell.get_ValidCells()
     #end Cell2Wafer()
     
 #end class(Job)
