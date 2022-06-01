@@ -307,7 +307,22 @@ class Cell(object):
                 LR= np.array([cell_x/2, -cell_y/2]) + np.array([index_i*cell_x, index_j*cell_y]) + np.array([matrix_shift_x, matrix_shift_y])
                 return [UL, UR, LL, LR]
         #end get_cell_vertices()
-    
+        
+        def get_flat_edge_clearance_y():
+            ''' return a y-coordinate representing the wafer edge clearance - any point below this is invalid.'''
+            F = Defaults.WFR_FLAT_LENGTH    # wafer flat length, mm
+            D = Defaults.WFR_DIAMETER   # wafer diameter, mm
+            Fc = F - self.get_FlatEdgeClearance()
+            Dc = D - 2*self.get_RoundEdgeClearance()
+            #Arc Angles:
+            if Defaults.WFR_NOTCH.upper() == "N":
+                Ac = np.rad2deg(  np.arcsin( (Fc/2) / (Dc/2) )  ) # arc angle corresponding to 1/2 of wafer flat clearance
+            else:
+                Ac = 2
+            return -1 * np.cos( np.deg2rad(Ac) ) * (Dc/2)
+        #end get_flat_edge_clearance_y()
+        flat_edge_clearance_y = get_flat_edge_clearance_y()
+        
         valid_cells = []
         cell_index_i = 0
         cell_index_j = 0
@@ -321,13 +336,12 @@ class Cell(object):
                 vertices = get_cell_vertices(cell_index_i, cell_index_j)
                 if self.parent.ExposeEdgeDie == False:
                     if not np.any(np.linalg.norm(vertices, axis = 1) > wafer_diameter/2):
-                        valid_cells.append([cell_index_i, cell_index_j])
+                        if not np.any( vertices < flat_edge_clearance_y):
+                            valid_cells.append([cell_index_i, cell_index_j])
                 elif self.parent.ExposeEdgeDie == True:
-                    if np.linalg.norm(vertices[0], axis = 0) <= wafer_diameter/2 \
-                    or np.linalg.norm(vertices[1], axis = 0) <= wafer_diameter/2 \
-                    or np.linalg.norm(vertices[2], axis = 0) <= wafer_diameter/2 \
-                    or np.linalg.norm(vertices[3], axis = 0) <= wafer_diameter/2 :
-                        valid_cells.append([cell_index_i, cell_index_j])
+                    if np.any( np.linalg.norm(vertices, axis = 1) <= wafer_diameter/2 ):
+                        if np.any( np.array([v[1] for v in vertices]) >= flat_edge_clearance_y ):
+                            valid_cells.append([cell_index_i, cell_index_j])
                 
                 cell_count_j += 1
                 sign_j *= -1
