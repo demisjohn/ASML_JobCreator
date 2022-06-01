@@ -271,7 +271,7 @@ class Cell(object):
         '''Return on-wafer Cells, for use in Image.distribute().
     
         Uses CellSize, MatrixShift, and RoundEdgeClearance.
-        Does NOT (yet) account for: FlatEdgeClearance (wafer flat exclusion), nor ExposeEdgeDie (shoot die that are partially on-wafer)
+        Accounts for FlatEdgeClearance (wafer flat exclusion), ExposeEdgeDie (shoot die that are partially on-wafer)
         Not yet able to be passed directly to Image.distribute(get_valid_cells()).  Currently must iterate through valid_cells and pass each [col,row] to Image.distribute().
         
         Parameters
