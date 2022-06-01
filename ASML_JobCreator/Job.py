@@ -53,7 +53,7 @@ class Job(object):
         self.LayerList = []
         self.defaults = Defaults    # imported in .__globals
         self.Plot = Plot(parent=self)
-        
+        self.ExposeEdgeDie = False
     #end __init__
     
     
@@ -120,6 +120,7 @@ class Job(object):
         '''
         self.Cell.NumberDiePerCell = [50, 50]
         self.Cell.MinNumberDie = 1
+        self.ExposeEdgeDie = True
     #end
     
     def unset_ExposeEdgeDie(self):
@@ -128,6 +129,7 @@ class Job(object):
         '''
         self.Cell.NumberDiePerCell = [1, 1]
         self.Cell.MinNumberDie = 1
+        self.ExposeEdgeDie = False
     #end
     
     

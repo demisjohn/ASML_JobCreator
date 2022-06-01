@@ -319,8 +319,15 @@ class Cell(object):
         while cell_index_i < max_num_cell_x+1:
             while cell_index_j < max_num_cell_y+1:
                 vertices = get_cell_vertices(cell_index_i, cell_index_j)
-                if not np.any(np.linalg.norm(vertices, axis = 1) > wafer_diameter/2):
-                    valid_cells.append([cell_index_i, cell_index_j])
+                if self.parent.ExposeEdgeDie == False:
+                    if not np.any(np.linalg.norm(vertices, axis = 1) > wafer_diameter/2):
+                        valid_cells.append([cell_index_i, cell_index_j])
+                elif self.parent.ExposeEdgeDie == True:
+                    if np.linalg.norm(vertices[0], axis = 0) <= wafer_diameter/2 \
+                    or np.linalg.norm(vertices[1], axis = 0) <= wafer_diameter/2 \
+                    or np.linalg.norm(vertices[2], axis = 0) <= wafer_diameter/2 \
+                    or np.linalg.norm(vertices[3], axis = 0) <= wafer_diameter/2 :
+                        valid_cells.append([cell_index_i, cell_index_j])
                 
                 cell_count_j += 1
                 sign_j *= -1
