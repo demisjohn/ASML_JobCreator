@@ -288,7 +288,7 @@ class Cell(object):
         import numpy as np
     
         #find whole die
-        cell_x, cell_y = self.CellSize
+        cell_x, cell_y = self.get_CellSize()
         matrix_shift_x, matrix_shift_y = self.get_MatrixShift()
         wafer_diameter = self.parent.get_WaferDiameter() - 2*self.get_RoundEdgeClearance()
         wafer_flat_clearance = self.get_FlatEdgeClearance()
@@ -309,7 +309,7 @@ class Cell(object):
         #end get_cell_vertices()
         
         def get_flat_edge_clearance_y():
-            ''' return a y-coordinate representing the wafer edge clearance - any point below this is invalid.'''
+            ''' return a y-coordinate representing the bottom wafer flat edge clearance - any point below this is invalid.'''
             F = Defaults.WFR_FLAT_LENGTH    # wafer flat length, mm
             D = Defaults.WFR_DIAMETER   # wafer diameter, mm
             Fc = F - self.get_FlatEdgeClearance()
@@ -336,11 +336,11 @@ class Cell(object):
                 vertices = get_cell_vertices(cell_index_i, cell_index_j)
                 if self.parent.ExposeEdgeDie == False:
                     if not np.any(np.linalg.norm(vertices, axis = 1) > wafer_diameter/2):
-                        if not np.any( vertices < flat_edge_clearance_y):
+                        if not np.any( [y for x,y in vertices] < flat_edge_clearance_y):
                             valid_cells.append([cell_index_i, cell_index_j])
                 elif self.parent.ExposeEdgeDie == True:
                     if np.any( np.linalg.norm(vertices, axis = 1) <= wafer_diameter/2 ):
-                        if np.any( np.array([v[1] for v in vertices]) >= flat_edge_clearance_y ):
+                        if np.any( [y for x,y in vertices] >= flat_edge_clearance_y ):
                             valid_cells.append([cell_index_i, cell_index_j])
                 
                 cell_count_j += 1
@@ -357,6 +357,22 @@ class Cell(object):
         return  valid_cells 
     #end get_valid_cells()
     
+    """
+    def is_ValidCell(self, CellCR):
+        '''Return True/False whether specified Cell ([c,r] index) is valid for exposure.
+        Uses get_ValidCells(), which accounts for Round/FlatEdgeClearance (wafer flat exclusion), ExposeEdgeDie (shoot die that are partially on-wafer).
+        
+        Parameters
+        ----------
+        CellCR : 2-valued iterable of integers
+            Col,Row integers given in a 2-valued list, array, tuple etc.  Eg. [0,0] or [1,-2]
+        
+        Returns
+        -------
+        {True|False}: whether cell is valid for exposure/distribution.
+        '''
+        return np.any(
+    """ 
   
 #end class(Cell)
 
