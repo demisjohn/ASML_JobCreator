@@ -38,6 +38,9 @@ MyJob.set_comment("Demo Alignment Job", "", "Exported from Python ASML_JobCreato
 
 ## Cell Structure:
 MyJob.Cell.set_CellSize( [5.00, 5.00] )    # cell size [X,Y] in millimeters
+MyJob.set_ExposeEdgeDie()  # Expose die that fall only partially on the wafer
+MyJob.Cell.set_RoundEdgeClearance( 5 )  # Width of disallowed border of wafer
+MyJob.Cell.set_FlatEdgeClearance( 3 )   # Width of disallowed border at wafer flat
 
 
 
@@ -49,9 +52,10 @@ MyJob.Cell.set_CellSize( [5.00, 5.00] )    # cell size [X,Y] in millimeters
 Res = MyJob.Image("UCSB_Res", "UCSB-OPC1", sizeXY=[3, 3], shiftXY=[4,5])
 
 ## To expose on Layer 2:
-#   use a pre-defined image from file, in the sub-folder ASML_JobCreator/Images/SPM_X.py
-#   `dir( asml.Images )` will show you a list, or look inside the sub-folder
-#   X-scribe-line alignment mark, used as dicing alignment guides
+#   We'll use a pre-defined image from file, in the sub-folder ASML_JobCreator/Images/SPM_X.py
+#   `dir( asml.Images )` will show you a list, or look inside the sub-folder.
+#   You can place your own Image Library files into the Images subfolder.
+#   We'll place X-scribe-line alignment marks, used as dicing alignment guides
 DicingLine_X = MyJob.Image( asml.Images.SPM_X )  
 # In order to use alignment mark images for other purposes, must give a custom Image ID, otherwise it thinks it's an SPM-X alignment mark:
 DicingLine_X.set_ImageID( "DiceX" )
@@ -63,12 +67,10 @@ DicingLine_X.set_ImageID( "DiceX" )
 #   shiftXY is floating-point X/Y shift
 
 ## To expose on Layer 1:
-# Distribute Image "Res" in a 3x3 array with no shift:
-for r in [-1,0,1]:
-    for c in [-1,0,1]:
-        Res.distribute( [c,r] )
-    #end for(c)
-#end for(r)
+# Distribute Image "Res" across whole wafer
+for cells in MyJob.Cell.get_ValidCells():
+    Res.distribute( cells )
+#end for(cells)
 
 ## To expose on Layer 2:
 # Distribute DicingX in rows across wafer, on top and bottom of cells:
@@ -82,17 +84,16 @@ for r in [-2,+1]:
 
 
 ## Alignment Mark Definition
-E = MyJob.Alignment.Mark("E", "PM", waferXY=[45.0, 0.0])
-EN = MyJob.Alignment.Mark("EN", "PM", waferXY=[45.0, 3.0])
-ES = MyJob.Alignment.Mark("ES", "PM", waferXY=[45.0, -3.0])
+E = MyJob.Alignment.Mark("E", "PM", waferXY=[42.5, 0.0])
+EN = MyJob.Alignment.Mark("EN", "PM", waferXY=[42.5, 2.5])
+ES = MyJob.Alignment.Mark("ES", "PM", waferXY=[42.5, -2.5])
 
-W = MyJob.Alignment.Mark("W", "PM", waferXY=[-45.0, 0.0])
-WN = MyJob.Alignment.Mark("WN", "PM", waferXY=[-45.0, 3.0])
-WS = MyJob.Alignment.Mark("WS", "PM", waferXY=[-45.0, -3.0])
-WS.set_backup()  # make the mark backup/preferred, for example only
+W = MyJob.Alignment.Mark("W", "PM", waferXY=[-42.5, 0.0])
+WN = MyJob.Alignment.Mark("WN", "PM", waferXY=[-42.5, 2.5])
+WS = MyJob.Alignment.Mark("WS", "PM", waferXY=[-42.5, -2.5])
 
 ALL = MyJob.Alignment.Strategy("ALL", marks=[E, EN, ES, W, WN, WS])
-ALL.set_required_marks(2)    # num marks to use, defaults to all
+ALL.set_required_marks(2)    # num marks that must pass, defaults to all
 
 
 
@@ -119,6 +120,7 @@ Lyr2.expose_Image( DicingLine_X, Energy=21, Focus=-0.10 )
 
 # Print all the data added to this Job:
 print(MyJob)
+MyJob.Plot.plot_wafer()
 
 
 ## Export the text file:
