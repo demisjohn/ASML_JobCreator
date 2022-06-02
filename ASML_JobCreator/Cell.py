@@ -371,14 +371,8 @@ class Cell(object):
         -------
         {True|False}: whether cell is valid for exposure/distribution.
         '''
-        self.parent._check_CellCR(cellCR)
-        
-        try:
-            self.get_ValidCells().index( cellCR )
-            return True
-        except ValueError:
-            # cellCR was not found in get_ValidCells()
-            return False
+        self.parent._check_CellCR(cellCR) # validate arguments
+        return cellCR in self.get_ValidCells()
     #end is_ValidCell()
   
 #end class(Cell)
