@@ -3,6 +3,7 @@
 ASML_JobCreator - Example 01
     Example usage, to export a text file for import into ASML PAS system.
     Multi-layer job, multiple images per layer, no alignments or mark exposure.
+    Very basics of making a Job.
 
 @author: Demis D. John
 Univ. of California Santa Barbara
@@ -15,10 +16,10 @@ Coordinates and sizes are specified as two-valued iterables like [X,Y]
 All sizes and shifts are specified at 1x wafer-scale (NOT 4x/5x reticle-scale)
 
 For help: after running once, use commands like:
-    help( asml )
-    help( MyJob )
-    dir( MyJob.Cell )
-    help( MyJob.Cell.set_CellSize )
+    help( asml ) -- print package info and contents
+    help( MyJob ) -- list functions in the Job class.
+    dir( MyJob.Cell ) -- list all options inside the Cell module.
+    help( MyJob.Cell.set_CellSize ) -- help on a specific function.
 """
 
 ####################################################
@@ -32,7 +33,7 @@ print('Running...')
 
 MyJob = asml.Job()
 
-MyJob.set_comment("Demo Job", "Exported from ", "Python ASML_JobCreator")
+MyJob.set_comment("Demo Job - Example 1", "Exported from ", "Python ASML_JobCreator")
 #print( MyJob.get_comment(), "\n" )    # Return the current comment lines
 
 
