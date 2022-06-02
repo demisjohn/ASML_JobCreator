@@ -408,27 +408,38 @@ class Job(object):
     #end Cell2Wafer()
     
     
-    def get_ValidCells(self):
-        '''
-        Return on-wafer Cells, for use in Image.distribute().  
-        (Documentation copied from Job.Cell.get_ValidCells(), inside the Cell class/module.)
-    
-        Uses CellSize, MatrixShift, and RoundEdgeClearance.
-        Does NOT (yet) account for: FlatEdgeClearance (wafer flat exclusion), nor ExposeEdgeDie (shoot die that are partially on-wafer)
-        Not yet able to be passed directly to Image.distribute(get_valid_cells()).  Currently must iterate through valid_cells and pass each [col,row] to Image.distribute().
+    def check_CellCR(self, cellCR):
+        '''Validate CellCR arguments - making sure it is a two-valued iterable of integers.
         
-        Parameters
-        ----------
-        none
-    
-        Returns
-        -------
-        valid_cells: a List of valid cell indices (indices are two-valued Lists of [col,row]).
-    
-        Contributed by Miguel Daal 2022, Ben Mazin group, U.California Santa Barbara, Physics Dept.'''
-        return self.Cell.get_ValidCells()
-    #end Cell2Wafer()
-    
+            Parameters
+            ----------
+            cellCR : 2-valued iterable of integers
+                Col,Row integers given in a 2-valued list, array, tuple etc.  Eg. [0,0] or [1,-2] or (-30,25) or np.array([1,2])
+        
+            Raises
+            -------
+            ValueError: if cellCR is malformed.
+        '''
+        if len(cellCR) != 2:
+            errstr = "Expected `cellCR` to be two-valued integer iterable. Eg. (1,1) or [3,3].  Instead got '%s'." % cellCR
+            raise ValueError(errstr)
+        #if len(CellCR)
+        
+        try:
+            c,r = cellCR[0], cellCR[1]
+        except IndexError:
+            errstr = "Expected `cellCR` to be two-valued integer iterable. Eg. (1,1) or [3,3].  Instead got '%s'." % cellCR
+            raise ValueError(errstr)
+        #end try
+        
+        if not cellCR[0] - int(cellCR[0]) == 0:
+            errstr = "`cellCR` column (1st value) is not integer.  Instead got '%s'." % cellCR[0]
+            raise ValueError(errstr)
+        
+        if not cellCR[1] - int(cellCR[1]) == 0:
+            errstr = "`cellCR` row (2nd value) is not integer.  Instead got '%s'." % cellCR[1]
+            raise ValueError(errstr)
+        
 #end class(Job)
 
 
