@@ -15,11 +15,18 @@ ASML_JobCreator
     
     Conventions
     -----------
-    All length units are specified in millimeters, and all coordinates are specified at 1x "wafer scale". X/Y Coordinates should be passed in a two-valued array-like iterable, such as a two-valued [List], (Tuple), numpy array etc.  Eg. [10, -5] means 10mm in X and -5mm in Y.
+    All length units are specified in millimeters, and all coordinates are specified at 1x "wafer scale". Conversion with system magnification are done internally, including for reticle coordinates.
+    Coordinates are in standard cartesian coordinates, with +X to the right and +Y up, assuming wafer-flat is down (negative Y).
+    X/Y Coordinates should be passed in a two-valued array-like iterable, such as a two-valued [List], (Tuple), numpy array etc.  Eg. [10.1, -5.1] means 10.1mm in X and -5.1mm in Y.
+    Similarly, Cell row/col "cellCR" selections should be passed as two-valued iterables of integers, such as `cellCR=[-1,1]`.
+    
+    ASML System Params
+    ------------------
+    The file `Defaults.py` includes system-hardware dependent parameters, such as wafer size, lens magnification, and other parameters that can be altered to make this module work with your ASML system.  Contact ASML or the maintainer of this package for help on setting up your Defaults.py file.  More more info, see `help(ASML_JobCreator.Defaults)` or `help(Job.defaults)`.
     
 
     __init__.py
-        The main file that imports all other module files and functions.  
+        This is the main file that imports all other module files and functions.  
         Anything defined here is global to the module namespace.
         The parent folder name, "ASML_JobCreator", is the module name, and upon import, will run this file.
     

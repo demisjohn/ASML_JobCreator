@@ -3,7 +3,11 @@ This file is part of the ASML_JobCreator package for Python 3.x.
 
 defaults.py
     Contains & instantiates object of class Default, 
-    containing hard-coded default values for many options.
+    containing hard-coded default values for many options, including hardware options
+    such as Lens Magnification, Wafer Size, Notch vs. Flat etc.
+    
+    You can modify this file to make the module compatible with your own ASML system.
+    The recommended method to accomplish that is to use your JobCreator software option to convert a binary job file into a text file.  Then open that file, and copy the various hardware values into the corresponding parameter in Defaults.py.  The Parameters are named identically to those in the Text file, with an additional Prefix indicating approximate subsection.
     
 - - - - - - - - - - - - - - -
 

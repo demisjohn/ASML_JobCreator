@@ -86,7 +86,7 @@ class Cell(object):
     
     
     def set_MatrixShift(self, xy=[0,0] ):
-        '''Set the Cell Matrix Shift in millimeters, [x,y].'''
+        '''Set the Cell Matrix Shift in millimeters, [x,y]. This shifts the Cell placement grid by the specified amount.'''
         if len(xy)==2: 
             self.MatrixShift = (xy[0], xy[1])
         else:
