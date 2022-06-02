@@ -371,7 +371,7 @@ class Cell(object):
         -------
         {True|False}: whether cell is valid for exposure/distribution.
         '''
-        self.parent.check_CellCR(cellCR)
+        self.parent._check_CellCR(cellCR)
         
         try:
             self.get_ValidCells().index( cellCR )

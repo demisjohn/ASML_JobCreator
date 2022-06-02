@@ -408,7 +408,7 @@ class Job(object):
     #end Cell2Wafer()
     
     
-    def check_CellCR(self, cellCR):
+    def _check_CellCR(self, cellCR):
         '''Validate CellCR arguments - making sure it is a two-valued iterable of integers.
         
             Parameters
