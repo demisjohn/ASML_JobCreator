@@ -357,22 +357,29 @@ class Cell(object):
         return  valid_cells 
     #end get_valid_cells()
     
-    """
-    def is_ValidCell(self, CellCR):
+    
+    def is_ValidCell(self, cellCR):
         '''Return True/False whether specified Cell ([c,r] index) is valid for exposure.
         Uses get_ValidCells(), which accounts for Round/FlatEdgeClearance (wafer flat exclusion), ExposeEdgeDie (shoot die that are partially on-wafer).
         
         Parameters
         ----------
-        CellCR : 2-valued iterable of integers
+        cellCR : 2-valued iterable of integers
             Col,Row integers given in a 2-valued list, array, tuple etc.  Eg. [0,0] or [1,-2]
         
         Returns
         -------
         {True|False}: whether cell is valid for exposure/distribution.
         '''
-        return np.any(
-    """ 
+        self.parent.check_CellCR(cellCR)
+        
+        try:
+            self.get_ValidCells().index( cellCR )
+            return True
+        except ValueError:
+            # cellCR was not found in get_ValidCells()
+            return False
+    #end is_ValidCell()
   
 #end class(Cell)
 
