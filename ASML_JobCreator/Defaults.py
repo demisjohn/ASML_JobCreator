@@ -183,6 +183,11 @@ class Defaults(object):
         self.ProcessData_GLBL_RTCL_ALIGNMENT                           = "N"
         self.ProcessData_GLBL_OVERLAY_ENHANCEMENT                      = "N"
         self.ProcessData_GLBL_SYM_ALIGNMENT                            = "N"
+        self.ProcessData_WAFER_ALIGN_REPEATS                           = "N"
+        self.ProcessData_NR_WAFER_ALIGN_REPEATS                        = 2
+        self.ProcessData_ALIGN_REPEAT_INTERVAL                         = [10, 10, 10, 10, 10, 10, 10, 10, 10, 10]
+        self.ProcessData_SMART_REPEAT_COUNT                                        = 3
+        self.ProcessData_SMART_REPEAT_THRESHOLD                                    = 0.000000
         self.ProcessData_LAYER_SHIFT                                   = [0.000000, 0.000000]
         self.ProcessData_CORR_INTER_FLD_EXPANSION                      = [0.000000, 0.000000]
         self.ProcessData_CORR_INTER_FLD_NONORTHO                       = 0.000000

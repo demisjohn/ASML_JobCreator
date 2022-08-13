@@ -38,9 +38,9 @@ MyJob.set_comment("Demo Alignment Job", "", "Exported from Python ASML_JobCreato
 
 ## Cell Structure:
 MyJob.Cell.set_CellSize( [5.00, 5.00] )    # cell size [X,Y] in millimeters
-MyJob.set_ExposeEdgeDie()  # Expose die that fall only partially on the wafer
-MyJob.Cell.set_RoundEdgeClearance( 5 )  # Width of disallowed border of wafer
-MyJob.Cell.set_FlatEdgeClearance( 3 )   # Width of disallowed border at wafer flat
+MyJob.unset_ExposeEdgeDie()  # Expose die that fall only partially on the wafer
+MyJob.Cell.set_RoundEdgeClearance( 0 )  # Width of disallowed border of wafer
+MyJob.Cell.set_FlatEdgeClearance( 0 )   # Width of disallowed border at wafer flat
 
 
 
@@ -125,6 +125,7 @@ MyJob.Plot.plot_wafer()
 
 ## Export the text file:
 asml.unset_WARN()   # Turn off warning messages about defaults
+asml.set_DEBUG()   # Turn on debugging output.
 #   overwrite the file. A warning will be printed while doing so.
 MyJob.export('Example02.txt', overwrite=True) 
 

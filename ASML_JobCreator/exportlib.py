@@ -6,6 +6,8 @@ exportlib.py
     
 - - - - - - - - - - - - - - -
 
+2022-08-13: Added "WAFER_ALIGHN_REPEATS" sections into PROCESS_DATA sections - needed for compatibility with LIPC system.
+
 Demis D. John, Univ. of California Santa Barbara; Nanofabrication Facility; 2019
 
 """
@@ -67,7 +69,17 @@ def _genascii(JobObj):
         """
         s1 = tab + cmd
         if isinstance(val, str):
-            s2 = indent(s1) + '"' + val + '"'
+            if quoted:
+                s2 = indent(s1) + '"' + val + '"'  # add quotes
+            else:
+                s2 = indent(s1) + val  # remove quotes
+            #end if(quoted)
+        elif np.size(val) == 1:
+            if not integers:
+                s2 = indent(s1) + "%0.6f" % (val)
+            else:
+                s2 = indent(s1) + '%i' % (val)  # layer ID #
+            #end if(integers)
         elif np.size(val) == 2:
             if doublestr:
                 s2 = indent(s1) + '"%s" "%s"' % tuple(val) # two strings, Opt.Prealign Marks
@@ -76,28 +88,32 @@ def _genascii(JobObj):
                     s2 = indent(s1) + '"%i" "%i"' % tuple(val)  # Cell Index, quoted
                 else:
                     s2 = indent(s1) + '%i %i' % tuple(val)  # NUMBER_DIES, unquoted
+                #end if(quoted)            
             else:
                 s2 = indent(s1) + "%0.6f %0.6f" % tuple(val) # X/Y coords
-            #end if(cells)
+            #end if(doublstr/integers)
         elif np.size(val) == 3:
             if not integers:
                 s2 = indent(s1) + "%0.6f %0.6f %0.6f" % tuple(val) # unused
             else:
                 s2 = indent(s1) + '%i %i %i' % tuple(val)  # RTCL_CHECK_LIMITS_UPPER, unquoted
-            #end if(cells)
+            #end if(integers)
         elif np.size(val) == 4:
             if not integers:
                 s2 = indent(s1) + "%0.6f %0.6f %0.6f %0.6f" % tuple(val) # CORR_80_88_MARK_SHIFT
             else:
                 s2 = indent(s1) + '%i %i %i %i' % tuple(val)  # unused
-            #end if(cells)
-        else:
-            if not integers:
-                s2 = indent(s1) + "%0.6f" % (val)
-            else:
-                s2 = indent(s1) + '%i' % (val)  # layer ID #
             #end if(integers)
-        #end if(str)
+        elif np.size(val) == 10:
+            if DEBUG(): print("DEBUG: export_lib(): np.size(val) == 10")
+            if not integers:
+                s2 = indent(s1) + "%0.6f %0.6f %0.6f %0.6f %0.6f %0.6f %0.6f %0.6f %0.6f %0.6f" % tuple(val) # unused
+            else:
+                s2 = indent(s1) + '%i %i %i %i %i %i %i %i %i %i' % tuple(val)  # for ALIGN_REPEAT_INTERVAL
+            #end if(integers)
+        else:
+            raise ValueError("Unrecognized value type - unsure how to format for export string.")
+        #end if(str/np.size)
         return string + s1 + s2 + "\n"
     #end add()
     
@@ -333,6 +349,14 @@ def _genascii(JobObj):
         s = add(s, "GLBL_OVERLAY_ENHANCEMENT", Defaults.ProcessData_GLBL_OVERLAY_ENHANCEMENT)
         if align: 
             s = add(s, "GLBL_SYM_ALIGNMENT", Defaults.ProcessData_GLBL_SYM_ALIGNMENT)
+        
+        # added 2022-08-13 for post-LIPC compatibility:
+        s = add(s, "WAFER_ALIGN_REPEATS", Defaults.ProcessData_WAFER_ALIGN_REPEATS)
+        s = add(s, "NR_WAFER_ALIGN_REPEATS", Defaults.ProcessData_NR_WAFER_ALIGN_REPEATS, integers=True)
+        s = add(s, "ALIGN_REPEAT_INTERVAL", Defaults.ProcessData_ALIGN_REPEAT_INTERVAL, integers=True)
+        s = add(s, "SMART_REPEAT_COUNT", Defaults.ProcessData_SMART_REPEAT_COUNT, integers=True)
+        s = add(s, "SMART_REPEAT_THRESHOLD", Defaults.ProcessData_SMART_REPEAT_THRESHOLD)
+        
         
         s = add(s, "LAYER_SHIFT", L.get_LayerShift() )
         
