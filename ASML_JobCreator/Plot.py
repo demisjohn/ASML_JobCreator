@@ -33,7 +33,7 @@ class Plot(object):
     
     
     
-    def plot_wafer(self, showwafer=True, showmarks=True):
+    def plot_wafer(self, showwafer=True, showmarks=True, savewaferfig=False):
         """
         Plot the Wafer layout and distributed Images.
         Note that some plotting options, such as font size and axis positioning, are set in __globals.py
@@ -42,6 +42,9 @@ class Plot(object):
         ----------
         showwafer, showmarks : True | False, optional
             Show the wafer outline marks + edge clearance (showware) and alignment marks (showmarks). Defaults to True.
+            
+        savewaferfig: True | False, optional
+            If True, save a figure for each reticle. Default to False.
         
         Returns
         -------
@@ -224,13 +227,14 @@ class Plot(object):
             LegendEntries.extend( [clearance, wf] )
         ax.legend(handles=LegendEntries, title="Images", fontsize="small", loc='upper left', bbox_to_anchor=(1.01, 1), borderaxespad=0.)
 
+        if savewaferfig: plt.savefig("ASML_JOB_PLOT" + ".png")
         fig.show()
         return fig, ax
     #end plot_wafer()
     
     
     
-    def plot_reticles(self, scale=False, showwindow=True, showlens=True):
+    def plot_reticles(self, scale=False, showwindow=True, showlens=True, saveretfigs=False):
         """
         Plot the Reticle layout(s).  If multiple Reticle ID's are detected, multiple reticles will be plotted.
         Note that some plotting options, such as font size and axis positioning, are set in __globals.py
@@ -242,6 +246,9 @@ class Plot(object):
             
         showwindow, showlens : True | False, optional
             If True, show the rectangular reticle table window (showwindow) and circular lens (showlens) outlines. These dimensions are defined in Defaults.py. Both defualt to True.
+            
+        saveretfigs: True | False, optional
+            If True, save a figure for each reticle. Default to False.
         
         Returns
         -------
@@ -326,6 +333,7 @@ class Plot(object):
             ax.legend(handles=LegendEntries, title="Images", fontsize="small", loc='upper left', bbox_to_anchor=(1.01, 1), borderaxespad=0.)
         
             fig.show()
+            if saveretfigs: plt.savefig(RetStr+".png")
         #end for (RetStr)
         # unset_DEBUG()
         
