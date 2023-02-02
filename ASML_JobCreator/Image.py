@@ -153,7 +153,7 @@ class Image(object):
             raise ValueError(errstr)
         ImageID_allowed = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.-_%+"
         for c in ImageID:
-            if c not in LayerID_allowed:
+            if c not in ImageID_allowed:
                 errstr = "Bad ImageID, {} : character {} is not allowed.".format(ImageID, c)
                 errstr += "\nAllowed characters: {}".format(ImageID_allowed)
                 raise ValueError(errstr)
