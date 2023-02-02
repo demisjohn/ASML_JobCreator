@@ -147,7 +147,17 @@ class Image(object):
     
     def set_ImageID(self, ImageID):
         '''Set ImageID, as string. Also aliased to `set_ID()`.'''
-        self.ImageID = str(ImageID).strip().upper()
+        ImageID = str(ImageID).strip().upper()
+        if len(ImageID) > 15:
+            errstr = "Bad ImageID, {} : ImageID must be 15 characters or less.".format(ImageID)
+            raise ValueError(errstr)
+        ImageID_allowed = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.-_%+"
+        for c in ImageID:
+            if c not in LayerID_allowed:
+                errstr = "Bad ImageID, {} : character {} is not allowed.".format(ImageID, c)
+                errstr += "\nAllowed characters: {}".format(ImageID_allowed)
+                raise ValueError(errstr)
+        self.ImageID = ImageID
     
     # aliases
     get_ID = get_ImageID
