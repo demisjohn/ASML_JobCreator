@@ -44,7 +44,17 @@ class Layer(object):
         '''Layer object constructor.  See `help(Layer)` for parameters.
         '''
         self.parent = parent    # parent Job object
-        self.LayerID = str(LayerID).strip().upper() # To Do: Sanitize LayerID text
+        LayerID = str(LayerID).strip().upper()
+        if len(LayerID) > 15:
+            errstr = "Bad LayerID, {} : LayerID must be 15 characters or less.".format(LayerID)
+            raise ValueError(errstr)
+        LayerID_allowed = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-"
+        for c in LayerID:
+            if c not in LayerID_allowed:
+                errstr = "Bad LayerID, {} : character {} is not allowed.".format(LayerID, c)
+                errstr += "\nAllowed characters: {}".format(LayerID_allowed)
+                raise ValueError(errstr)
+        self.LayerID = LayerID
         self.combined_zerofirst = bool(CombineWithZeroLayer)
         self.zero = bool(ZeroLayer)
         self.ImageList = []

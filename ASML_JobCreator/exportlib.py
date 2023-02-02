@@ -250,13 +250,7 @@ def _genascii(JobObj):
         if DEBUG(): print( "Layer #%i, ID='%s'" %(i, str(L.LayerID) ) )
         s += "START_SECTION LAYER_DEFINITION\n"
         s = add(s, "LAYER_NO", i, integers=True)
-        if L.LayerID.isalnum():
-            LyrIDstr = L.LayerID
-        else:
-            warnstr = 'Layer # %i: Layer ID string "%s" is invalid, setting ID to layer number.' % (i, str(L.LayerID))
-            if WARN(): print(warnstr)
-            LyrIDstr = str(i)
-            L.LayerID = LyrIDstr
+        LyrIDstr = L.LayerID
         #end if(LayerID is alphanumeric)
         s = add(s, "LAYER_ID", LyrIDstr)
         s = add(s, "WAFER_SIDE", Defaults.Layer_WAFER_SIDE)
