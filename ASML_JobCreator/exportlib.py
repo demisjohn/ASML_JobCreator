@@ -250,6 +250,11 @@ def _genascii(JobObj):
         if DEBUG(): print( "Layer #%i, ID='%s'" %(i, str(L.LayerID) ) )
         s += "START_SECTION LAYER_DEFINITION\n"
         s = add(s, "LAYER_NO", i, integers=True)
+        if not L.LayerID:
+            warnstr = 'Layer # %i: No Layer ID string provided ("%s"), setting ID to layer number.' % (i, str(L.LayerID))
+            if WARN(): print(warnstr)
+            L.LayerID = str(i)
+        #end if(not L.LayerID)
         LyrIDstr = L.LayerID
         #end if(LayerID is alphanumeric)
         s = add(s, "LAYER_ID", LyrIDstr)
