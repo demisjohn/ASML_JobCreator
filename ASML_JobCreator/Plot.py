@@ -15,7 +15,7 @@ Demis D. John, Univ. of California Santa Barbara; Nanofabrication Facility; 2020
 
 from .__globals import *    # global variables/methods to the module.
 
-# import matplotlib.pyplot as plt – already done in globals.py
+# import matplotlib.pyplot as plt # already done in globals.py
 
 ####################################################
 
@@ -33,7 +33,7 @@ class Plot(object):
     
     
     
-    def plot_wafer(self, showwafer=True, showmarks=True):
+    def plot_wafer(self, showwafer=True, showmarks=True, savewaferfig=False):
         """
         Plot the Wafer layout and distributed Images.
         Note that some plotting options, such as font size and axis positioning, are set in __globals.py
@@ -42,6 +42,9 @@ class Plot(object):
         ----------
         showwafer, showmarks : True | False, optional
             Show the wafer outline marks + edge clearance (showware) and alignment marks (showmarks). Defaults to True.
+            
+        savewaferfig: True | False, optional
+            If True, save a figure for each reticle. Default to False.
         
         Returns
         -------
@@ -223,14 +226,15 @@ class Plot(object):
         if showwafer:
             LegendEntries.extend( [clearance, wf] )
         ax.legend(handles=LegendEntries, title="Images", fontsize="small", loc='upper left', bbox_to_anchor=(1.01, 1), borderaxespad=0.)
-        
+
+        if savewaferfig: plt.savefig("ASML_JOB_PLOT" + ".png")
         fig.show()
         return fig, ax
     #end plot_wafer()
     
     
     
-    def plot_reticles(self, scale=False, showwindow=True, showlens=True):
+    def plot_reticles(self, scale=False, showwindow=True, showlens=True, saveretfigs=False):
         """
         Plot the Reticle layout(s).  If multiple Reticle ID's are detected, multiple reticles will be plotted.
         Note that some plotting options, such as font size and axis positioning, are set in __globals.py
@@ -242,6 +246,9 @@ class Plot(object):
             
         showwindow, showlens : True | False, optional
             If True, show the rectangular reticle table window (showwindow) and circular lens (showlens) outlines. These dimensions are defined in Defaults.py. Both defualt to True.
+            
+        saveretfigs: True | False, optional
+            If True, save a figure for each reticle. Default to False.
         
         Returns
         -------
@@ -259,10 +266,11 @@ class Plot(object):
         import matplotlib.patches as mplp   # for plotting shapes
         import numpy as np    
         
-        Rets,Imgs = self._get_ReticlesPerImage()
-        figs, axs = [],[]
-        
-        for r,RetStr in enumerate(Rets):
+        Rets = self._get_ReticlesPerImage()
+        figs, axs = [],[]        
+
+        # set_DEBUG()
+        for RetStr, Imgs in Rets.items():
             fig, ax = plt.subplots(nrows=1, ncols=1)
             figs.append(fig)
             axs.append(ax)
@@ -299,7 +307,7 @@ class Plot(object):
             
             # Plot the defined images:
             cmap = plt.get_cmap(Defaults.Plotting_ImageColorMap)    # cycling colors
-            for i, Img in enumerate(Imgs[r]):
+            for i, Img in enumerate(Imgs):
                 #if DEBUG(): print("_get_ReticlesPerImage(): Imgs:\n", Imgs, "\nImg #%i\n"%i, Img)
                 Iwidth = Img.sizeXY[0] * Mag
                 Iheight = Img.sizeXY[1] * Mag
@@ -325,7 +333,9 @@ class Plot(object):
             ax.legend(handles=LegendEntries, title="Images", fontsize="small", loc='upper left', bbox_to_anchor=(1.01, 1), borderaxespad=0.)
         
             fig.show()
+            if saveretfigs: plt.savefig(RetStr+".png")
         #end for (RetStr)
+        # unset_DEBUG()
         
         return figs, axs
     #end plot_wafer()
@@ -349,31 +359,18 @@ class Plot(object):
         >>> One = Image(ImageID="One", ReticleID="Ret1", ....)
         >>> Two = Image(ImageID="Two", ReticleID="Ret1", ....)
         >>> Three = Image(ImageID="Three", ReticleID="RetTwo", ....)
-        >>> Reticles, Images = _get_ReticlesPerImage( [One, Two, Three] )
+        >>> Reticles = _get_ReticlesPerImage( [One, Two, Three] )
         returns:
-        : Reticles = ["Ret1", "RetTwo"]
-        : Images = [ [One,Two], [Three] ]
+        : Reticles = {"Ret1" : [One,Two] , "RetTwo": [Three]}
         '''
-        Rets = []
-        Imgs = []
-        
-        for i,I in enumerate(self.parent.ImageList):
-            Imgs.append( [] )
+        Rets = {}
+        for I in self.parent.ImageList:
             Rstr = I.get_ReticleID()
-            Ri = np.where(   np.isin( Rets, Rstr )  )[0]
-            if DEBUG(): print("_get_ReticlesPerImage(): #%i\n"%i, "\tI.ImageID = %s\n" % I.get_ImageID(), "\tI.ReticleID = %s\n" % I.get_ReticleID(), "\tI.Rets = %s, Rstr = %s\n" % (Rets, Rstr), "\tRi = %s\n" % Ri)
-            if len(Ri)==0:
-                # Unlisted ReticleID
-                Rets.append( Rstr )
-                Imgs[i].append( I )
-            else:
-                Imgs[Ri[0]].append( I )
-            #end if(Ri)
-           
+            if Rstr in Rets: Rets[Rstr].append(I)
+            else: Rets[Rstr] = [I]
         #end for(ImageList)
-        
-        if DEBUG(): print("_get_ReticlesPerImage(): Rets, Imgs = \n", Rets, "\n", Imgs )
-        return Rets, Imgs
+        if DEBUG(): print("_get_ReticlesPerImage(): Rets = \n", Rets)
+        return Rets
     #end _get_ReticlesPerImage()
         
 #end class(Plot)

@@ -14,7 +14,7 @@ Demis D. John, Univ. of California Santa Barbara; Nanofabrication Facility; 2019
 # Module setup etc.
 
 from .__globals import *    # global variables/methods to the module.
-
+from math import atan2, pi
 
 ####################################################
 
@@ -44,7 +44,17 @@ class Layer(object):
         '''Layer object constructor.  See `help(Layer)` for parameters.
         '''
         self.parent = parent    # parent Job object
-        self.LayerID = str(LayerID).strip().upper() # To Do: Sanitize LayerID text
+        LayerID = str(LayerID).strip().upper()
+        if len(LayerID) > 15:
+            errstr = "Bad LayerID, {} : LayerID must be 15 characters or less.".format(LayerID)
+            raise ValueError(errstr)
+        LayerID_allowed = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-"
+        for c in LayerID:
+            if c not in LayerID_allowed:
+                errstr = "Bad LayerID, {} : character {} is not allowed.".format(LayerID, c)
+                errstr += "\nAllowed characters: {}".format(LayerID_allowed)
+                raise ValueError(errstr)
+        self.LayerID = LayerID
         self.combined_zerofirst = bool(CombineWithZeroLayer)
         self.zero = bool(ZeroLayer)
         self.ImageList = []
@@ -390,7 +400,7 @@ class Layer(object):
     #end expose_Marks()
     
     
-    def set_PreAlignment(self,  marks=[] ):
+    def set_PreAlignment(self,  marks=[], check_position=False):
         """
         Enable Optical Prealignment on this Layer.
         Pass a list/iterable containing the two Mark objects corresponding to the alignment marks to be used for Optical Prealignment.
@@ -404,12 +414,57 @@ class Layer(object):
         except IndexError:
             errstr = "Expected exactly two Mark objects, instead got: %s"%( marks )
             raise IndexError(errstr)
-        
+
+        # Ensure mark arguments were passed
         if isinstance(mark1, _Mark) and isinstance(mark2, _Mark):
             self.PreAlignMarksList = [mark1, mark2]
         else:
-            errstr = "Expected exactly two Mark objects, instead got %s and %s."%(mark1.__repr__(), mark2.__repr__() )
+            errstr = "Expected exactly two Mark objects, "
+            errstr += "instead got {} and {}.".format(
+                mark1.__repr__(), mark2.__repr__() )
             raise ValueError(errstr)
+
+        # check position requirements (possibly only for some ASML PAS systems)
+        if check_position:
+            # Ensure that marks are in allowed pre-alignment region
+            # (See image in Issue 43)
+            errtemplate = "\npre-alignment position {} ({:.6f},{:.6f}) not allowed"
+            markallowed = [1, 1]
+            errstr = ""
+            r_min = 32.5 # mm (hard-coded, from image in Issue 43)
+            r_max = Defaults.WFR_DIAMETER/2 - self.get_RoundEdgeClearance()
+            # y_min = # TODO also forbid prealignment using flat clearance?
+            # (see get_flat_edge_clearance_y in Cell.get_ValidCells)
+            for ii, mark in enumerate([mark1, mark2]):
+                x0, y0 = mark.waferXY
+                d = 1.640/4 / 2 # half of the mark side-length
+                for dx, dy in [(-d, -d), (d, -d), (-d, d), (d, d)] :
+                    x1, y1 = x0+dx, y0+dy
+
+                    theta = np.rad2deg(atan2(y1, x1))
+                    if 20 <= theta <= 70: markallowed[ii] = 0; break
+                    if 110 <= theta <= 160: markallowed[ii] = 0; break
+                    if -70 <= theta <= -20: markallowed[ii] = 0; break
+                    if -160 <= theta <= -110: markallowed[ii] = 0; break
+
+                    r2 = x1*x1 + y1*y1
+                    if r2 <= r_min*r_min: markallowed[ii] = 0; break
+                    if r2 >= r_max*r_max: markallowed[ii] = 0; break
+                    # TODO handle notch/wafer flat
+                if not markallowed[ii]: errstr += errtemplate.format(ii+1, x0, y0)
+            if errstr != "": raise ValueError(errstr)
+
+            # Ensure that the marks on "opposite sides of the wafer"
+            theta1 = np.rad2deg(atan2(mark1.waferXY[1], mark1.waferXY[0]))
+            theta2 = np.rad2deg(atan2(mark2.waferXY[1], mark2.waferXY[0]))
+            dtheta1 = abs(theta2 - theta1)
+            dtheta2 = 360.0 - dtheta1
+            dtheta = min([dtheta1, dtheta2])
+            if dtheta <= 140.0 :
+                errstr = "Expected marks on opposite sides of the wafer: "
+                errstr += "mark angles are {:.1f} and {:.1f} degrees".format(
+                    theta1, theta2)
+                raise ValueError(errstr)
     #end set_PreAlignment()
     
     def unset_PreAlignment(self):

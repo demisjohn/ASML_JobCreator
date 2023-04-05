@@ -234,34 +234,30 @@ class Cell(object):
         ShiftXY : 2-valued iterable of floats
             X,Y shift from center of Cell, in a 2-valued list, array, tuple etc.
         '''
-        ErrStr = "Cell: This function is not verified to work properly. Use `set_DEBUG()` to enable."
-        if not DEBUG():
-            raise NotImplementedError(ErrStr)
-        else:
-            if WARN(): print(ErrStr)
         
         from math import floor  # round down
-        
+
         A = [0,0]
         CR = [0,0]
+        CR_ = [0,0]
         XY = [0,0]
-        
-        A[0] = (WaferXY[0] - self.get_MatrixShift()[0]) 
-        A[1] = (WaferXY[1] - self.get_MatrixShift()[1]) 
-        
-        if DEBUG(): print("Ax,Ay = ", A[0] , A[1])
-        if DEBUG(): print("raw C,R = ", A[0] / self.get_CellSize()[0], A[1] / self.get_CellSize()[1]  )
-        
-        CR[0] = floor(  A[0] / self.get_CellSize()[0] )
-        CR[1] = floor(  A[1] / self.get_CellSize()[1] )
-        
-        if DEBUG(): print("mod X,Y = ", 
-            A[0] % self.get_CellSize()[0], 
-            A[1] % self.get_CellSize()[1]
-            )
-        
-        XY[0] = WaferXY[0] - CR[0]*self.get_CellSize()[0] + self.get_MatrixShift()[0] - self.get_CellSize()[0]/2
-        XY[1] = WaferXY[1] - CR[1]*self.get_CellSize()[1] + self.get_MatrixShift()[1] - self.get_CellSize()[1]/2
+
+        cellSize = self.get_CellSize()
+        matrixShift = self.get_MatrixShift()
+
+        for ii in [0, 1] : # iterate over x and y separately
+            A[ii] = (WaferXY[ii] - matrixShift[ii]) # matrix shift
+            A[ii] += cellSize[ii]/2                 # shift to cell bottom-left reference
+            CR_[ii] = A[ii]/cellSize[ii]            # scale to cell size
+            CR[ii] = floor(CR_[ii])                 # integer cell choice
+            XY[ii] = CR_[ii] - CR[ii]               # mod
+            XY[ii] = XY[ii] * cellSize[ii]          # scale to mm
+            XY[ii] = XY[ii] - cellSize[ii]/2        # shift back to cell-center reference
+
+        if DEBUG(): print("wafer X,Y = ", waferXY[0] , waferXY[1] )
+        if DEBUG(): print("C,R scaled = ", CR_[0], CR_[1] )
+        if DEBUG(): print("C,R round  = ", CR[0], CR[1] )
+        if DEBUG(): print("cell X,Y = ", XY[0], XY[1] )
         
         return [CR[0],CR[1]], [round(XY[0],6), round(XY[1],6)]
     #end Wafer2Cell()
