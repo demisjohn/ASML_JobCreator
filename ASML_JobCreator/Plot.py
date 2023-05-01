@@ -30,21 +30,25 @@ class Plot(object):
         '''Create empty Plot object.'''
         self.parent = parent    # parent Job object
     #end __init__
-    
-    
-    
-    def plot_wafer(self, showwafer=True, showmarks=True, savewaferfig=False):
+
+
+
+    def plot_wafer(self, figax=None, showwafer=True, showmarks=True, layer=None):
         """
         Plot the Wafer layout and distributed Images.
         Note that some plotting options, such as font size and axis positioning, are set in __globals.py
         
         Parameters
         ----------
+
+        figax : figure and axis tuple, optional
+            If not None, creates a new figure and axis
+
         showwafer, showmarks : True | False, optional
             Show the wafer outline marks + edge clearance (showware) and alignment marks (showmarks). Defaults to True.
-            
-        savewaferfig: True | False, optional
-            If True, save a figure for each reticle. Default to False.
+
+        layer: valid LayerID, optional
+            If not None, plots ONLY the specified layer. Default to None.
         
         Returns
         -------
@@ -53,10 +57,10 @@ class Plot(object):
         import matplotlib.pyplot as plt
         import matplotlib.patches as mplp   # for plotting shapes
         import numpy as np
-        
-        fig, ax = plt.subplots(nrows=1, ncols=1)
+
+        if figax is None: fig, ax = plt.subplots(nrows=1, ncols=1) 
         LegendEntries = []
-        
+
         ## Plot the wafer outline:
         # Arc angles:
         F = self.parent.defaults.WFR_FLAT_LENGTH    # wafer flat length, mm
@@ -68,7 +72,7 @@ class Plot(object):
             
         if showwafer:
             # matplotlib.patches.Arc(xy, width, height, angle=0.0, theta1=0.0, theta2=360.0) :
-            wf = mplp.Arc( (0,0) , D, D, angle=-90, theta1=A, theta2=-A , color=Defaults.Plotting_WaferEdgeColor, hatch=Defaults.Plotting_BGHatch, label="Edge Clearance")
+            wf = mplp.Arc( (0,0) , D, D, angle=-90, theta1=A, theta2=-A , color=Defaults.Plotting_WaferEdgeColor, hatch=Defaults.Plotting_BGHatch, label="Wafer")
             ax.add_patch( wf )
         
         
@@ -82,7 +86,7 @@ class Plot(object):
             Ac = 2
         
         if showwafer:
-            clearance = mplp.Arc( (0,0) , Dc, Dc, angle=-90, theta1=Ac, theta2=(-Ac) , color=Defaults.Plotting_WaferColor, hatch=Defaults.Plotting_BGHatch, label="Wafer")
+            clearance = mplp.Arc( (0,0) , Dc, Dc, angle=-90, theta1=Ac, theta2=(-Ac) , color=Defaults.Plotting_WaferColor, hatch=Defaults.Plotting_BGHatch, label="Edge Clearance")
             ax.add_patch( clearance )
         
         
@@ -164,6 +168,9 @@ class Plot(object):
             Iwidth = Img.sizeXY[0]
             Iheight = Img.sizeXY[1]
             if Img.Layers:
+                if layer is not None:
+                    if layer not in Img.Layers:
+                        continue
                 for ii, Id in enumerate( Img.get_distribution() ):
                     CellCR = Id[0]
                     ShiftXY = Id[1]
@@ -172,7 +179,7 @@ class Plot(object):
                     if DEBUG(): print("X,Y=", X,Y)
                     #DELETE? Icen = np.array(  [ () , () ]  )
                     # matplotlib.patches.Rectangle( (x,y), width, height):
-                    R = mplp.Rectangle( (X,Y),  Iwidth, Iheight, color=cmap(i), label=Img.ImageID, alpha=Defaults.Plotting_Alpha, linewidth=Defaults.Plotting_LineWidth )
+                    R = mplp.Rectangle( (X,Y),  Iwidth, Iheight, color=cmap(i%len(cmap.colors)), label=Img.ImageID, alpha=Defaults.Plotting_Alpha, linewidth=Defaults.Plotting_LineWidth )
                     ax.add_patch(   R   )
                     if ii==0: LegendEntries.append( R ) # add once only
                 #end for(ImgDistr)
@@ -227,14 +234,12 @@ class Plot(object):
             LegendEntries.extend( [clearance, wf] )
         ax.legend(handles=LegendEntries, title="Images", fontsize="small", loc='upper left', bbox_to_anchor=(1.01, 1), borderaxespad=0.)
 
-        if savewaferfig: plt.savefig("ASML_JOB_PLOT" + ".png")
-        fig.show()
         return fig, ax
     #end plot_wafer()
     
     
     
-    def plot_reticles(self, scale=False, showwindow=True, showlens=True, saveretfigs=False):
+    def plot_reticles(self, figax=None, scale=False, showwindow=True, showlens=True):
         """
         Plot the Reticle layout(s).  If multiple Reticle ID's are detected, multiple reticles will be plotted.
         Note that some plotting options, such as font size and axis positioning, are set in __globals.py
@@ -246,9 +251,6 @@ class Plot(object):
             
         showwindow, showlens : True | False, optional
             If True, show the rectangular reticle table window (showwindow) and circular lens (showlens) outlines. These dimensions are defined in Defaults.py. Both defualt to True.
-            
-        saveretfigs: True | False, optional
-            If True, save a figure for each reticle. Default to False.
         
         Returns
         -------
@@ -314,7 +316,7 @@ class Plot(object):
                 X = Img.shiftXY[0] * Mag - Iwidth/2
                 Y = Img.shiftXY[1] * Mag - Iheight/2
                 
-                R = mplp.Rectangle( (X,Y),  Iwidth, Iheight, color=cmap(i), label=Img.ImageID, alpha=Defaults.Plotting_Alpha, linewidth=Defaults.Plotting_LineWidth )
+                R = mplp.Rectangle( (X,Y),  Iwidth, Iheight, color=cmap(i%len(cmap.colors)), label=Img.ImageID, alpha=Defaults.Plotting_Alpha, linewidth=Defaults.Plotting_LineWidth )
                 ax.add_patch(   R   )
                 LegendEntries.append( R ) # add once only
             #end for(Imagelist)
@@ -331,9 +333,7 @@ class Plot(object):
             if showwindow:
                 LegendEntries.append( RT )
             ax.legend(handles=LegendEntries, title="Images", fontsize="small", loc='upper left', bbox_to_anchor=(1.01, 1), borderaxespad=0.)
-        
-            fig.show()
-            if saveretfigs: plt.savefig(RetStr+".png")
+
         #end for (RetStr)
         # unset_DEBUG()
         
