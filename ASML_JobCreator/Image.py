@@ -88,8 +88,8 @@ class Image(object):
         s += " "*tab + "ASML_JobCreator.Image object:\n"
         s += " "*tab + " Image ID = '" + str(self.ImageID) + "'\n"
         s += " "*tab + " Reticle ID = '" + str(self.ReticleID) + "'\n"
-        s += " "*tab + " Image Shift = " + str(self.sizeXY) + "\n"
-        s += " "*tab + " Image Size = " + str(self.shiftXY) + "\n"
+        s += " "*tab + " Image Size = " + str(self.sizeXY) + "\n"
+        s += " "*tab + " Image Shift = " + str(self.shiftXY) + "\n"
         if self.Layers:
             s += " "*tab + " Exposed on Layers: " + str([x.get_ID() for x in self.Layers]) + "\n"
         else:
@@ -120,27 +120,27 @@ class Image(object):
         from copy import deepcopy   # to make copies instead of only references
         return deepcopy(self)
     #end copy()
-    
-    
-    
+
+
+
     ##############################################
     #       Setters/Getters
     ##############################################
-    
+
     def get_ReticleSize(self):
         '''Return the Image Size scaled to Reticle-scale (using `Job.get_LensReduction()`` ), in millimeters, [x,y].'''
         mag = self.parent.get_LensReduction()
         return (self.sizeXY[0] * mag , self.sizeXY[1] * mag)
     #end
-    
+
     def get_ReticleShift(self):
         '''Return the Image Shift scaled to Reticle-scale (using `Job.get_LensReduction()`` ), in millimeters, [x,y].'''
         mag = self.parent.get_LensReduction()
         return (self.shiftXY[0] * mag , self.shiftXY[1] * mag)
     #end
-    
-    
-    
+
+
+
     def get_ImageID(self):
         '''Return ImageID, if it has been set.  Otherwise, return `None`. Also aliased to `set_ID()`.'''
         return self.ImageID
