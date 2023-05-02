@@ -62,7 +62,7 @@ class Plot(object):
         import numpy as np
 
         if type(layer) is str: layer = [layer]
-        if figax is None: fig, ax = plt.subplots(nrows=1, ncols=1) 
+        fig, ax = plt.subplots(nrows=1, ncols=1) if figax is None else figax
         LegendEntries = []
 
         ## Plot the wafer outline:
@@ -172,9 +172,10 @@ class Plot(object):
             Iheight = Img.sizeXY[1]
             if Img.Layers:
                 if layer is not None:
+                    imglayers = list([lay.LayerID for lay in Img.Layers])
                     plot_this = False
-                    for lay in layer:
-                        if lay in Img.Layers:
+                    for layername in layer:
+                        if layername in imglayers:
                             plot_this = True
                             break
                     if not plot_this: continue
@@ -248,15 +249,14 @@ class Plot(object):
                 name = 'all_layers'
             else : 
                 name = 'Layers_{}'.format("_".join(layer))
-            plt.savefig(os.path.join(['Figures', name+'.png']), dpi=300, transparent=True, bbox_inches='tight')
+            plt.savefig(os.path.join('Figures', name+'.png'), dpi=300, transparent=True, bbox_inches='tight')
 
         fig.show()
         return fig, ax
     #end plot_wafer()
-    
-    
-    
-    def plot_reticles(self, figax=None, scale=False, showwindow=True, showlens=True, saveretfigs=False):
+
+
+    def plot_reticles(self, scale=False, showwindow=True, showlens=True, saveretfigs=False):
         """
         Plot the Reticle layout(s).  If multiple Reticle ID's are detected, multiple reticles will be plotted.
         Note that some plotting options, such as font size and axis positioning, are set in __globals.py
@@ -357,7 +357,7 @@ class Plot(object):
             ax.legend(handles=LegendEntries, title="Images", fontsize="small", loc='upper left', bbox_to_anchor=(1.01, 1), borderaxespad=0.)
 
             if saveretfigs:
-                plt.savefig(os.path.join(['Figures', RetStr+".png"]))
+                plt.savefig(os.path.join('Figures', RetStr+".png"))
             fig.show()
 
         #end for (RetStr)

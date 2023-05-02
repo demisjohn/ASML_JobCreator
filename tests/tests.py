@@ -7,6 +7,8 @@ for script, outputfile in [
             "examplejob01_multilayer_noalignments.txt"),
     ("example02_alignment_and_imageslib.py",
             "examplejob02_alignments_and_imageslib.txt"),
+    ("example03_grid_images.py",
+            "examplejob03_grid_images.txt"),
         ]:
 
     # read the old file
