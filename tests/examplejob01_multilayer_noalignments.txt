@@ -1,0 +1,422 @@
+
+
+START_SECTION GENERAL
+   COMMENT                                        "Demo Job - Example 1"
+                                                  "Exported from "
+                                                  "Python ASML_JobCreator"
+   MACHINE_TYPE                                   "PAS5500/300"
+   RETICLE_SIZE                                   6
+   WFR_DIAMETER                                   100.000000
+   WFR_NOTCH                                      "N"
+   CELL_SIZE                                      4.000000 4.000000
+   ROUND_EDGE_CLEARANCE                           2.000000
+   FLAT_EDGE_CLEARANCE                            2.000000
+   EDGE_EXCLUSION                                 2.000000
+   COVER_MODE                                     "W"
+   NUMBER_DIES                                    50 50
+   MIN_NUMBER_DIES                                1
+   PLACEMENT_MODE                                 "O"
+   MATRIX_SHIFT                                   2.000000 2.000000
+   PREALIGN_METHOD                                "STANDARD"
+   COMBINE_ZERO_FIRST                             "N"
+   WAFER_ROTATION                                 0.000000
+   MATCHING_SET_ID                                "DEFAULT"
+END_SECTION
+
+
+
+
+
+START_SECTION IMAGE_DEFINITION
+   IMAGE_ID                                       "UCSB_RES"
+   RETICLE_ID                                     "UCSB-OPC1"
+   IMAGE_SIZE                                     12.000000 12.000000
+   IMAGE_SHIFT                                    16.000000 20.000000
+   MASK_SIZE                                      12.000000 12.000000
+   MASK_SHIFT                                     16.000000 20.000000
+   VARIANT_ID                                     ""
+END_SECTION
+
+START_SECTION IMAGE_DEFINITION
+   IMAGE_ID                                       "UCSB_MA6"
+   RETICLE_ID                                     "UCSB-OPC1"
+   IMAGE_SIZE                                     8.000000 8.000000
+   IMAGE_SHIFT                                    -16.000000 -20.000000
+   MASK_SIZE                                      8.000000 8.000000
+   MASK_SHIFT                                     -16.000000 -20.000000
+   VARIANT_ID                                     ""
+END_SECTION
+
+START_SECTION IMAGE_DEFINITION
+   IMAGE_ID                                       "UCSB_GCA"
+   RETICLE_ID                                     "UCSB-OPC1"
+   IMAGE_SIZE                                     8.000000 8.000000
+   IMAGE_SHIFT                                    0.000000 -8.000000
+   MASK_SIZE                                      8.000000 8.000000
+   MASK_SHIFT                                     0.000000 -8.000000
+   VARIANT_ID                                     ""
+END_SECTION
+
+
+
+
+
+
+
+START_SECTION IMAGE_DISTRIBUTION
+   IMAGE_ID                                       "UCSB_RES"
+   CELL_SELECTION                                 "-1" "-1"
+   DISTRIBUTION_ACTION                            "I"
+   OPTIMIZE_ROUTE                                 "N"
+   IMAGE_CELL_SHIFT                               0.000000 0.000000
+END_SECTION
+
+
+
+START_SECTION IMAGE_DISTRIBUTION
+   IMAGE_ID                                       "UCSB_RES"
+   CELL_SELECTION                                 "0" "-1"
+   DISTRIBUTION_ACTION                            "I"
+   OPTIMIZE_ROUTE                                 "N"
+   IMAGE_CELL_SHIFT                               0.000000 0.000000
+END_SECTION
+
+
+
+START_SECTION IMAGE_DISTRIBUTION
+   IMAGE_ID                                       "UCSB_RES"
+   CELL_SELECTION                                 "1" "-1"
+   DISTRIBUTION_ACTION                            "I"
+   OPTIMIZE_ROUTE                                 "N"
+   IMAGE_CELL_SHIFT                               0.000000 0.000000
+END_SECTION
+
+
+
+START_SECTION IMAGE_DISTRIBUTION
+   IMAGE_ID                                       "UCSB_RES"
+   CELL_SELECTION                                 "-1" "0"
+   DISTRIBUTION_ACTION                            "I"
+   OPTIMIZE_ROUTE                                 "N"
+   IMAGE_CELL_SHIFT                               0.000000 0.000000
+END_SECTION
+
+
+
+START_SECTION IMAGE_DISTRIBUTION
+   IMAGE_ID                                       "UCSB_RES"
+   CELL_SELECTION                                 "0" "0"
+   DISTRIBUTION_ACTION                            "I"
+   OPTIMIZE_ROUTE                                 "N"
+   IMAGE_CELL_SHIFT                               0.000000 0.000000
+END_SECTION
+
+
+
+START_SECTION IMAGE_DISTRIBUTION
+   IMAGE_ID                                       "UCSB_RES"
+   CELL_SELECTION                                 "1" "0"
+   DISTRIBUTION_ACTION                            "I"
+   OPTIMIZE_ROUTE                                 "N"
+   IMAGE_CELL_SHIFT                               0.000000 0.000000
+END_SECTION
+
+
+
+START_SECTION IMAGE_DISTRIBUTION
+   IMAGE_ID                                       "UCSB_RES"
+   CELL_SELECTION                                 "-1" "1"
+   DISTRIBUTION_ACTION                            "I"
+   OPTIMIZE_ROUTE                                 "N"
+   IMAGE_CELL_SHIFT                               0.000000 0.000000
+END_SECTION
+
+
+
+START_SECTION IMAGE_DISTRIBUTION
+   IMAGE_ID                                       "UCSB_RES"
+   CELL_SELECTION                                 "0" "1"
+   DISTRIBUTION_ACTION                            "I"
+   OPTIMIZE_ROUTE                                 "N"
+   IMAGE_CELL_SHIFT                               0.000000 0.000000
+END_SECTION
+
+
+
+START_SECTION IMAGE_DISTRIBUTION
+   IMAGE_ID                                       "UCSB_RES"
+   CELL_SELECTION                                 "1" "1"
+   DISTRIBUTION_ACTION                            "I"
+   OPTIMIZE_ROUTE                                 "N"
+   IMAGE_CELL_SHIFT                               0.000000 0.000000
+END_SECTION
+
+
+
+START_SECTION IMAGE_DISTRIBUTION
+   IMAGE_ID                                       "UCSB_MA6"
+   CELL_SELECTION                                 "-5" "-5"
+   DISTRIBUTION_ACTION                            "I"
+   OPTIMIZE_ROUTE                                 "N"
+   IMAGE_CELL_SHIFT                               -2.000000 -2.000000
+END_SECTION
+
+
+
+START_SECTION IMAGE_DISTRIBUTION
+   IMAGE_ID                                       "UCSB_GCA"
+   CELL_SELECTION                                 "5" "5"
+   DISTRIBUTION_ACTION                            "I"
+   OPTIMIZE_ROUTE                                 "N"
+   IMAGE_CELL_SHIFT                               -2.000000 -2.000000
+END_SECTION
+
+
+
+
+
+
+
+START_SECTION LAYER_DEFINITION
+   LAYER_NO                                       0
+   LAYER_ID                                       "0"
+   WAFER_SIDE                                     "A"
+END_SECTION
+
+START_SECTION LAYER_DEFINITION
+   LAYER_NO                                       1
+   LAYER_ID                                       "METAL"
+   WAFER_SIDE                                     "A"
+END_SECTION
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+START_SECTION PROCESS_DATA
+   LAYER_ID                                       "0"
+   LENS_REDUCTION                                 4
+   CALIBRATION                                    "N"
+   COO_REDUCTION                                  "D"
+   MIN_NUMBER_PULSES_IN_SLIT                      "D"
+   MIN_NUMBER_PULSES                              21
+   SKIP_COARSE_WAFER_ALIGN                        "N"
+   REDUCE_RETICLE_ALIGN                           "N"
+   REDUCE_RA_DRIFT                                5.000000
+   REDUCE_RA_INTERVAL                             2
+   RET_COOL_CORR                                  "D"
+   RET_COOL_TIME                                  0
+   RET_COOL_START_ON_LOAD                         "Y"
+   RET_COOL_USAGE                                 "W"
+   GLBL_OVERLAY_ENHANCEMENT                       "N"
+   WAFER_ALIGN_REPEATS                            "N"
+   NR_WAFER_ALIGN_REPEATS                         2
+   ALIGN_REPEAT_INTERVAL                          10 10 10 10 10 10 10 10 10 10
+   SMART_REPEAT_COUNT                             3
+   SMART_REPEAT_THRESHOLD                         0.000000
+   LAYER_SHIFT                                    0.000000 0.000000
+   CORR_INTER_FLD_EXPANSION                       0.000000 0.000000
+   CORR_INTER_FLD_NONORTHO                        0.000000
+   CORR_INTER_FLD_ROTATION                        0.000000
+   CORR_INTER_FLD_TRANSLATION                     0.000000 0.000000
+   CORR_INTRA_FLD_MAGNIFICATION                   0.000000
+   CORR_INTRA_FLD_ROTATION                        0.000000
+   CORR_INTRA_FLD_TRANSLATION                     0.000000 0.000000
+   CORR_INTRA_FLD_ASYM_ROTATION                   0.000000
+   CORR_INTRA_FLD_ASYM_MAGN                       0.000000
+   CORR_PREALIGN_ROTATION                         0.000000
+   CORR_PREALIGN_TRANSLATION                      0.000000 0.000000
+   CORR_80_88_MARK_SHIFT                          0.000000 0.000000 0.000000 0.000000
+   CORR_LENS_HEATING                              1.000000
+   RTCL_CHECK_SURFACES                            "N"
+   RTCL_CHECK_LIMITS_UPPER                        50000 50000 50000
+   RTCL_CHECK_LIMITS_LOWER                        50000 50000 50000
+   CLOSE_GREEN_LASER_SHUTTER                      "N"
+   REALIGNMENT_METHOD                             "D"
+   IMAGE_ORDER_OPTIMISATION                       "Y"
+   RETICLE_ALIGNMENT                              "T"
+   USE_DEFAULT_RETICLE_ALIGNMENT_METHOD           "N"
+   CRITICAL_PERCENTAGE                            83
+   SHARE_LEVEL_INFO                               "N"
+   FOCUS_EDGE_CLEARANCE                           3.000000
+   INLINE_Q_ABOVE_P_CALIBRATION                   "D"
+   SHIFTED_MEASUREMENT_SCANS                      "N"
+   FOCUS_MONITORING                               "D"
+   FOCUS_MONITORING_SCANNER                       "D"
+   DYN_PERF_MONITORING                            "D"
+   FORCE_MEANDER_ENABLED                          "N"
+END_SECTION
+
+START_SECTION PROCESS_DATA
+   LAYER_ID                                       "METAL"
+   LENS_REDUCTION                                 4
+   CALIBRATION                                    "N"
+   COO_REDUCTION                                  "D"
+   MIN_NUMBER_PULSES_IN_SLIT                      "D"
+   MIN_NUMBER_PULSES                              21
+   SKIP_COARSE_WAFER_ALIGN                        "N"
+   REDUCE_RETICLE_ALIGN                           "N"
+   REDUCE_RA_DRIFT                                5.000000
+   REDUCE_RA_INTERVAL                             2
+   RET_COOL_CORR                                  "D"
+   RET_COOL_TIME                                  0
+   RET_COOL_START_ON_LOAD                         "Y"
+   RET_COOL_USAGE                                 "W"
+   GLBL_OVERLAY_ENHANCEMENT                       "N"
+   WAFER_ALIGN_REPEATS                            "N"
+   NR_WAFER_ALIGN_REPEATS                         2
+   ALIGN_REPEAT_INTERVAL                          10 10 10 10 10 10 10 10 10 10
+   SMART_REPEAT_COUNT                             3
+   SMART_REPEAT_THRESHOLD                         0.000000
+   LAYER_SHIFT                                    0.000000 0.000000
+   CORR_INTER_FLD_EXPANSION                       0.000000 0.000000
+   CORR_INTER_FLD_NONORTHO                        0.000000
+   CORR_INTER_FLD_ROTATION                        0.000000
+   CORR_INTER_FLD_TRANSLATION                     0.000000 0.000000
+   CORR_INTRA_FLD_MAGNIFICATION                   0.000000
+   CORR_INTRA_FLD_ROTATION                        0.000000
+   CORR_INTRA_FLD_TRANSLATION                     0.000000 0.000000
+   CORR_INTRA_FLD_ASYM_ROTATION                   0.000000
+   CORR_INTRA_FLD_ASYM_MAGN                       0.000000
+   CORR_PREALIGN_ROTATION                         0.000000
+   CORR_PREALIGN_TRANSLATION                      0.000000 0.000000
+   CORR_80_88_MARK_SHIFT                          0.000000 0.000000 0.000000 0.000000
+   CORR_LENS_HEATING                              1.000000
+   RTCL_CHECK_SURFACES                            "N"
+   RTCL_CHECK_LIMITS_UPPER                        50000 50000 50000
+   RTCL_CHECK_LIMITS_LOWER                        50000 50000 50000
+   CLOSE_GREEN_LASER_SHUTTER                      "N"
+   REALIGNMENT_METHOD                             "D"
+   IMAGE_ORDER_OPTIMISATION                       "Y"
+   RETICLE_ALIGNMENT                              "T"
+   USE_DEFAULT_RETICLE_ALIGNMENT_METHOD           "N"
+   CRITICAL_PERCENTAGE                            83
+   SHARE_LEVEL_INFO                               "N"
+   FOCUS_EDGE_CLEARANCE                           3.000000
+   INLINE_Q_ABOVE_P_CALIBRATION                   "D"
+   SHIFTED_MEASUREMENT_SCANS                      "N"
+   FOCUS_MONITORING                               "D"
+   FOCUS_MONITORING_SCANNER                       "D"
+   DYN_PERF_MONITORING                            "D"
+   FORCE_MEANDER_ENABLED                          "N"
+END_SECTION
+
+
+
+
+
+
+START_SECTION RETICLE_DATA
+   LAYER_ID                                       "METAL"
+   IMAGE_ID                                       "UCSB_RES"
+   IMAGE_USAGE                                    "Y"
+   RETICLE_ID                                     "UCSB-OPC1"
+   IMAGE_SIZE                                     12.000000 12.000000
+   IMAGE_SHIFT                                    16.000000 20.000000
+   MASK_SIZE                                      12.000000 12.000000
+   MASK_SHIFT                                     16.000000 20.000000
+   ENERGY_ACTUAL                                  21.000000
+   FOCUS_ACTUAL                                   -0.100000
+   FOCUS_TILT                                     0.000000 0.000000
+   NUMERICAL_APERTURE                             0.570000
+   SIGMA_OUTER                                    0.750000
+   IMAGE_EXPOSURE_ORDER                           0
+   LITHOGRAPHY_PROCESS                            "Default"
+   IMAGE_INTRA_FLD_COR_TRANS                      0.000000 0.000000
+   IMAGE_INTRA_FLD_COR_ROT                        0.000000
+   IMAGE_INTRA_FLD_COR_MAG                        0.000000
+   IMAGE_INTRA_FLD_COR_ASYM_ROT                   0.000000
+   IMAGE_INTRA_FLD_COR_ASYM_MAG                   0.000000
+   LEVEL_METHOD_Z                                 "D"
+   LEVEL_METHOD_RX                                "D"
+   LEVEL_METHOD_RY                                "D"
+   DIE_SIZE_DEPENDENCY                            "N"
+   ENABLE_EFESE                                   "N"
+   CD_FEC_MODE                                    "N"
+   DOSE_CORRECTION                                "N"
+   DOSE_CRITICAL_IMAGE                            "Y"
+   GLOBAL_LEVEL_POINT_1                           0.000000 0.000000
+   GLOBAL_LEVEL_POINT_2                           0.000000 0.000000
+   GLOBAL_LEVEL_POINT_3                           0.000000 0.000000
+END_SECTION
+
+START_SECTION RETICLE_DATA
+   LAYER_ID                                       "METAL"
+   IMAGE_ID                                       "UCSB_MA6"
+   IMAGE_USAGE                                    "Y"
+   RETICLE_ID                                     "UCSB-OPC1"
+   IMAGE_SIZE                                     8.000000 8.000000
+   IMAGE_SHIFT                                    -16.000000 -20.000000
+   MASK_SIZE                                      8.000000 8.000000
+   MASK_SHIFT                                     -16.000000 -20.000000
+   ENERGY_ACTUAL                                  22.000000
+   FOCUS_ACTUAL                                   0.000000
+   FOCUS_TILT                                     0.000000 0.000000
+   NUMERICAL_APERTURE                             0.570000
+   SIGMA_OUTER                                    0.750000
+   IMAGE_EXPOSURE_ORDER                           0
+   LITHOGRAPHY_PROCESS                            "Default"
+   IMAGE_INTRA_FLD_COR_TRANS                      0.000000 0.000000
+   IMAGE_INTRA_FLD_COR_ROT                        0.000000
+   IMAGE_INTRA_FLD_COR_MAG                        0.000000
+   IMAGE_INTRA_FLD_COR_ASYM_ROT                   0.000000
+   IMAGE_INTRA_FLD_COR_ASYM_MAG                   0.000000
+   LEVEL_METHOD_Z                                 "D"
+   LEVEL_METHOD_RX                                "D"
+   LEVEL_METHOD_RY                                "D"
+   DIE_SIZE_DEPENDENCY                            "N"
+   ENABLE_EFESE                                   "N"
+   CD_FEC_MODE                                    "N"
+   DOSE_CORRECTION                                "N"
+   DOSE_CRITICAL_IMAGE                            "Y"
+   GLOBAL_LEVEL_POINT_1                           0.000000 0.000000
+   GLOBAL_LEVEL_POINT_2                           0.000000 0.000000
+   GLOBAL_LEVEL_POINT_3                           0.000000 0.000000
+END_SECTION
+
+START_SECTION RETICLE_DATA
+   LAYER_ID                                       "METAL"
+   IMAGE_ID                                       "UCSB_GCA"
+   IMAGE_USAGE                                    "Y"
+   RETICLE_ID                                     "UCSB-OPC1"
+   IMAGE_SIZE                                     8.000000 8.000000
+   IMAGE_SHIFT                                    0.000000 -8.000000
+   MASK_SIZE                                      8.000000 8.000000
+   MASK_SHIFT                                     0.000000 -8.000000
+   ENERGY_ACTUAL                                  22.000000
+   FOCUS_ACTUAL                                   0.000000
+   FOCUS_TILT                                     0.000000 0.000000
+   NUMERICAL_APERTURE                             0.570000
+   SIGMA_OUTER                                    0.750000
+   IMAGE_EXPOSURE_ORDER                           0
+   LITHOGRAPHY_PROCESS                            "Default"
+   IMAGE_INTRA_FLD_COR_TRANS                      0.000000 0.000000
+   IMAGE_INTRA_FLD_COR_ROT                        0.000000
+   IMAGE_INTRA_FLD_COR_MAG                        0.000000
+   IMAGE_INTRA_FLD_COR_ASYM_ROT                   0.000000
+   IMAGE_INTRA_FLD_COR_ASYM_MAG                   0.000000
+   LEVEL_METHOD_Z                                 "D"
+   LEVEL_METHOD_RX                                "D"
+   LEVEL_METHOD_RY                                "D"
+   DIE_SIZE_DEPENDENCY                            "N"
+   ENABLE_EFESE                                   "N"
+   CD_FEC_MODE                                    "N"
+   DOSE_CORRECTION                                "N"
+   DOSE_CRITICAL_IMAGE                            "Y"
+   GLOBAL_LEVEL_POINT_1                           0.000000 0.000000
+   GLOBAL_LEVEL_POINT_2                           0.000000 0.000000
+   GLOBAL_LEVEL_POINT_3                           0.000000 0.000000
+END_SECTION
+

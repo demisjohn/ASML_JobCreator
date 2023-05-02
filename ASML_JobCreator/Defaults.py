@@ -144,6 +144,7 @@ class Defaults(object):
         ## Alignment Marks
         self.AlignmentMark_MARK_EDGE_CLEARANCE = "L"
         self.AlignmentMark_WAFER_SIDE = "A"
+        self.AlignmentMark_PreAlignLocation_MinRadius = 32.5 # mm <-- prealignment marks must be outside of this radius
         
         
         ## Alignment Strategy

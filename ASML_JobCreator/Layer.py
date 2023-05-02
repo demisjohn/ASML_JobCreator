@@ -431,7 +431,7 @@ class Layer(object):
             errtemplate = "\npre-alignment position {} ({:.6f},{:.6f}) not allowed"
             markallowed = [1, 1]
             errstr = ""
-            r_min = 32.5 # mm (hard-coded, from image in Issue 43)
+            r_min = Defaults.AlignmentMark_PreAlignLocation_MinRadius # mm
             r_max = Defaults.WFR_DIAMETER/2 - self.get_RoundEdgeClearance()
             # y_min = # TODO also forbid prealignment using flat clearance?
             # (see get_flat_edge_clearance_y in Cell.get_ValidCells)
