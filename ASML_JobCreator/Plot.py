@@ -33,7 +33,7 @@ class Plot(object):
 
 
 
-    def plot_wafer(self, figax=None, showwafer=True, showmarks=True, layer=None):
+    def plot_wafer(self, figax=None, showwafer=True, showmarks=True, layer=None, savewaferfig=False):
         """
         Plot the Wafer layout and distributed Images.
         Note that some plotting options, such as font size and axis positioning, are set in __globals.py
@@ -47,8 +47,11 @@ class Plot(object):
         showwafer, showmarks : True | False, optional
             Show the wafer outline marks + edge clearance (showware) and alignment marks (showmarks). Defaults to True.
 
-        layer: valid LayerID, optional
+        layer : valid LayerID string or list of LayerID strings, optional
             If not None, plots ONLY the specified layer. Default to None.
+            
+        savewaferfig: True | False, optional
+            If True, save a figure for each reticle. Default to False.
         
         Returns
         -------
@@ -58,6 +61,7 @@ class Plot(object):
         import matplotlib.patches as mplp   # for plotting shapes
         import numpy as np
 
+        if type(layer) is str: layer = [layer]
         if figax is None: fig, ax = plt.subplots(nrows=1, ncols=1) 
         LegendEntries = []
 
@@ -74,8 +78,7 @@ class Plot(object):
             # matplotlib.patches.Arc(xy, width, height, angle=0.0, theta1=0.0, theta2=360.0) :
             wf = mplp.Arc( (0,0) , D, D, angle=-90, theta1=A, theta2=-A , color=Defaults.Plotting_WaferEdgeColor, hatch=Defaults.Plotting_BGHatch, label="Wafer")
             ax.add_patch( wf )
-        
-        
+
         ## Plot the edge clearance
         # Arc angles:
         Fc = F - self.parent.Cell.get_FlatEdgeClearance()
@@ -169,8 +172,12 @@ class Plot(object):
             Iheight = Img.sizeXY[1]
             if Img.Layers:
                 if layer is not None:
-                    if layer not in Img.Layers:
-                        continue
+                    plot_this = False
+                    for lay in layer:
+                        if lay in Img.Layers:
+                            plot_this = True
+                            break
+                    if not plot_this: continue
                 for ii, Id in enumerate( Img.get_distribution() ):
                     CellCR = Id[0]
                     ShiftXY = Id[1]
@@ -234,12 +241,22 @@ class Plot(object):
             LegendEntries.extend( [clearance, wf] )
         ax.legend(handles=LegendEntries, title="Images", fontsize="small", loc='upper left', bbox_to_anchor=(1.01, 1), borderaxespad=0.)
 
+        if savewaferfig:
+            import os
+            if not os.path.isdir('Figures'): os.mkdir('Figures')
+            if layer is None :
+                name = 'all_layers'
+            else : 
+                name = 'Layers_{}'.format("_".join(layer))
+            plt.savefig(os.path.join(['Figures', name+'.png']), dpi=300, transparent=True, bbox_inches='tight')
+
+        fig.show()
         return fig, ax
     #end plot_wafer()
     
     
     
-    def plot_reticles(self, figax=None, scale=False, showwindow=True, showlens=True):
+    def plot_reticles(self, figax=None, scale=False, showwindow=True, showlens=True, saveretfigs=False):
         """
         Plot the Reticle layout(s).  If multiple Reticle ID's are detected, multiple reticles will be plotted.
         Note that some plotting options, such as font size and axis positioning, are set in __globals.py
@@ -251,6 +268,9 @@ class Plot(object):
             
         showwindow, showlens : True | False, optional
             If True, show the rectangular reticle table window (showwindow) and circular lens (showlens) outlines. These dimensions are defined in Defaults.py. Both defualt to True.
+            
+        saveretfigs: True | False, optional
+            If True, save a figure for each reticle. Default to False.
         
         Returns
         -------
@@ -267,6 +287,8 @@ class Plot(object):
         import matplotlib.pyplot as plt
         import matplotlib.patches as mplp   # for plotting shapes
         import numpy as np    
+        if saveretfigs:
+            import os
         
         Rets = self._get_ReticlesPerImage()
         figs, axs = [],[]        
@@ -334,12 +356,16 @@ class Plot(object):
                 LegendEntries.append( RT )
             ax.legend(handles=LegendEntries, title="Images", fontsize="small", loc='upper left', bbox_to_anchor=(1.01, 1), borderaxespad=0.)
 
+            if saveretfigs:
+                plt.savefig(os.path.join(['Figures', RetStr+".png"]))
+            fig.show()
+
         #end for (RetStr)
         # unset_DEBUG()
-        
+
         return figs, axs
     #end plot_wafer()
-    
+
     plot_reticle = plot_reticles    # alias for convenience
     
     
