@@ -1,5 +1,5 @@
 # ASML_JobCreator
-Python module to generate text job files for an [ASML PAS 5500/300 Stepper Lithography system](https://www.nanotech.ucsb.edu/wiki/index.php/Stepper_3_(ASML_DUV)), at the [UCSB Nanofabrication Facility](https://www.nanotech.ucsb.edu). Requires the relevant ASML Software options ("*Job Creator*") on the machine to convert the text output file into machine-usable files.
+Python module to generate text job files for an [ASML PAS 5500/300 Stepper Lithography system](https://www.nanotech.ucsb.edu/wiki/index.php/Stepper_3_(ASML_DUV)), at the [UCSB Nanofabrication Facility](https://www.nanotech.ucsb.edu). A `Defaults.py` file can be created for your particular tool. Requires the relevant ASML Software options ("*Job Creator*") on the machine to convert the text output file into machine-usable files. 
 
 Class heirarchy is set up similarly to the ASML *Job Definition* GUI.  The `Defaults.py` file, described below, may allow for usage on other ASML systems.
 
@@ -12,13 +12,15 @@ Class heirarchy is set up similarly to the ASML *Job Definition* GUI.  The `Defa
 - **Download the latest _ASML_JobCreator_ package** at [GitHub > ASML_JobCreator > Releases](https://github.com/demisjohn/ASML_JobCreator/releases)
    - Extract the ZIP into a directory of your choice, and open/run an Example file with the Python IDE
 
+- Obtain the Defaults.py file from your tool's manager - this file must be created using a text-exported job file from your tool.
+
 # Usage
 
-Example usage, to export a text file for import into ASML PAS stepper system via `pas_recipe_import`.
+The following shows example usage, to export a text file via Python, for import into ASML PAS stepper system via `pas_recipe_import`.
 
 Edit the appropriate *Example* file to your needs and execute the script with your Python interpreter.
 
-The text file produced can be copied to your ASML PAS system.  On the system, execute the converter `pas_recipe_import` (with appropriate arguments) to generate the binary file that can be loaded into the PAS "*Job Definition*" GUI for further editing or the "*Task Streaming Queue*" for usage.
+The text file produced can be copied to your ASML PAS system.  On the system, execute the converter `pas_recipe_import` (with appropriate arguments) to generate the binary file that can be loaded into the PAS "*Job Definition*" GUI for further editing or the "*Task Streaming Queue*" for usage. Note that the text files must be placed in a specific directory on the system for the converter to locate them.
 
 For help on a command: after importing module and creating Job object, use commands like:
 
@@ -51,7 +53,7 @@ All info will be added to this `Job` object.  Commands like `help(MyJob)` or `di
 ### Cell Structure:
 
     MyJob.Cell.set_CellSize( [4.00, 4.00] )    # cell size [X,Y] in millimeters
-    MyJob.Cell.set_MatrixShift( [2.00, 2.00] ) # shift by half a cell
+    MyJob.Cell.set_MatrixShift( [2.00, 2.00] ) # shift the Cell Matrix by half a cell
 
 
 ### Image Definition: Define pattern location on printed reticle.
