@@ -12,7 +12,7 @@ Class heirarchy is set up similarly to the ASML *Job Definition* GUI.  The `Defa
 - **Download the latest _ASML_JobCreator_ package** at [GitHub > ASML_JobCreator > Releases](https://github.com/demisjohn/ASML_JobCreator/releases)
    - Extract the ZIP into a directory of your choice, and open/run an Example file with the Python IDE
 
-- Obtain the Defaults.py file from your tool's manager - this file must be created using a text-exported job file from your tool.
+- Obtain the `Defaults.py` file from your tool's manager - this file must be created using a text-exported job file from your tool.
 
 # Usage
 
