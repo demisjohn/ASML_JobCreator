@@ -25,6 +25,7 @@ For help: after running once, use commands like:
 ####################################################
 # Module setup etc.
 
+import matplotlib.pyplot as plt
 import ASML_JobCreator as asml
 
 ####################################################
@@ -83,9 +84,10 @@ print(MyJob)
 # Plot the wafer layout and distributed Images:
 MyJob.Plot.plot_wafer()
 MyJob.Plot.plot_reticles()
+plt.show()
 
 ## Export the text file:
-MyJob.export('Ex01_TestJob_NoAlign.txt')
+MyJob.export('examplejob01_multilayer_noalignments.txt')
 
 
 print('done.')

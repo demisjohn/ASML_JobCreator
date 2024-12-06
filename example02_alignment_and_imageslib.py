@@ -25,6 +25,7 @@ For help: after running once, use commands like:
 ####################################################
 # Module setup etc.
 
+import matplotlib.pyplot as plt
 import ASML_JobCreator as asml
 
 ####################################################
@@ -115,19 +116,17 @@ Lyr2.set_GlobalAlignment( strategy=ALL )  # choose a global strategy
 Lyr2.expose_Image( DicingLine_X, Energy=21, Focus=-0.10 )
 
 
-
-
-
 # Print all the data added to this Job:
 print(MyJob)
-MyJob.Plot.plot_wafer()
+fig, ax = MyJob.Plot.plot_wafer()
+plt.show()
 
 
 ## Export the text file:
 asml.unset_WARN()   # Turn off warning messages about defaults
 asml.set_DEBUG()   # Turn on debugging output.
 #   overwrite the file. A warning will be printed while doing so.
-MyJob.export('Example02.txt', overwrite=True) 
+MyJob.export('examplejob02_alignments_and_imageslib.txt', overwrite=True) 
 
 
 print('done.')
