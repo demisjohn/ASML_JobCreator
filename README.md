@@ -6,14 +6,14 @@ Class heirarchy is set up similarly to the ASML *Job Definition* GUI.  The `Defa
 # Installation
 - You must have access to an ASML tool that has the software option `JobCreator` (aka. JDJC or JC) installed, in order to convert the output of these scripts into binary job files.
 
-- You must have a Python interpreter installed in order to use this module.  It is designed for use with Python 3.x, although 2.x may work (untested). 
-   - Common easy-to-install Scientific Python IDE's include [Anaconda Python](https://www.anaconda.com) > Spyder, or Jupyter Notebooks, or the command-line Python interpreter that is built-in to many modern operating sytems.
+- You must have a Python interpreter installed in order to use this module.  It is designed for use with Python 3.x. 
+   - Common easy-to-install Scientific Python IDE's include [Anaconda Python](https://www.anaconda.com) > Spyder, or Jupyter Notebooks, or the command-line Python interpreter that is built-in to many operating sytems.
    
 - **Download the latest _ASML_JobCreator_ package** at [GitHub > ASML_JobCreator > Releases](https://github.com/demisjohn/ASML_JobCreator/releases)
-   - Extract the ZIP into a directory of your choice, and open/run an Example file with the Python IDE
+   - Extract the ZIP into a directory of your choice, and open/run an Example file with your Python IDE
 
 - Obtain the `Defaults.py` file from your tool's manager - this file must be created using a text-exported job file from your tool. 
-- UCSB users please see [this UCSB Nanofab wiki page](https://wiki.nanofab.ucsb.edu/wiki/ASML_Stepper_3_-_Job_Creator#Required_Files) to obtain this file.
+- UCSB users please see [this UCSB Nanofab wiki page](https://wiki.nanofab.ucsb.edu/wiki/ASML_Stepper_3_-_Job_Creator#Required_Files) to obtain this file.  Others may contact [the creator](mailto:demis@ucsb.edu) for advice on how to generate this file.
 
 # Usage
 
