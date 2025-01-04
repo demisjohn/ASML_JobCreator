@@ -37,7 +37,6 @@ class Defaults(object):
     #end __init__
     
     
-    
     def __str__(self):
         '''Return string to `print` this object.'''
         s = ""
@@ -46,7 +45,6 @@ class Defaults(object):
         
         return s
     #end __str__
-    
     
     
     def copy(self):
@@ -67,7 +65,7 @@ class Defaults(object):
     
     def LoadDefaultValues(self):
         
-        ## Defaults for plotting options:
+        ## Plotting options:
         self.Plotting_Alpha = 0.7       # alpha transparency value
         self.Plotting_LineWidth = 1.0
         self.Plotting_WaferColor = 'snow'
@@ -90,8 +88,23 @@ class Defaults(object):
         self.Plotting_ReticleLensAlpha = 0.6
         self.Plotting_ReticleTableAlpha = 0.3
         
+        ## Software Limits (PAS5500/300):
+        self.ImageDistribution_MaxDistPerImage = 999
+        self.Image_MinImageSize = [0.0001,0.0001]   # mm <-- not checked currently
+        self.Image_MaxImageSize = [26.0,33.0]   # mm <-- not checked currently
+        self.Cell_MinCellSize = 1.020 # mm
+        # self.Cell_MaxCellSize = 100.0 # mm <-- not checked currently
+        self.AlignmentMark_PreAlignLocation_MinRadius = 32.5 # mm <-- prealignment marks must be outside of this radius
+
+        # For plotting only:
+        self.RETICLE_TABLE_WINDOW = [22, 27]    # mm
+        self.LENS_DIAMETER = 31.00              # mm
+        self.WFR_FLAT_LENGTH = 32.5             # mm
         
         
+        ############################################################################
+        ## The following variables are machine-specific defaults
+        ############################################################################
         
         ## Cell Structure:
         self.ROUND_EDGE_CLEARANCE = 2.0
@@ -101,7 +114,6 @@ class Defaults(object):
         self.MIN_NUMBER_DIES = 1
         self.CELL_SIZE = [10, 10]    #mm
         self.MATRIX_SHIFT = [0.0, 0.0]
-        
         
         
         ## Machine Defaults Hard-Coded here:
@@ -115,24 +127,11 @@ class Defaults(object):
         self.WAFER_ROTATION = 0.0
         self.MATCHING_SET_ID = "DEFAULT"
         self.ProcessData_LENS_REDUCTION = 4.0    # Magnification; DUV: 4.0 // I-Line: 5.0
-        # For plotting only:
-        self.RETICLE_TABLE_WINDOW = [22, 27]    # mm
-        self.LENS_DIAMETER = 31.00              # mm
-        self.WFR_FLAT_LENGTH = 32.5             # mm
+        
         
         self.comment_line1 = "Created with python ASML_JobCreator"
         self.comment_line2 = "Univ. of California Santa Barbara"
         self.comment_line3 = "UCSB Nanofab, Demis D. John"
-        
-        
-        
-        ## Software Limits (PAS5500/300):
-        self.ImageDistribution_MaxDistPerImage = 999
-        self.Image_MinImageSize = [0.0001,0.0001]   # mm <-- not checked currently
-        self.Image_MaxImageSize = [26.0,33.0]   # mm <-- not checked currently
-        self.Cell_MinCellSize = 1.020 # mm
-        # self.Cell_MaxCellSize = 100.0 # mm <-- not checked currently
-        
         
         
         ## Image Defaults
@@ -144,7 +143,6 @@ class Defaults(object):
         ## Alignment Marks
         self.AlignmentMark_MARK_EDGE_CLEARANCE = "L"
         self.AlignmentMark_WAFER_SIDE = "A"
-        self.AlignmentMark_PreAlignLocation_MinRadius = 32.5 # mm <-- prealignment marks must be outside of this radius
         
         
         ## Alignment Strategy
