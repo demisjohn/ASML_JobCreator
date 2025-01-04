@@ -1,0 +1,46 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: ASML_JobCreator
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+authors:
+  - given-names: Demis
+    family-names: John
+    name-particle: D.
+    email: demis@ucsb.edu
+    affiliation: University of California Santa Barbara
+    orcid: 'https://orcid.org/0000-0001-9588-0124'
+  - name: UCSB Nanofabrication Facility
+    address: 'Engineering Sciences, Bldg #225'
+    city: Santa Barbara
+    post-code: '93106'
+    region: CA
+    email: nanofab-job-inquiry@ece.ucsb.edu
+    tel: '8058935934'
+    country: US
+    website: 'https://nanofab.ucsb.edu/'
+    alias: UCSB NanoFab
+  - given-names: Theodore
+    family-names: Morin
+    affiliation: University of California Santa Barbara
+  - given-names: Miguel
+    family-names: Daal
+    affiliation: University of California Santa Barbara
+repository-code: 'https://github.com/demisjohn/ASML_JobCreator/'
+url: >-
+  https://wiki.nanofab.ucsb.edu/wiki/ASML_Stepper_3_-_Job_Creator
+abstract: >-
+  Python program your Job files for an ASML PAS 5500 Stepper
+  Lithography system, by the UCSB Nanofabrication Facility.
+keywords:
+  - semiconductor
+  - microfabrication
+  - photolithography
+  - python
+license: GPL-3.0-or-later
+version: 1.4.2
+date-released: '2024-04-18'
