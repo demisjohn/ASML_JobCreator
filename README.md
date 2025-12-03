@@ -152,4 +152,4 @@ The ASML Graphical Interface has many checks and tests built into the software t
 
 ## Citing this repo in papers
 If you use this script in a publication, please cite it!
-Use the Github "Cite" function on this page to get the citation.
+Use the Github "Cite this page" function on this page to get the citation.
