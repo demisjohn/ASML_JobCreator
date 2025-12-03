@@ -149,3 +149,7 @@ The ASML Graphical Interface has many checks and tests built into the software t
 # Author(s)
 
 [Demis D. John](https://wiki.nanotech.ucsb.edu/wiki/index.php/Demis_D._John), Scientist at the [UCSB Nanofabrication Facility](http://www.nanotech.ucsb.edu), [Univ. of California Santa Barbara](http://www.ucsb.edu)
+
+## Citing this repo in papers
+If you use this script in a publication, please cite it!
+Use the Github "Cite" function on this page to get the citation.
